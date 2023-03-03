@@ -24,12 +24,18 @@ right_pointer : RIGHT OP WS* idref_or_xpath WS* CP ;
 
 string_index_pointer : STRING_INDEX OP WS* idref_or_xpath WS* COMMA WS* offset WS* CP ;
 
-range_pointer : RANGE OP WS* range_argument ( WS* COMMA WS* range_argument WS* COMMA WS* range_argument )* WS* COMMA WS* range_argument CP ;
+range_pointer : RANGE OP WS* range_pointer_pair ( WS* COMMA WS* range_pointer_pair )*  WS* CP ;
 
 string_range_pointer : STRING_RANGE OP WS* idref_or_xpath WS* COMMA WS* offset WS* COMMA WS* length ( WS* COMMA WS* offset WS* COMMA WS* length )* WS* CP ;
 
 match_pointer : MATCH OP WS* idref_or_xpath WS* COMMA WS* regex ( WS* COMMA WS* index )? WS* CP ;
 
+
+range_pointer_pair : range_start WS* COMMA WS* range_end ;
+
+range_start : range_argument ;
+
+range_end : range_argument ;
 
 range_argument
     : xpath_pointer
