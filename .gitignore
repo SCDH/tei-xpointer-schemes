@@ -1,5 +1,8 @@
 # emacs backup files
 *~
 
-# maven build artifacts
+# maven build artifacts and automatically set up files
 target
+.settings
+.classpath
+.project
