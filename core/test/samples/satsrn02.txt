@@ -1,0 +1,1 @@
+#range(right(//lb[@n='3']),string-index(//lb[@n='3'],15))

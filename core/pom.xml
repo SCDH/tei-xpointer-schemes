@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+       <groupId>org.teic.sats</groupId>
+       <artifactId>SATS</artifactId>
+       <version>${revision}</version>
+    </parent>
+
+    <artifactId>tei-xpointer-scheme</artifactId>
+    <name>TEI XPointer Scheme</name>
+    <url>https://github.com/lueck/tei-xpointer-scheme</url>
+
+    <properties>
+       <xsl.dir>${project.basedir}/xsl</xsl.dir>
+       <scripts.dir>${project.basedir}/..</scripts.dir>
+       <test.resources>${project.build.directory}/generated-test-resources</test.resources>
+    </properties>
+
+    <build>
+       <plugins>
+
+          <plugin>
+             <!-- This plugin generates java classes from the ANTLR
+                  grammars during the generate-sources phase of
+                  maven. -->
+             <groupId>org.antlr</groupId>
+             <artifactId>antlr4-maven-plugin</artifactId>
+             <version>${antlr.version}</version>
+             <executions>
+                <execution>
+                   <goals>
+                      <goal>antlr4</goal>
+                   </goals>
+                </execution>
+             </executions>
+          </plugin>
+
+          <!-- configure test reporter for JUnit 5 -->
+          <plugin>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <version>2.22.2</version>
+             <configuration>
+                <!-- set to false for debugging! -->
+                <trimStackTrace>true</trimStackTrace>
+             </configuration>
+          </plugin>
+
+          <plugin>
+             <!-- test the grammar -->
+             <groupId>com.khubla.antlr</groupId>
+             <artifactId>antlr4test-maven-plugin</artifactId>
+             <version>${antlr.test.version}</version>
+             <!--packaging>jar</packaging-->
+             <executions>
+                <execution>
+                   <goals>
+                      <goal>test</goal>
+                   </goals>
+                </execution>
+             </executions>
+             <configuration>
+                <scenarios>
+                   <scenario>
+                      <scenarioName>Wellformed pointers</scenarioName>
+                      <verbose>false</verbose>
+                      <showTree>false</showTree>
+                      <entryPoint>fragm</entryPoint>
+                      <grammarName>SATS</grammarName>
+                      <packageName>org.teic.sats.parser</packageName>
+                      <testFileExtension>.txt</testFileExtension>
+                      <exampleFiles>test/samples</exampleFiles>
+                   </scenario>
+                </scenarios>
+             </configuration>
+          </plugin>
+
+          <plugin>
+             <!-- put the dependencies into the target/lib for the
+                  commandline app -->
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-dependency-plugin</artifactId>
+             <version>3.1.1</version>
+             <executions>
+                <execution>
+                   <phase>prepare-package</phase>
+                   <goals>
+                      <goal>copy-dependencies</goal>
+                   </goals>
+                   <configuration>
+                      <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                      <includeArtifactIds>slf4j-simple,slf4j-api,Saxon-HE,antlr4-runtime</includeArtifactIds>
+                   </configuration>
+                </execution>
+             </executions>
+          </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>create-test-resources-dir</id>
+                    <phase>generate-test-resources</phase>
+                    <configuration>
+                        <tasks>
+                            <delete dir="${test.resources}"/>
+                            <mkdir dir="${test.resources}"/>
+                        </tasks>
+                    </configuration>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                </execution>
+		<execution>
+		    <id>set-permissions</id>
+		    <phase>package</phase>
+		    <configuration>
+                       <target>
+			  <chmod file="${project.build.directory}/saxon" perm="755"/>
+                       </target>
+		    </configuration>
+		    <goals>
+                       <goal>run</goal>
+		    </goals>
+		</execution>
+            </executions>
+         </plugin>
+
+	 <!-- fill in the right versions in the templates in shell
+	      directory and set their permissions -->
+	 <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+	       <execution>
+		  <id>copy-resources</id>
+		  <phase>compile</phase>
+		  <goals>
+		     <goal>copy-resources</goal>
+		  </goals>
+		  <configuration>
+		     <outputDirectory>${project.build.directory}/bin</outputDirectory>
+		     <resources>
+			<resource>
+		           <directory>${project.basedir}/scripts</directory>
+		           <includes>
+			      <include>saxon</include>
+			      <include>saxon.bat</include>
+		           </includes>
+			   <filtering>true</filtering>
+			</resource>
+		     </resources>
+		  </configuration>
+	       </execution>
+            </executions>
+	 </plugin>
+
+       </plugins>
+    </build>
+
+</project>

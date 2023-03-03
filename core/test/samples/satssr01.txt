@@ -1,0 +1,1 @@
+#string-range(//lb[@n='5'],0,27)

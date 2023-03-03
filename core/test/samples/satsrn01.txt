@@ -1,0 +1,1 @@
+#range(left(//lb[@n='3']),left(//lb[@n='4']))

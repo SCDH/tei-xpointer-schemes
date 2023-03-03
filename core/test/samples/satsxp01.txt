@@ -1,0 +1,1 @@
+#xpath(//lb[@n='1']/following-sibling::choice[1]/reg)
