@@ -1,6 +1,6 @@
-parser grammar SATSParser ;
+parser grammar TEIXPointerParser ;
 
-options { tokenVocab=SATSLexer; }
+options { tokenVocab=TEIXPointerLexer; }
 
 // fragment is a reserved token in ANTLR parser grammars
 fragm : FRAGMENT pointer WS* ;

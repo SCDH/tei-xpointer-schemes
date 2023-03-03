@@ -3,8 +3,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.teic.sats</groupId>
-    <artifactId>SATS</artifactId>
+    <groupId>org.teic.teixptr</groupId>
+    <artifactId>TEIXPointerScheme</artifactId>
     <version>${revision}</version>
     <name>TEI XPointer Scheme</name>
     <url>https://github.com/lueck/tei-xpointer-scheme</url>

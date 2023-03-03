@@ -1,4 +1,4 @@
-lexer grammar SATSLexer;
+lexer grammar TEIXPointerLexer;
 
 WS : [\n\f\r ] ;
 

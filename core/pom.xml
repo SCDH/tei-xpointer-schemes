@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-       <groupId>org.teic.sats</groupId>
-       <artifactId>SATS</artifactId>
+       <groupId>org.teic.teixptr</groupId>
+       <artifactId>TEIXPointerScheme</artifactId>
        <version>${revision}</version>
     </parent>
 
-    <artifactId>tei-xpointer-scheme</artifactId>
-    <name>TEI XPointer Scheme</name>
+    <artifactId>TEIXPointer</artifactId>
+    <name>TEI XPointer</name>
     <url>https://github.com/lueck/tei-xpointer-scheme</url>
 
     <properties>
@@ -66,10 +66,10 @@
                    <scenario>
                       <scenarioName>Wellformed pointers</scenarioName>
                       <verbose>false</verbose>
-                      <showTree>false</showTree>
+                      <showTree>true</showTree>
                       <entryPoint>fragm</entryPoint>
-                      <grammarName>SATS</grammarName>
-                      <packageName>org.teic.sats.parser</packageName>
+                      <grammarName>TEIXPointer</grammarName>
+                      <packageName>org.teic.teixptr.parser</packageName>
                       <testFileExtension>.txt</testFileExtension>
                       <exampleFiles>test/samples</exampleFiles>
                    </scenario>
@@ -156,6 +156,17 @@
 		  </configuration>
 	       </execution>
             </executions>
+	 </plugin>
+
+	 <!-- generate API docs -->
+	 <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.5.0</version>
+            <configuration>
+               <show>private</show>
+               <nohelp>true</nohelp>
+            </configuration>
 	 </plugin>
 
        </plugins>
