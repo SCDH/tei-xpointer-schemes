@@ -16,6 +16,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_pointerType() throws SaxonApiException {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsxp01, satsXml, proc);
 	assertEquals("xpath", pointer.getPointerType());
+	assertEquals("<reg>habui</reg>", pointer.getSelectedNodes().toString());
     }
 
 }
