@@ -5,7 +5,7 @@ import java.util.Iterator;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
-
+import net.sf.saxon.s9api.XdmExternalObject;
 
 class TestUtils {
 
@@ -15,17 +15,6 @@ class TestUtils {
 	    XdmItem item = iter.next();
 	    if (item instanceof XdmNode) {
 		return (XdmNode) item;
-	    }
-	}
-	return null;
-    }
-
-    public static Point getPoint(XdmValue xdmValue) {
-	Iterator<XdmItem> iter = xdmValue.iterator();
-	if (iter.hasNext()) {
-	    XdmItem item = iter.next();
-	    if (item instanceof Point) {
-		return (Point) item;
 	    }
 	}
 	return null;

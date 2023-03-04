@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmValue;
 
 
 public class TEIXPointerTest extends TestSetup {
@@ -23,34 +24,23 @@ public class TEIXPointerTest extends TestSetup {
     void test_satsr01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsr01, satsXml, proc);
 	assertEquals("right", pointer.getPointerType());
-	assertEquals("<lb n=\"3\"/>", pointer.getSelectedNodes().toString());
-	assertEquals(1, pointer.getSelectedNodes().size());
-    }
-
-    @Disabled
-    @Test
-    void test_satsr01Point() throws Exception {
-	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsr01, satsXml, proc);
-	assertNotNull(TestUtils.getFirstNode(pointer.getSelectedNodes()));
-	assertNotNull(TestUtils.getPoint(pointer.getSelectedNodes()));
-	assertTrue(TestUtils.getPoint(pointer.getSelectedNodes()) instanceof Point);
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+	Point point = Point.getPoint(selection);
+	assertNotNull(point);
+	assertEquals("<lb n=\"3\"/>", point.toString());
+	assertEquals(Point.RIGHT, point.getPosition());
     }
 
     @Test
     void test_satsl01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsl01, satsXml, proc);
 	assertEquals("left", pointer.getPointerType());
-	assertEquals("<supplied reason=\"lost\">si</supplied>", pointer.getSelectedNodes().toString());
-	assertEquals(1, pointer.getSelectedNodes().size());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+	Point point = Point.getPoint(selection);
+	assertNotNull(point);
+	assertEquals("<supplied reason=\"lost\">si</supplied>", point.toString());
+	assertEquals(Point.LEFT, point.getPosition());
     }
-
-    @Disabled
-    @Test
-    void test_satsl01Point() throws Exception {
-	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsl01, satsXml, proc);
-	assertNotNull(TestUtils.getFirstNode(pointer.getSelectedNodes()));
-	assertNotNull(TestUtils.getPoint(pointer.getSelectedNodes()));
-	assertTrue(TestUtils.getPoint(pointer.getSelectedNodes()) instanceof Point);
-    }
-
 }

@@ -7,6 +7,7 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;
+import net.sf.saxon.s9api.XdmExternalObject;
 
 import net.sf.saxon.om.NodeInfo;
 
@@ -19,8 +20,8 @@ import net.sf.saxon.om.NodeInfo;
  * See {@link Point#makePoint(XdmValue, int)} for a convenient method
  * to wrap {@link XdmValue}.
  *
- * FIXME: See {@link XdmItem}: "Users must not attempt to create
- * additional subclasses."
+ * See {@link XdmItem}: "Users must not attempt to create additional
+ * subclasses." So we wrap the Point into {@link XdmExternalObject}.
  *
  */
 public class Point extends XdmNode {
@@ -55,7 +56,7 @@ public class Point extends XdmNode {
     /**
      * Get the position of the point relative to the node.
      */
-    public int getPostion() {
+    public int getPosition() {
 	return position;
     }
 
@@ -76,7 +77,8 @@ public class Point extends XdmNode {
 	    if (item instanceof XdmNode) {
 		// wrap the node into a Point object
 		Point point = new Point(((XdmNode) item).getUnderlyingNode(), LEFT);
-		wrappedItems.add(point);
+		XdmExternalObject wrappedPoint = new XdmExternalObject(point);
+		wrappedItems.add(wrappedPoint);
 		break;
 	    }
 	}
@@ -104,8 +106,28 @@ public class Point extends XdmNode {
 	    }
 	}
 	if (point != null) {
-	    wrappedItems.add(point);
+	    XdmExternalObject wrappedPoint = new XdmExternalObject(point);
+	    wrappedItems.add(wrappedPoint);
 	}
 	return new XdmValue(wrappedItems);
     }
+
+    /**
+     * Unwrap the {@link Point} from a pointer selection.
+     *
+     * @param selection  an {@link XdmValue} containing a selection
+     * @return {@link Point}
+     */
+    public static Point getPoint(XdmValue selection) {
+	Iterator<XdmItem> iter = selection.iterator();
+	if (iter.hasNext()) {
+	    XdmItem item = iter.next();
+	    if (item instanceof XdmExternalObject) {
+		Object obj = ((XdmExternalObject) item).getExternalObject();
+		return (Point) obj;
+	    }
+	}
+	return null;
+    }
+
 }
