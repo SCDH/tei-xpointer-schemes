@@ -19,4 +19,16 @@ class TestUtils {
 	}
 	return null;
     }
+
+    public static Point getPoint(XdmValue xdmValue) {
+	Iterator<XdmItem> iter = xdmValue.iterator();
+	if (iter.hasNext()) {
+	    XdmItem item = iter.next();
+	    if (item instanceof Point) {
+		return (Point) item;
+	    }
+	}
+	return null;
+    }
+
 }

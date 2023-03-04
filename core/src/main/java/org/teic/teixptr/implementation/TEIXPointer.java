@@ -3,6 +3,7 @@ package org.teic.teixptr.implementation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import org.xml.sax.InputSource;
 import javax.xml.transform.Source;
@@ -15,6 +16,7 @@ import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
+import net.sf.saxon.s9api.XdmItem;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -45,6 +47,8 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
     private String pointerType;
 
     private XdmValue selectedNodes = null;
+
+    protected boolean assertNonEmpty = true;
 
     // state variables
     private boolean errorSeen = false;
@@ -101,11 +105,12 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      *
      */
     public static TEIXPointer parseTEIXPointer(String pointer, File file, Processor processor)
-	throws SaxonApiException {
+	throws SaxonApiException, Exception {
 	ParseTree tree = parse(pointer);
 	ParseTreeWalker walker = new ParseTreeWalker();
 	TEIXPointer listener = new TEIXPointer(file, processor);
 	walker.walk(listener, tree);
+	listener.check();
 	return listener;
     }
 
@@ -130,6 +135,21 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
     }
 
     /**
+     * Check for errors during the parsing and processing of the
+     * pointer. This method should be called before accessing the
+     * getter methods.
+     */
+    public void check() throws Exception {
+	if (errorStack.size() > 0) {
+	    LOG.error("found {} errors in the pointer", errorStack.size());
+	    for (Exception err : errorStack) {
+		LOG.error(err.getMessage());
+	    }
+	    throw errorStack.get(0);
+	}
+    }
+
+    /**
      * A method that encapsulates code for evaluating an XPath
      * expression on the document. This method catches errors and puts
      * them on the error stack and sets <code>errorSeen</code>.
@@ -148,6 +168,22 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	    errorSeen = true;
 	    errorStack.add(e);
 	    return null;
+	}
+    }
+
+    /**
+     * If the policy for handling non-empty pointers determines to
+     * raise errors on empty pointers, then check the pointer value
+     * passed in.
+     *
+     */
+    protected void enforceNonEmptyPolicy(XdmValue xdmValue, String pointerString) {
+	if (assertNonEmpty) {
+	    Iterator<XdmItem> iter = xdmValue.iterator();
+	    if (!iter.hasNext()) {
+		errorSeen = true;
+		errorStack.add(new EmptyPointerException("Empty pointer " + pointerString));
+	    }
 	}
     }
 
@@ -178,7 +214,13 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
     public void exitPointer(TEIXPointerParser.PointerContext ctx) {
 	if (errorSeen) {
 	    LOG.error("errors occurred while processing the pointer");
-	} else if (ctx.getStart().getType() == TEIXPointerLexer.XPATH) {
+	}
+	// set selectedNodes according to the base pointer type
+	else if (ctx.getStart().getType() == TEIXPointerLexer.XPATH) {
+	    selectedNodes = selectedNodesStack.get(0);
+	} else if (ctx.getStart().getType() == TEIXPointerLexer.LEFT) {
+	    selectedNodes = selectedNodesStack.get(0);
+	} else if (ctx.getStart().getType() == TEIXPointerLexer.RIGHT) {
 	    selectedNodes = selectedNodesStack.get(0);
 	} else {
 	    // it's an IDREF
@@ -218,9 +260,56 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
 	    LOG.debug("found XPATH pointer, evaluating: {}", xpath);
-	    selectedNodesStack.add(evaluateXPath(xpath, "xpath()"));
+	    XdmValue nodes = evaluateXPath(xpath, "xpath()");
+	    enforceNonEmptyPolicy(nodes, ctx.getText());
+	    selectedNodesStack.add(nodes);
 	    // reset the xpath state variable
 	    xpath = null;
+	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitLeft_pointer(TEIXPointerParser.Left_pointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    LOG.debug("found left() pointer, evaluating: {}", xpath);
+	    // wrap node(s) into a point
+	    try {
+		XdmValue point = Point.makePointLeft(evaluateXPath(xpath, "left()"));
+		enforceNonEmptyPolicy(point, ctx.getText());
+		selectedNodesStack.add(point);
+		// reset the xpath state variable
+		xpath = null;
+	    } catch (Exception e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    }
+	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitRight_pointer(TEIXPointerParser.Right_pointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    LOG.debug("found right() pointer, evaluating: {}", xpath);
+	    try {
+		XdmValue point = Point.makePointRight(evaluateXPath(xpath, "right()"));
+		enforceNonEmptyPolicy(point, ctx.getText());
+		selectedNodesStack.add(point);
+		// reset the xpath state variable
+		xpath = null;
+	    } catch (Exception e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    }
 	}
     }
 

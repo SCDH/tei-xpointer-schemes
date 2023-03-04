@@ -18,6 +18,10 @@ import net.sf.saxon.om.NodeInfo;
  *
  * See {@link Point#makePoint(XdmValue, int)} for a convenient method
  * to wrap {@link XdmValue}.
+ *
+ * FIXME: See {@link XdmItem}: "Users must not attempt to create
+ * additional subclasses."
+ *
  */
 public class Point extends XdmNode {
 

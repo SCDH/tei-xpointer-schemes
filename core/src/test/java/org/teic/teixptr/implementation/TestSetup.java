@@ -18,18 +18,18 @@ public class TestSetup {
 
     public static File satsXml = Paths.get(sampleDir.resolve("sats.xml")).toFile();
 
-    public static String satsxp01;
+    public static String satsxp01, satsr01, satsl01;
 
     public static String readSample(String sample) throws IOException {
 	Path path = Paths.get(sampleDir.resolve(sample));
 	return Files.readString(path);
     }
 
-
-
     @BeforeAll
     public static void setupSATSExamples() throws IOException {
 	satsxp01 = readSample("satsxp01.txt");
+	satsr01 = readSample("satsr01.txt");
+	satsl01 = readSample("satsl01.txt");
     }
 
 }
