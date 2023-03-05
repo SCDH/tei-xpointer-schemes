@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmValue;
+import net.sf.saxon.s9api.XdmNode;
 
 
 public class TEIXPointerTest extends TestSetup {
@@ -68,8 +69,24 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("range", pointer.getPointerType());
 	XdmValue selection = pointer.getSelectedNodes();
 	assertEquals(19, selection.size());
-	XdmValue forrest = Utils.forrest(selection);
-	assertEquals(9, forrest.size());
-	//assertEquals("...", forrest.toString());
+	// assert right first and last node
+	XdmNode node = Utils.getFirstNode(selection);
+	assertEquals("<lb n=\"3\"/>", node.toString());
+	node = Utils.getLastNode(selection);
+	assertEquals("supra res", node.toString().strip());
     }
+
+    @Test
+    void test_casern04() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(casern04, satsXml, proc);
+	assertEquals("range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(19, selection.size());
+	// assert right first and last node
+    	XdmNode node = Utils.getFirstNode(selection);
+	assertEquals("<unclear>s</unclear>", node.toString());
+	node = Utils.getLastNode(selection);
+	assertEquals("<lb n=\"4\"/>", node.toString().strip());
+    }
+
 }

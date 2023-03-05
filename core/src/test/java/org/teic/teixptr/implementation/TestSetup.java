@@ -20,6 +20,8 @@ public class TestSetup {
 
     public static String satsxp01, satsr01, satsl01, satssi01, satsrn01;
 
+    public static String casern04;
+
     public static String readSample(String sample) throws IOException {
 	Path path = Paths.get(sampleDir.resolve(sample));
 	return Files.readString(path);
@@ -32,6 +34,8 @@ public class TestSetup {
 	satsl01 = readSample("satsl01.txt");
 	satssi01 = readSample("satssi01.txt");
 	satsrn01 = readSample("satsrn01.txt");
+
+	casern04 = readSample("casern04.txt");
     }
 
 }
