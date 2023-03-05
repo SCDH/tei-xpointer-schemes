@@ -313,4 +313,27 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	}
     }
 
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitString_index_pointer(TEIXPointerParser.String_index_pointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    LOG.debug("found right() pointer, evaluating: {}", xpath);
+	    try {
+		int offset = Integer.parseInt(ctx.offset().getText());
+		XdmValue point = Point.makeStringIndex(evaluateXPath(xpath, "string-index()"), offset);
+		enforceNonEmptyPolicy(point, ctx.getText());
+		selectedNodesStack.add(point);
+		// reset the xpath state variable
+		xpath = null;
+	    } catch (Exception e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    }
+	}
+    }
+
 }

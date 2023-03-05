@@ -151,6 +151,32 @@ public class Point {
     }
 
     /**
+     * A static method that makes a {@link Point} right of the last
+     * node in the {@link XdmValue} passed in.
+     *
+     * @param xdmValue  the item or node (list) to wrap into point
+     * @return {@link XdmValue}
+     */
+    public static XdmValue makeStringIndex(XdmValue xdmValue, int offset) throws SaxonApiException {
+	// get the last node from the xdmValue and wrap it into a point
+	ArrayList<XdmItem> wrappedItems = new ArrayList<XdmItem>();
+	Point point = null;
+	Iterator<XdmItem> iter = xdmValue.documentOrder().iterator();
+	while (iter.hasNext()) {
+	    XdmItem item = iter.next();
+	    if (item instanceof XdmNode) {
+		// wrap the node into a Point object
+		point = new Point((XdmNode) item, STRING_INDEX, offset);
+	    }
+	}
+	if (point != null) {
+	    XdmExternalObject wrappedPoint = new XdmExternalObject(point);
+	    wrappedItems.add(wrappedPoint);
+	}
+	return new XdmValue(wrappedItems);
+    }
+
+    /**
      * Unwrap the {@link Point} from a pointer selection.
      *
      * @param selection  an {@link XdmValue} containing a selection

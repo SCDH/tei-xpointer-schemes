@@ -47,4 +47,18 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("left", point.getPointerType());
 	assertEquals(Point.LEFT_OFFSET, point.getOffset());
     }
+
+    @Test
+    void test_satssi01() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssi01, satsXml, proc);
+	assertEquals("string-index", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+	Point point = Point.getPoint(selection);
+	assertNotNull(point);
+	assertEquals("<lb n=\"2\"/>", point.getNode().toString());
+	assertEquals(Point.STRING_INDEX, point.getPosition());
+	assertEquals("string-index", point.getPointerType());
+	assertEquals(1, point.getOffset());
+    }
 }
