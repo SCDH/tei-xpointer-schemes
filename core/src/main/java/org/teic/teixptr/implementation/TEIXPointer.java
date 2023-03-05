@@ -17,6 +17,7 @@ import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.Axis;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -172,6 +173,28 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
     }
 
     /**
+     * A method that encapsulates code for evaluating an XPath
+     * expression on the document. This method catches errors and puts
+     * them on the error stack and sets <code>errorSeen</code>.
+     *
+     * @param xpath  the XPath expression
+     * @return {@link XdmValue}
+     */
+    protected XdmValue evaluateXPathWithContext(String xpath, XdmNode context, String pointerType) {
+	try {
+	    XPathExecutable xpathExecutable = xpathCompiler.compile(xpath);
+	    XPathSelector xpathSelector = xpathExecutable.load();
+	    xpathSelector.setContextItem(context);
+	    return xpathSelector.evaluate();
+	} catch (SaxonApiException e) {
+	    LOG.error("error evaluating XPath from {} pointer: {}", pointerType, xpath);
+	    errorSeen = true;
+	    errorStack.add(e);
+	    return null;
+	}
+    }
+
+    /**
      * If the policy for handling non-empty pointers determines to
      * raise errors on empty pointers, then check the pointer value
      * passed in.
@@ -222,7 +245,10 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	    selectedNodes = selectedNodesStack.get(0);
 	} else if (ctx.getStart().getType() == TEIXPointerLexer.RIGHT) {
 	    selectedNodes = selectedNodesStack.get(0);
+	} else if (ctx.getStart().getType() == TEIXPointerLexer.RANGE) {
+	    selectedNodes = selectedNodesStack.get(0);
 	} else {
+	    // TODO
 	    // it's an IDREF
 	    selectedNodes = selectedNodesStack.get(0);
 	}
@@ -321,7 +347,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
-	    LOG.debug("found right() pointer, evaluating: {}", xpath);
+	    LOG.debug("found string-index() pointer, evaluating: {}", xpath);
 	    try {
 		int offset = Integer.parseInt(ctx.offset().getText());
 		XdmValue point = Point.makeStringIndex(evaluateXPath(xpath, "string-index()"), offset);
@@ -332,6 +358,128 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	    } catch (Exception e) {
 		errorSeen = true;
 		errorStack.add(e);
+	    }
+	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitRange_pointer(TEIXPointerParser.Range_pointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    int pairsCount = ctx.range_pointer_pair().size();
+	    LOG.debug("found range() pointer with {} pair(s)", pairsCount);
+	    if (pairsCount*2 != selectedNodesStack.size()) {
+		LOG.error("error processing range pointers: {} range pairs mismatch {} processed pointers",
+			  pairsCount, selectedNodesStack.size());
+		errorSeen = true;
+		errorStack.add(new Exception("error processing range pointer: number of range pairs and processed pointers differ"));
+	    } else {
+		// start with an empty sequence
+		XdmValue seqs = new XdmValue(new ArrayList<XdmNode>());
+		try {
+		    for (int i = 0; i < pairsCount; i++) {
+
+			// collect nodes following the start node
+			XdmValue startPointer = selectedNodesStack.get(2*i);
+			XdmValue followingStartNodes = new XdmValue(new ArrayList<XdmNode>());
+			// initialize axis iterator with an empty iterator
+			Iterator<XdmNode> followingIterator = new ArrayList<XdmNode>().iterator();
+			// handle pointer types
+			if (Point.isPoint(startPointer)) {
+			    // Point pointer
+			    Point startPoint = Point.getPoint(startPointer);
+			    if (startPoint.getPosition() == Point.LEFT) {
+				followingStartNodes = followingStartNodes.append(startPoint.getNode());
+				followingIterator = startPoint.getNode().axisIterator(Axis.FOLLOWING);
+			    } else if (startPoint.getPosition() == Point.RIGHT) {
+				followingIterator = startPoint.getNode().axisIterator(Axis.FOLLOWING);
+			    } else if (startPoint.getPosition() == Point.STRING_INDEX) {
+				// FIXME: get text node fragment
+				followingIterator = startPoint.getNode().axisIterator(Axis.FOLLOWING);
+			    } else {
+				// FIXME
+			    }
+			} else {
+			    // Sequence pointer
+			    followingIterator = Utils.getFirstNode(startPointer).axisIterator(Axis.FOLLOWING);
+			}
+    			// add nodes on the following axis
+			while (followingIterator.hasNext()) {
+			    XdmNode node = followingIterator.next();
+			    followingStartNodes = followingStartNodes.append(node);
+			    LOG.debug("adding {} node following start: {}", node.getNodeKind(), node.toString());
+			}
+			LOG.debug("nodes in following start node: {}", followingStartNodes.size());
+
+
+			// collect nodes preceding the end node
+			XdmValue endPointer = selectedNodesStack.get(2*i+1);
+			XdmValue precedingEndNodes = new XdmValue(new ArrayList<XdmNode>());
+			// initialize axis iterator with an empty iterator
+			Iterator<XdmNode> precedingIterator = new ArrayList<XdmNode>().iterator();
+			// handle pointer types
+			if (Point.isPoint(endPointer)) {
+			    // Point pointer
+			    Point endPoint = Point.getPoint(endPointer);
+			    if (endPoint.getPosition() == Point.LEFT) {
+				precedingIterator = endPoint.getNode().axisIterator(Axis.PRECEDING);
+			    } else if (endPoint.getPosition() == Point.RIGHT) {
+				precedingEndNodes = precedingEndNodes.append(endPoint.getNode());
+				precedingIterator = endPoint.getNode().axisIterator(Axis.PRECEDING);
+			    } else if (endPoint.getPosition() == Point.STRING_INDEX) {
+				// FIXME: get text node fragment
+				precedingEndNodes = precedingEndNodes.append(endPoint.getNode());
+				precedingIterator = endPoint.getNode().axisIterator(Axis.PRECEDING);
+			    } else {
+				// FIXME
+			    }
+			} else {
+			    // Sequence pointer
+			    precedingIterator = Utils.getFirstNode(endPointer).axisIterator(Axis.PRECEDING);
+			}
+    			// add nodes on the preceding axis
+			while (precedingIterator.hasNext()) {
+			    XdmNode node = precedingIterator.next();
+			    precedingEndNodes = precedingEndNodes.append(node);
+			    LOG.debug("adding {} node preceding end: {}", node.getNodeKind(), node.toString());
+			}
+			LOG.debug("nodes in preceding end node: {}", precedingEndNodes.size());
+
+			// intersection
+			// TODO: is there a faster solution?
+			Iterator<XdmItem> startIterator = followingStartNodes.iterator();
+			int n = 0;
+			while (startIterator.hasNext()) {
+			    XdmItem startItem = startIterator.next();
+			    if (startItem instanceof XdmNode) {
+				XdmNode startNode = (XdmNode) startItem;
+				Iterator<XdmItem> endIterator = precedingEndNodes.iterator();
+				while (endIterator.hasNext()) {
+				    XdmItem endItem = endIterator.next();
+				    if (endItem instanceof XdmNode) {
+					XdmNode endNode = (XdmNode) endItem;
+					if (startNode.equals(endNode)) {
+					    seqs = seqs.append(startNode);
+					    n++;
+					    break;
+					}
+				    }
+				}
+			    }
+			}
+			LOG.debug("range pair with {} nodes", n);
+		    }
+		} catch (SaxonApiException e) {
+		    errorSeen = true;
+		    errorStack.add(e);
+		}
+		// store the generated selection of nodes to the stack
+		selectedNodesStack.clear();
+		selectedNodesStack.add(seqs);
 	    }
 	}
     }

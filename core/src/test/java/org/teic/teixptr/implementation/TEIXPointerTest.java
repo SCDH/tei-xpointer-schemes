@@ -61,4 +61,15 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("string-index", point.getPointerType());
 	assertEquals(1, point.getOffset());
     }
+
+    @Test
+    void test_satsrn01() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsrn01, satsXml, proc);
+	assertEquals("range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(19, selection.size());
+	XdmValue forrest = Utils.forrest(selection);
+	assertEquals(9, forrest.size());
+	//assertEquals("...", forrest.toString());
+    }
 }
