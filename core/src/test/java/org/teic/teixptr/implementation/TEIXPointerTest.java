@@ -28,7 +28,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
-	assertEquals("<lb n=\"3\"/>", point.toString());
+	assertEquals("<lb n=\"3\"/>", point.getNode().toString());
 	assertEquals(Point.RIGHT, point.getPosition());
     }
 
@@ -40,7 +40,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
-	assertEquals("<supplied reason=\"lost\">si</supplied>", point.toString());
+	assertEquals("<supplied reason=\"lost\">si</supplied>", point.getNode().toString());
 	assertEquals(Point.LEFT, point.getPosition());
     }
 }
