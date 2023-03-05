@@ -29,11 +29,6 @@ import net.sf.saxon.s9api.XdmExternalObject;
 public class Point {
 
     /**
-     * No point available.
-     */
-    public static final int NOTHING = 0;
-
-    /**
      * Point located next left to the node.
      */
     public static final int LEFT = 1;
@@ -43,13 +38,27 @@ public class Point {
      */
     public static final int RIGHT = 2;
 
+    /**
+     * Point located at an offset in the text nodes following the node.
+     */
+    public static final int STRING_INDEX = 3;
+
+    /**
+     * By convention, the offset of a left() pointer is set to this
+     * constant value.
+     */
+    public static final int LEFT_OFFSET = -1;
+
     private final XdmNode node;
 
     private final int position;
 
-    public Point(XdmNode node, int position) {
+    private final int offset;
+
+    public Point(XdmNode node, int position, int offset) {
 	this.node = node;
 	this.position = position;
+	this.offset = offset;
     }
 
     /**
@@ -61,10 +70,32 @@ public class Point {
     }
 
     /**
-     * Get the position of the point relative to the node.
+     * Get the position code of the point relative to the node.
      */
     public int getPosition() {
 	return position;
+    }
+
+    /**
+     * Get the type of the pointer that described the point.
+     */
+    public String getPointerType() {
+	if (position == LEFT) {
+	    return "left";
+	} else if (position == RIGHT) {
+	    return "right";
+	} else if (position == STRING_INDEX) {
+	    return "string-index";
+	} else {
+	    return null;
+	}
+    }
+
+    /**
+     * Get the offset of the point relative to the node.
+     */
+    public int getOffset() {
+	return offset;
     }
 
     /**
@@ -84,7 +115,7 @@ public class Point {
 	    XdmItem item = iter.next();
 	    if (item instanceof XdmNode) {
 		// wrap the node into a Point object
-		Point point = new Point((XdmNode) item, LEFT);
+		Point point = new Point((XdmNode) item, LEFT, LEFT_OFFSET);
 		XdmExternalObject wrappedPoint = new XdmExternalObject(point);
 		wrappedItems.add(wrappedPoint);
 		break;
@@ -109,7 +140,7 @@ public class Point {
 	    XdmItem item = iter.next();
 	    if (item instanceof XdmNode) {
 		// wrap the node into a Point object
-		point = new Point((XdmNode) item, RIGHT);
+		point = new Point((XdmNode) item, RIGHT, 0);
 	    }
 	}
 	if (point != null) {
