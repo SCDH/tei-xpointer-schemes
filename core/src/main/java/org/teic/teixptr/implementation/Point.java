@@ -177,6 +177,23 @@ public class Point {
     }
 
     /**
+     * Test if the supplied {@link XdmValue} is a {@link Point}.
+     *
+     * @param selection  an {@link XdmValue} containing a selection
+     * @return <code>boolean</code>
+     */
+    public static boolean isPoint(XdmValue selection) {
+	Iterator<XdmItem> iter = selection.iterator();
+	if (iter.hasNext()) {
+	    XdmItem item = iter.next();
+	    if (item instanceof XdmExternalObject) {
+		return ((XdmExternalObject) item).getExternalObject() instanceof Point;
+	    }
+	}
+	return false;
+    }
+
+    /**
      * Unwrap the {@link Point} from a pointer selection.
      *
      * @param selection  an {@link XdmValue} containing a selection
