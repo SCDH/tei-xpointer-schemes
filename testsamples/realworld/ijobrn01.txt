@@ -1,1 +1,1 @@
-#range(left(MT.12.5),right(MT.12.5))
+#range(MT.12.5.6,MT.12.5.7)

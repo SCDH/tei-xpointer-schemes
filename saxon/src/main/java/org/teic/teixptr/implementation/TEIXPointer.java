@@ -57,7 +57,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
     private boolean errorSeen = false;
     private List<Exception> errorStack = new ArrayList<Exception>();
     private List<XdmValue> selectedNodesStack = new ArrayList<XdmValue>();
-    private String xpath = "";
+    private String xpath = null;
 
     /**
      * Create a {@link TEIXPointer} to a file.
@@ -252,6 +252,13 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	    selectedNodes = selectedNodesStack.get(0);
 	} else if (ctx.getStart().getType() == TEIXPointerLexer.STRING_INDEX) {
 	    selectedNodes = selectedNodesStack.get(0);
+	} else if (!ctx.idref().getText().isEmpty()) {
+	    // it's an IDREF
+	    pointerType = "IDREF";
+	    LOG.info("found IDREF, evaluating: {}", xpath);
+	    selectedNodes = evaluateXPath(xpath, "IDREF");
+	    // reset the xpath state variable
+	    xpath = null;
 	} else {
 	    // TODO
 	    errorSeen = true;
@@ -268,7 +275,10 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	// we make an XPath, save it to the state and let the pointer
 	// evaluate it on the exit<POINTER> event
 	LOG.debug("found IDREF {}", ctx.getText());
-	xpath = "id(" + ctx.getText() + ")";
+	// xpath = "id(" + ctx.getText() + ")";
+	// IDness is not implemented by Xerces! In a TEI context we
+	// can check the @xml:id instead of calling id(...)
+	xpath = "//*[@xml:id eq '" + ctx.getText() + "']";
     }
 
     /**
