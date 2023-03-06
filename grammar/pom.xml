@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+       <groupId>org.teic.teixptr</groupId>
+       <artifactId>TEIXPointerScheme</artifactId>
+       <version>${revision}</version>
+    </parent>
+
+    <artifactId>tei-xpointer-grammar</artifactId>
+    <name>TEI XPointer Grammar</name>
+    <url>https://github.com/lueck/tei-xpointer-scheme</url>
+
+    <properties>
+       <test.resources>${project.build.directory}/generated-test-resources</test.resources>
+    </properties>
+
+    <build>
+       <plugins>
+
+          <plugin>
+             <!-- This plugin generates java classes from the ANTLR
+                  grammars during the generate-sources phase of
+                  maven. -->
+             <groupId>org.antlr</groupId>
+             <artifactId>antlr4-maven-plugin</artifactId>
+             <version>${antlr.version}</version>
+             <executions>
+                <execution>
+                   <goals>
+                      <goal>antlr4</goal>
+                   </goals>
+                </execution>
+             </executions>
+          </plugin>
+
+          <!-- configure test reporter for JUnit 5 -->
+          <plugin>
+             <artifactId>maven-surefire-plugin</artifactId>
+             <version>2.22.2</version>
+             <configuration>
+                <!-- set to false for debugging! -->
+                <trimStackTrace>true</trimStackTrace>
+             </configuration>
+          </plugin>
+
+          <plugin>
+             <!-- test the grammar -->
+             <groupId>com.khubla.antlr</groupId>
+             <artifactId>antlr4test-maven-plugin</artifactId>
+             <version>${antlr.test.version}</version>
+             <!--packaging>jar</packaging-->
+             <executions>
+                <execution>
+                   <goals>
+                      <goal>test</goal>
+                   </goals>
+                </execution>
+             </executions>
+             <configuration>
+                <scenarios>
+                   <scenario>
+                      <scenarioName>Pointers from TEI Guidelines Section SATS</scenarioName>
+                      <verbose>false</verbose>
+                      <showTree>false</showTree>
+                      <entryPoint>fragm</entryPoint>
+                      <grammarName>TEIXPointer</grammarName>
+                      <packageName>org.teic.teixptr.grammar</packageName>
+                      <testFileExtension>.txt</testFileExtension>
+                      <exampleFiles>../testsamples/sats</exampleFiles>
+                   </scenario>
+                </scenarios>
+             </configuration>
+          </plugin>
+
+	 <!-- generate API docs -->
+	 <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.5.0</version>
+            <configuration>
+               <show>private</show>
+               <nohelp>true</nohelp>
+            </configuration>
+	 </plugin>
+
+       </plugins>
+    </build>
+
+</project>

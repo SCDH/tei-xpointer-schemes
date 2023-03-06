@@ -28,7 +28,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.teic.teixptr.parser.*;
+import org.teic.teixptr.grammar.*;
 
 /**
  * The implementation of the TEI XPointer scheme.

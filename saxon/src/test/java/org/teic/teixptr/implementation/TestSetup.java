@@ -14,16 +14,16 @@ import org.junit.jupiter.api.BeforeAll;
  */
 public class TestSetup {
 
-    public static URI sampleDir = Paths.get("test", "samples").toUri();
+    public static URI satsSamples = Paths.get("..", "testsamples", "sats").toUri();
 
-    public static File satsXml = Paths.get(sampleDir.resolve("sats.xml")).toFile();
+    public static File satsXml = Paths.get(satsSamples.resolve("sats.xml")).toFile();
 
     public static String satsxp01, satsr01, satsl01, satssi01, satsrn01;
 
     public static String casern04;
 
     public static String readSample(String sample) throws IOException {
-	Path path = Paths.get(sampleDir.resolve(sample));
+	Path path = Paths.get(satsSamples.resolve(sample));
 	return Files.readString(path);
     }
 
