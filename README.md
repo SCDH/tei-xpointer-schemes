@@ -11,12 +11,15 @@ development
 
 ## Getting started
 
+Build, test and packetize:
+
 ```{shell}
-mvn clean verify
+mvn clean package verify
 ```
 
-Generate Java API docs
+Java API docs are present in `target/site/apidocs/index.html` after
+running the following command:
 
 ```{shell}
-mvn javadoc:javadoc
+mvn javadoc:aggregate
 ```
