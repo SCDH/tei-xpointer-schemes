@@ -250,10 +250,12 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	    selectedNodes = selectedNodesStack.get(0);
 	} else if (ctx.getStart().getType() == TEIXPointerLexer.RANGE) {
 	    selectedNodes = selectedNodesStack.get(0);
+	} else if (ctx.getStart().getType() == TEIXPointerLexer.STRING_INDEX) {
+	    selectedNodes = selectedNodesStack.get(0);
 	} else {
 	    // TODO
-	    // it's an IDREF
-	    selectedNodes = selectedNodesStack.get(0);
+	    errorSeen = true;
+	    errorStack.add(new UnsupportedOperationException("pointer type not implemented"));
 	}
 	LOG.debug("finished processing the pointer");
     }
