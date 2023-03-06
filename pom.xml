@@ -81,7 +81,8 @@
     </dependencies>
 
     <modules>
-       <module>core</module>
+       <module>grammar</module>
+       <module>saxon</module>
     </modules>
 
 </project>

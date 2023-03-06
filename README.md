@@ -9,14 +9,23 @@ in the TEI guidelines.
 
 development
 
+## Modules
+
+- `grammar`: an ANTLR4-based grammar of the TEI XPointer scheme
+- `saxon`: an implementation of processing TEI XPointers based on
+  Saxon's s9api
+
 ## Getting started
 
+Build, test and packetize:
+
 ```{shell}
-mvn clean verify
+mvn clean package verify
 ```
 
-Generate Java API docs
+Java API docs are present in `target/site/apidocs/index.html` after
+running the following command:
 
 ```{shell}
-mvn javadoc:javadoc
+mvn javadoc:aggregate
 ```

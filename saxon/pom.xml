@@ -9,34 +9,25 @@
        <version>${revision}</version>
     </parent>
 
-    <artifactId>TEIXPointer</artifactId>
-    <name>TEI XPointer</name>
+    <artifactId>tei-xpointer-saxon-impl</artifactId>
+    <name>TEI XPointer Saxon Implementation</name>
     <url>https://github.com/lueck/tei-xpointer-scheme</url>
 
     <properties>
-       <xsl.dir>${project.basedir}/xsl</xsl.dir>
        <scripts.dir>${project.basedir}/..</scripts.dir>
        <test.resources>${project.build.directory}/generated-test-resources</test.resources>
     </properties>
 
+    <dependencies>
+       <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>tei-xpointer-grammar</artifactId>
+	  <version>${revision}</version>
+       </dependency>
+    </dependencies>
+
     <build>
        <plugins>
-
-          <plugin>
-             <!-- This plugin generates java classes from the ANTLR
-                  grammars during the generate-sources phase of
-                  maven. -->
-             <groupId>org.antlr</groupId>
-             <artifactId>antlr4-maven-plugin</artifactId>
-             <version>${antlr.version}</version>
-             <executions>
-                <execution>
-                   <goals>
-                      <goal>antlr4</goal>
-                   </goals>
-                </execution>
-             </executions>
-          </plugin>
 
           <!-- configure test reporter for JUnit 5 -->
           <plugin>
@@ -45,35 +36,6 @@
              <configuration>
                 <!-- set to false for debugging! -->
                 <trimStackTrace>true</trimStackTrace>
-             </configuration>
-          </plugin>
-
-          <plugin>
-             <!-- test the grammar -->
-             <groupId>com.khubla.antlr</groupId>
-             <artifactId>antlr4test-maven-plugin</artifactId>
-             <version>${antlr.test.version}</version>
-             <!--packaging>jar</packaging-->
-             <executions>
-                <execution>
-                   <goals>
-                      <goal>test</goal>
-                   </goals>
-                </execution>
-             </executions>
-             <configuration>
-                <scenarios>
-                   <scenario>
-                      <scenarioName>Pointers from TEI Guidelines Section SATS</scenarioName>
-                      <verbose>false</verbose>
-                      <showTree>false</showTree>
-                      <entryPoint>fragm</entryPoint>
-                      <grammarName>TEIXPointer</grammarName>
-                      <packageName>org.teic.teixptr.parser</packageName>
-                      <testFileExtension>.txt</testFileExtension>
-                      <exampleFiles>test/samples/</exampleFiles>
-                   </scenario>
-                </scenarios>
              </configuration>
           </plugin>
 
@@ -91,7 +53,7 @@
                    </goals>
                    <configuration>
                       <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                      <includeArtifactIds>slf4j-simple,slf4j-api,Saxon-HE,antlr4-runtime</includeArtifactIds>
+                      <includeArtifactIds>tei-xpointer-grammar,slf4j-simple,slf4j-api,Saxon-HE,antlr4-runtime</includeArtifactIds>
                    </configuration>
                 </execution>
              </executions>
@@ -156,17 +118,6 @@
 		  </configuration>
 	       </execution>
             </executions>
-	 </plugin>
-
-	 <!-- generate API docs -->
-	 <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.5.0</version>
-            <configuration>
-               <show>private</show>
-               <nohelp>true</nohelp>
-            </configuration>
 	 </plugin>
 
        </plugins>
