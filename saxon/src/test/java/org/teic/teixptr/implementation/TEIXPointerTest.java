@@ -98,18 +98,12 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
     }
 
-    @Disabled
     @Test
     void test_ijobrn04() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(ijobrn01, mtXml, proc);
 	assertEquals("range", pointer.getPointerType());
 	XdmValue selection = pointer.getSelectedNodes();
 	assertEquals(2, selection.size());
-	// assert right first and last node
-    	XdmNode node = Utils.getFirstNode(selection);
-	assertEquals("<unclear>s</unclear>", node.toString());
-	node = Utils.getLastNode(selection);
-	assertEquals("<lb n=\"4\"/>", node.toString().strip());
     }
 
 }

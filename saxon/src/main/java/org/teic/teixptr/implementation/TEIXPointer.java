@@ -381,6 +381,26 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * Internal.
      */
     @Override
+    public void exitRange_argument(TEIXPointerParser.Range_argumentContext ctx) {
+	// We only have to check if there was a argument, that is not a pointer: an IDREF
+	// Then we have to evaluate it and push the selection on the stack.
+	if (!errorSeen) {
+	    if (ctx.idref() != null && xpath != null) {
+		if (!ctx.idref().getText().isEmpty()) {
+		    LOG.info("found IDREF, evaluating: {}", xpath);
+		    XdmValue node = evaluateXPath(xpath, "IDREF");
+		    selectedNodesStack.add(node);
+		    // reset the xpath state variable
+		    xpath = null;
+		}
+	    }
+	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
     public void exitRange_pointer(TEIXPointerParser.Range_pointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
