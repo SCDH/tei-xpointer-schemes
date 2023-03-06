@@ -130,12 +130,12 @@ scdh:references-from-attribute(@target)[1] => scdh:dereference()
         optional fragment identifier, or a same-doc reference.
         The context is necessary to dereference same-doc references.
         If the reference contains a fragment identifier, the fragment is returned. -->
-    <xsl:function name="scdh:dereference">
+    <xsl:function name="scdh:dereference" as="node()*">
         <xsl:param name="reference" as="xs:string"/>
         <xsl:param name="context" as="node()"/>
         <xsl:variable name="tokens" as="xs:string*" select="tokenize($reference, '#')"/>
-        <xsl:variable name="uri" select="$tokens[1]"/>
-        <xsl:variable name="fragment" select="string-join($tokens[position() gt 1])"/>
+        <xsl:variable name="uri" as="xs:string?" select="$tokens[1]"/>
+        <xsl:variable name="fragment" as="xs:string?" select="string-join($tokens[position() gt 1], '')"/>
         <xsl:message use-when="system-property('debug') eq 'true'">
             <xsl:text>dereferencing fragment &quot;</xsl:text>
             <xsl:value-of select="$fragment"/>
@@ -159,7 +159,7 @@ scdh:references-from-attribute(@target)[1] => scdh:dereference()
                 <xsl:message use-when="system-property('debug') eq 'true'">
                     <xsl:text>external reference</xsl:text>
                 </xsl:message>
-                <xsl:sequence select="xptr:get-sequence($uri, $fragment) => count()"/>
+                <xsl:sequence select="xptr:get-sequence($uri, $fragment)"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:message>
