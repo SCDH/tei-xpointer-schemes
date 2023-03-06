@@ -16,26 +16,33 @@ public class TestSetup {
 
     public static URI satsSamples = Paths.get("..", "testsamples", "sats").toUri();
 
+    public static URI systematicSamples = Paths.get("..", "testsamples", "systematic").toUri();
+
     public static File satsXml = Paths.get(satsSamples.resolve("sats.xml")).toFile();
 
     public static String satsxp01, satsr01, satsl01, satssi01, satsrn01;
 
     public static String casern04;
 
-    public static String readSample(String sample) throws IOException {
+    public static String readSatsSample(String sample) throws IOException {
 	Path path = Paths.get(satsSamples.resolve(sample));
+	return Files.readString(path);
+    }
+
+    public static String readSystematicSample(String sample) throws IOException {
+	Path path = Paths.get(systematicSamples.resolve(sample));
 	return Files.readString(path);
     }
 
     @BeforeAll
     public static void setupSATSExamples() throws IOException {
-	satsxp01 = readSample("satsxp01.txt");
-	satsr01 = readSample("satsr01.txt");
-	satsl01 = readSample("satsl01.txt");
-	satssi01 = readSample("satssi01.txt");
-	satsrn01 = readSample("satsrn01.txt");
+	satsxp01 = readSatsSample("satsxp01.txt");
+	satsr01 = readSatsSample("satsr01.txt");
+	satsl01 = readSatsSample("satsl01.txt");
+	satssi01 = readSatsSample("satssi01.txt");
+	satsrn01 = readSatsSample("satsrn01.txt");
 
-	casern04 = readSample("casern04.txt");
+	casern04 = readSystematicSample("casern04.txt");
     }
 
 }
