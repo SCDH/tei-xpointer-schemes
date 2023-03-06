@@ -17,8 +17,9 @@
         <xsl:for-each select="tokenize(@target)">
             <xsl:variable name="reference" select="scdh:process-reference(., $context)"/>
             <xsl:variable name="dereferenced" select="scdh:dereference($reference, $context)"/>
-            <xsl:value-of select="count($dereferenced)"/>
+            <xsl:value-of select="$dereferenced"/>
         </xsl:for-each>
+        <xsl:text>&#xa;</xsl:text>
     </xsl:template>
 
 </xsl:stylesheet>
