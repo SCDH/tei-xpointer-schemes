@@ -64,14 +64,14 @@
              <configuration>
                 <scenarios>
                    <scenario>
-                      <scenarioName>Wellformed pointers</scenarioName>
+                      <scenarioName>Pointers from TEI Guidelines Section SATS</scenarioName>
                       <verbose>false</verbose>
-                      <showTree>true</showTree>
+                      <showTree>false</showTree>
                       <entryPoint>fragm</entryPoint>
                       <grammarName>TEIXPointer</grammarName>
                       <packageName>org.teic.teixptr.parser</packageName>
                       <testFileExtension>.txt</testFileExtension>
-                      <exampleFiles>test/samples</exampleFiles>
+                      <exampleFiles>test/samples/</exampleFiles>
                    </scenario>
                 </scenarios>
              </configuration>
