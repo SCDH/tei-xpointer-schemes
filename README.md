@@ -9,6 +9,12 @@ in the TEI guidelines.
 
 development
 
+## Modules
+
+- `grammar`: an ANTLR4-based grammar of the TEI XPointer scheme
+- `saxon`: an implementation of processing TEI XPointers based on
+  Saxon's s9api
+
 ## Getting started
 
 Build, test and packetize:
