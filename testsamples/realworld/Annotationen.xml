@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_all.rng" type="application/xml"
+	schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xml:lang="de">
+   <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>Annotationen</title>
+         </titleStmt>
+         <publicationStmt>
+            <p>Publication Information</p>
+         </publicationStmt>
+         <sourceDesc>
+            <p>Born digital</p>
+         </sourceDesc>
+      </fileDesc>
+      <!-- Einbinden der Definitionen der lokalen Protokolle und kanonischen Verweise -->
+      <include xmlns="http://www.w3.org/2001/XInclude" href="common.xml" xpointer="encodingDesc"/>
+   </teiHeader>
+   <standOff>
+      <listAnnotation>
+
+
+         <!-- Fackel: lokales Protokoll im target-Attribut (und TEI-XPointer-Schema) -->
+         <annotation xml:id="a12.5_1" target="MT.tei.xml#range(MT.12.5.6,MT.12.5.7)"
+            ana="ana:Uebersetzung ana:Bedeutungsverschiebung">
+            <note>LXX übersetzt den Konsonantenbestand, führt ihn aber auf <seg xml:lang="he"
+               >מעיד</seg> "Termin, Zeitpunkt" zurück.</note>
+         </annotation>
+         
+         <!-- Fackel: lokales Protokoll im target-Attribut (und TEI-XPointer-Schema) -->
+         <!--
+         <annotation xml:id="a12.5_1" target="mt:12.5.6-7 lxx:12.5.1-4"
+            ana="ana:Uebersetzung ana:Bedeutungsverschiebung">
+            <note>LXX übersetzt den Konsonantenbestand, führt ihn aber auf <seg xml:lang="he"
+                  >מעיד</seg> "Termin, Zeitpunkt" zurück.</note>
+         </annotation>
+         -->
+
+      </listAnnotation>
+   </standOff>
+</TEI>
