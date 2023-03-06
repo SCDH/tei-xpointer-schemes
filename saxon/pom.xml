@@ -53,43 +53,11 @@
                    </goals>
                    <configuration>
                       <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                      <includeArtifactIds>tei-xpointer-grammar,slf4j-simple,slf4j-api,Saxon-HE,antlr4-runtime</includeArtifactIds>
+                      <includeArtifactIds>tei-xpointer-grammar,slf4j-simple,slf4j-api,Saxon-HE,xmlresolver,antlr4-runtime</includeArtifactIds>
                    </configuration>
                 </execution>
              </executions>
           </plugin>
-
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>create-test-resources-dir</id>
-                    <phase>generate-test-resources</phase>
-                    <configuration>
-                        <tasks>
-                            <delete dir="${test.resources}"/>
-                            <mkdir dir="${test.resources}"/>
-                        </tasks>
-                    </configuration>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                </execution>
-		<execution>
-		    <id>set-permissions</id>
-		    <phase>package</phase>
-		    <configuration>
-                       <target>
-			  <chmod file="${project.build.directory}/saxon" perm="755"/>
-                       </target>
-		    </configuration>
-		    <goals>
-                       <goal>run</goal>
-		    </goals>
-		</execution>
-            </executions>
-         </plugin>
 
 	 <!-- fill in the right versions in the templates in shell
 	      directory and set their permissions -->
@@ -109,8 +77,8 @@
 			<resource>
 		           <directory>${project.basedir}/scripts</directory>
 		           <includes>
-			      <include>saxon</include>
-			      <include>saxon.bat</include>
+			      <include>saxon.sh</include>
+			      <include>xslt.sh</include>
 		           </includes>
 			   <filtering>true</filtering>
 			</resource>
@@ -119,6 +87,26 @@
 	       </execution>
             </executions>
 	 </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+		<execution>
+		    <id>set-permissions</id>
+		    <phase>package</phase>
+		    <configuration>
+                       <target>
+			  <chmod file="${project.build.directory}/bin/saxon.sh" perm="755"/>
+			  <chmod file="${project.build.directory}/bin/xslt.sh" perm="755"/>
+                       </target>
+		    </configuration>
+		    <goals>
+                       <goal>run</goal>
+		    </goals>
+		</execution>
+            </executions>
+         </plugin>
 
        </plugins>
     </build>
