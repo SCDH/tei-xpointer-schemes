@@ -255,7 +255,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	} else if (!ctx.idref().getText().isEmpty()) {
 	    // it's an IDREF
 	    pointerType = "IDREF";
-	    LOG.info("found IDREF, evaluating: {}", xpath);
+	    LOG.debug("found IDREF, evaluating: {}", xpath);
 	    selectedNodes = evaluateXPath(xpath, "IDREF");
 	    // reset the xpath state variable
 	    xpath = null;
@@ -387,7 +387,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 	if (!errorSeen) {
 	    if (ctx.idref() != null && xpath != null) {
 		if (!ctx.idref().getText().isEmpty()) {
-		    LOG.info("found IDREF, evaluating: {}", xpath);
+		    LOG.debug("found IDREF argument to range(), evaluating: {}", xpath);
 		    XdmValue node = evaluateXPath(xpath, "IDREF");
 		    selectedNodesStack.add(node);
 		    // reset the xpath state variable
