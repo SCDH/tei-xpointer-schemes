@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This is a Saxon configuration file.
+
+For documentation on the contents of a Saxon configuration file, see
+http://www.saxonica.com/documentation/index/configuration-file.html
+-->
+<configuration edition="HE" xmlns="http://saxon.sf.net/ns/configuration">
+
+   <resources>
+      <!-- register the extension functions -->
+      <extensionFunction>org.teic.teixptr.implementation.extensions.Forrest</extensionFunction>
+      <extensionFunction>org.teic.teixptr.implementation.extensions.GetSequence</extensionFunction>
+   </resources>
+
+</configuration>
