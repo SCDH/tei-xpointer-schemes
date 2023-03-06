@@ -79,6 +79,9 @@ public class GetSequence extends ExtensionFunctionDefinition {
 		    String uriArg = XPathUtils.getStringArgument(arguments[0]);
 		    String pointerArg = XPathUtils.getStringArgument(arguments[1]);
 
+		    LOG.debug("pointer: {}", pointerArg);
+		    LOG.debug("uri: {}", uriArg);
+
 		    // process the pointer
 		    TEIXPointer pointer = TEIXPointer.parseTEIXPointer(pointerArg, uriArg, processor);
 
