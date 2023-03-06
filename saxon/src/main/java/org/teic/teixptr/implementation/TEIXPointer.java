@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+import java.net.URI;
+import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.InputSource;
 import javax.xml.transform.Source;
@@ -105,11 +107,12 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * object.
      *
      */
-    public static TEIXPointer parseTEIXPointer(String pointer, File file, Processor processor)
+    public static TEIXPointer parseTEIXPointer(String pointer, String systemId, Processor processor)
 	throws SaxonApiException, Exception {
 	ParseTree tree = parse(pointer);
 	ParseTreeWalker walker = new ParseTreeWalker();
-	TEIXPointer listener = new TEIXPointer(file, processor);
+	Source source = new StreamSource(systemId);
+	TEIXPointer listener = new TEIXPointer(source, processor);
 	walker.walk(listener, tree);
 	listener.check();
 	return listener;

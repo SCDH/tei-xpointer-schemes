@@ -79,10 +79,8 @@ public class GetSequence extends ExtensionFunctionDefinition {
 		    String uriArg = XPathUtils.getStringArgument(arguments[0]);
 		    String pointerArg = XPathUtils.getStringArgument(arguments[1]);
 
-		    File file = new File(uriArg);
-
 		    // process the pointer
-		    TEIXPointer pointer = TEIXPointer.parseTEIXPointer(pointerArg, file, processor);
+		    TEIXPointer pointer = TEIXPointer.parseTEIXPointer(pointerArg, uriArg, processor);
 
 		    // return the selected nodes
 		    return pointer.getSelectedNodes().getUnderlyingValue();
