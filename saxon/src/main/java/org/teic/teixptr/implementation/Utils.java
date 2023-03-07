@@ -1,8 +1,8 @@
 package org.teic.teixptr.implementation;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
+import net.sf.saxon.s9api.XdmEmptySequence;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;
@@ -61,7 +61,7 @@ public class Utils {
     public static XdmValue forrest(XdmValue nodes) throws SaxonApiException {
 	Iterator<XdmItem> iter = nodes.documentOrder().iterator();
 	// start with an empty forrest
-	XdmValue forrest = new XdmValue(new ArrayList<XdmNode>());
+	XdmValue forrest = XdmEmptySequence.getInstance();
 	// For every node we test, if it is on the child axis of any
 	// other node. If it is not a child, we append it to the
 	// forrest.
