@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.teic.teixptr.implementation.TEIXPointer;
+import org.teic.teixptr.extension.xpath.AbstractGetSequence;
 
 
 /**
@@ -24,48 +25,9 @@ import org.teic.teixptr.implementation.TEIXPointer;
  * <code>get-sequence(uri as xs:string, pointer as xs:string) as node()*</code>
  *
  */
-public class GetSequence extends ExtensionFunctionDefinition {
+public class GetSequence extends AbstractGetSequence {
 
     private static final Logger LOG = LoggerFactory.getLogger(GetSequence.class);
-
-    public static final String NAME = "get-sequence";
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public StructuredQName getFunctionQName() {
-        return new StructuredQName(XPathFunctionRegistry.PREFIX,
-                                   XPathFunctionRegistry.NAMESPACE,
-                                   NAME);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SequenceType[] getArgumentTypes() {
-        return new SequenceType[] {
-            SequenceType.SINGLE_STRING,
-            SequenceType.SINGLE_STRING
-        };
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.NODE_SEQUENCE;
-    }
-
-    /**
-     * This function has side effects: It pulls in a document.
-     */
-    @Override
-    public boolean hasSideEffects() {
-	return true;
-    }
 
     /**
      * {@inheritDoc}

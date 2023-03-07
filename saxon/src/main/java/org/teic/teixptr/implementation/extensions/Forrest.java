@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.teic.teixptr.implementation.Utils;
-
+import org.teic.teixptr.extension.xpath.AbstractForrest;
 
 /**
  * This class defines and implements the XPath function
@@ -22,39 +22,9 @@ import org.teic.teixptr.implementation.Utils;
  * <code>forrest(nodes as node()*) as node()*</code>
  *
  */
-public class Forrest extends ExtensionFunctionDefinition {
+public class Forrest extends AbstractForrest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GetSequence.class);
-
-    public static final String NAME = "forrest";
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public StructuredQName getFunctionQName() {
-        return new StructuredQName(XPathFunctionRegistry.PREFIX,
-                                   XPathFunctionRegistry.NAMESPACE,
-                                   NAME);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SequenceType[] getArgumentTypes() {
-        return new SequenceType[] {
-            SequenceType.NODE_SEQUENCE
-        };
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
-        return SequenceType.NODE_SEQUENCE;
-    }
 
     /**
      * {@inheritDoc}
