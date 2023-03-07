@@ -81,6 +81,16 @@
                       <testFileExtension>.txt</testFileExtension>
                       <exampleFiles>../testsamples/systematic</exampleFiles>
                    </scenario>
+                   <scenario>
+                      <scenarioName>Pointers from real world scenarios</scenarioName>
+                      <verbose>false</verbose>
+                      <showTree>false</showTree>
+                      <entryPoint>fragm</entryPoint>
+                      <grammarName>TEIXPointer</grammarName>
+                      <packageName>org.teic.teixptr.grammar</packageName>
+                      <testFileExtension>.txt</testFileExtension>
+                      <exampleFiles>../testsamples/realworld</exampleFiles>
+                   </scenario>
                 </scenarios>
              </configuration>
           </plugin>
