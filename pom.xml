@@ -89,6 +89,7 @@
 
     <modules>
        <module>grammar</module>
+       <module>xpath-extension</module>
        <module>saxon</module>
     </modules>
 
