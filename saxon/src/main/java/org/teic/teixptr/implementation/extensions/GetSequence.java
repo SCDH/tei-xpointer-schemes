@@ -60,6 +60,14 @@ public class GetSequence extends ExtensionFunctionDefinition {
     }
 
     /**
+     * This function has side effects: It pulls in a document.
+     */
+    @Override
+    public boolean hasSideEffects() {
+	return true;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
