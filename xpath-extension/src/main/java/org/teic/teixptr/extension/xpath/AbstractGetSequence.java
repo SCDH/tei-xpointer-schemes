@@ -19,7 +19,7 @@ import net.sf.saxon.s9api.SaxonApiException;
  */
 public abstract class AbstractGetSequence extends ExtensionFunctionDefinition {
 
-    public static final String NAME = "get-sequence";
+    public final String NAME = "get-sequence";
 
     /**
      * {@inheritDoc}

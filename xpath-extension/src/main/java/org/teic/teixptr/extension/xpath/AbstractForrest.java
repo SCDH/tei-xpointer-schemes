@@ -19,7 +19,7 @@ import net.sf.saxon.s9api.XdmValue;
  */
 public abstract class AbstractForrest extends ExtensionFunctionDefinition {
 
-    public static final String NAME = "forrest";
+    public final String NAME = "forrest";
 
     /**
      * {@inheritDoc}
