@@ -3,12 +3,6 @@ package org.teic.teixptr.extension.xpath;
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.om.StructuredQName;
 import net.sf.saxon.value.SequenceType;
-import net.sf.saxon.lib.ExtensionFunctionCall;
-import net.sf.saxon.om.Sequence;
-import net.sf.saxon.trans.XPathException;
-import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
 
 
 /**
