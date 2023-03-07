@@ -19,7 +19,7 @@ public abstract class AbstractGetSequence extends ExtensionFunctionDefinition {
      * {@inheritDoc}
      */
     @Override
-    public StructuredQName getFunctionQName() {
+    public final StructuredQName getFunctionQName() {
         return new StructuredQName(Namespace.PREFIX,
                                    Namespace.NAMESPACE,
                                    NAME);
@@ -29,7 +29,7 @@ public abstract class AbstractGetSequence extends ExtensionFunctionDefinition {
      * {@inheritDoc}
      */
     @Override
-    public SequenceType[] getArgumentTypes() {
+    public final SequenceType[] getArgumentTypes() {
         return new SequenceType[] {
             SequenceType.SINGLE_STRING,
             SequenceType.SINGLE_STRING
@@ -40,7 +40,7 @@ public abstract class AbstractGetSequence extends ExtensionFunctionDefinition {
      * {@inheritDoc}
      */
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+    public final SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
         return SequenceType.NODE_SEQUENCE;
     }
 
@@ -48,7 +48,7 @@ public abstract class AbstractGetSequence extends ExtensionFunctionDefinition {
      * This function has side effects: It pulls in a document.
      */
     @Override
-    public boolean hasSideEffects() {
+    public final boolean hasSideEffects() {
 	return true;
     }
 

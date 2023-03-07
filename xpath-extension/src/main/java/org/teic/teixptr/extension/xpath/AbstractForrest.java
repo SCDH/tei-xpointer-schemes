@@ -19,7 +19,7 @@ public abstract class AbstractForrest extends ExtensionFunctionDefinition {
      * {@inheritDoc}
      */
     @Override
-    public StructuredQName getFunctionQName() {
+    public final StructuredQName getFunctionQName() {
         return new StructuredQName(Namespace.PREFIX,
                                    Namespace.NAMESPACE,
                                    NAME);
@@ -29,7 +29,7 @@ public abstract class AbstractForrest extends ExtensionFunctionDefinition {
      * {@inheritDoc}
      */
     @Override
-    public SequenceType[] getArgumentTypes() {
+    public final SequenceType[] getArgumentTypes() {
         return new SequenceType[] {
             SequenceType.NODE_SEQUENCE
         };
@@ -39,7 +39,7 @@ public abstract class AbstractForrest extends ExtensionFunctionDefinition {
      * {@inheritDoc}
      */
     @Override
-    public SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
+    public final SequenceType getResultType(SequenceType[] suppliedArgumentTypes) {
         return SequenceType.NODE_SEQUENCE;
     }
 
