@@ -13,6 +13,7 @@ import javax.xml.transform.Source;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmEmptySequence;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XPathCompiler;
@@ -414,13 +415,13 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 		errorStack.add(new Exception("error processing range pointer: number of range pairs and processed pointers differ"));
 	    } else {
 		// start with an empty sequence
-		XdmValue seqs = new XdmValue(new ArrayList<XdmNode>());
+		XdmValue seqs = XdmEmptySequence.getInstance();
 		try {
 		    for (int i = 0; i < pairsCount; i++) {
 
 			// collect nodes following the start node
 			XdmValue startPointer = selectedNodesStack.get(2*i);
-			XdmValue followingStartNodes = new XdmValue(new ArrayList<XdmNode>());
+			XdmValue followingStartNodes = XdmEmptySequence.getInstance();
 			// initialize axis iterator with an empty iterator
 			Iterator<XdmNode> followingIterator = new ArrayList<XdmNode>().iterator();
 			// handle pointer types
@@ -453,7 +454,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 
 			// collect nodes preceding the end node
 			XdmValue endPointer = selectedNodesStack.get(2*i+1);
-			XdmValue precedingEndNodes = new XdmValue(new ArrayList<XdmNode>());
+			XdmValue precedingEndNodes = XdmEmptySequence.getInstance();
 			// initialize axis iterator with an empty iterator
 			Iterator<XdmNode> precedingIterator = new ArrayList<XdmNode>().iterator();
 			// handle pointer types
