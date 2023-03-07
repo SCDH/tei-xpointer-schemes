@@ -41,45 +41,31 @@
             
             <!-- references to MT are prefixed with mt: -->
             <!-- single segment in MT -->
-            <prefixDef ident="mt" matchPattern="(\d+)(\.\d+){0,2}"
+            <prefixDef ident="mt" matchPattern="(\d+)(\.\d+){0,2}$"
                replacementPattern="MT.tei.xml#MT.$1$2"/>
             <!-- word to word in MT -->
             <prefixDef ident="mt" matchPattern="(\d+)(\.\d+)(\.\d+)-(\d+)"
-               replacementPattern="MT.tei.xml#range(MT.$1$2$3, MT.$1$2$4)"/>
+               replacementPattern="MT.tei.xml#range(left(MT.$1$2$3), right(MT.$1$2.$4))"/>
             <!-- consonant to consonant in MT -->
             <prefixDef ident="mt" matchPattern="(\d+)(\.\d+)(\.\d+)(\.\d+)-(\d+)"
-               replacementPattern="MT.tei.xml#range(MT.$1$2$3$4, MT.$1$2$3$5)"/>
+               replacementPattern="MT.tei.xml#range(left(MT.$1$2$3$4), right(MT.$1$2$3.$5))"/>
             <!-- mixed in MT -->
             <prefixDef ident="mt" matchPattern="(\d+)(\.\d+){1,3}-(\d+)(\.\d+){1,3}"
-               replacementPattern="MT.tei.xml#range(MT.$1$2, MT.$3$4)"/>
+               replacementPattern="MT.tei.xml#range(left(MT.$1$2), right(MT.$3$4))"/>
             
             <!-- references to LXX are prefixed with lxx: -->
             <!-- single segment in LXX -->
-            <prefixDef ident="lxx" matchPattern="(\d+)(\.\d+){0,2}"
+            <prefixDef ident="lxx" matchPattern="(\d+)(\.\d+){0,2}$"
                replacementPattern="LXX.tei.xml#LXX.$1$2"/>
             <!-- word to word in LXX -->
             <prefixDef ident="lxx" matchPattern="(\d+)(\.\d+)(\.\d+)-(\d+)"
-               replacementPattern="LXX.tei.xml#range(LXX.$1$2$3, LXX.$1$2$4)"/>
+               replacementPattern="LXX.tei.xml#range(left(LXX.$1$2$3), right(LXX.$1$2$4))"/>
             <!-- consonant to consonant in LXX -->
             <prefixDef ident="lxx" matchPattern="(\d+)(\.\d+)(\.\d+)(\.\d+)-(\d+)"
-               replacementPattern="LXX.tei.xml#range(LXX.$1$2$3$4, LXX.$1$2$3$5)"/>
+               replacementPattern="LXX.tei.xml#range(left(LXX.$1$2$3$4), right(LXX.$1$2$3$5))"/>
             <!-- mixed in LXX -->
             <prefixDef ident="lxx" matchPattern="(\d+)(\.\d+){1,3}-(\d+)(\.\d+){1,3}"
-               replacementPattern="LXX.tei.xml#range(LXX.$1$2, LXX.$3$4)"/>
-            
-            <!-- references to Tg are prefixed with tg: -->
-            <!-- single segment in Tg -->
-            <prefixDef ident="tg" matchPattern="(\d+)(\.\d+){0,2}"
-               replacementPattern="Tg.tei.xml#Tg.$1$2"/>
-            <!-- word to word in Tg -->
-            <prefixDef ident="tg" matchPattern="(\d+)(\.\d+)(\.\d+)-(\d+)"
-               replacementPattern="Tg.tei.xml#range(Tg.$1$2$3, Tg.$1$2$4)"/>
-            <!-- consonant to consonant in Tg -->
-            <prefixDef ident="tg" matchPattern="(\d+)(\.\d+)(\.\d+)(\.\d+)-(\d+)"
-               replacementPattern="Tg.tei.xml#range(Tg.$1$2$3$4, Tg.$1$2$3$5)"/>
-            <!-- mixed in Tg -->
-            <prefixDef ident="tg" matchPattern="(\d+)(\.\d+){1,3}-(\d+)(\.\d+){1,3}"
-               replacementPattern="Tg.tei.xml#range(Tg.$1$2, Tg.$3$4)"/>
+               replacementPattern="LXX.tei.xml#range(left(LXX.$1$2), right(LXX.$3$4))"/>
             
          </listPrefixDef>
       </encodingDesc>

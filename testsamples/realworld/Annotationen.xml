@@ -23,20 +23,18 @@
 
 
          <!-- Fackel: lokales Protokoll im target-Attribut (und TEI-XPointer-Schema) -->
-         <annotation xml:id="a12.5_1" target="MT.tei.xml#range(MT.12.5.6,MT.12.5.7)"
+         <annotation xml:id="a12.5_1" target="MT.tei.xml#range(MT.12.5.5,MT.12.5.7)"
             ana="ana:Uebersetzung ana:Bedeutungsverschiebung">
             <note>LXX übersetzt den Konsonantenbestand, führt ihn aber auf <seg xml:lang="he"
                >מעיד</seg> "Termin, Zeitpunkt" zurück.</note>
          </annotation>
          
          <!-- Fackel: lokales Protokoll im target-Attribut (und TEI-XPointer-Schema) -->
-         <!--
-         <annotation xml:id="a12.5_1" target="mt:12.5.6-7 lxx:12.5.1-4"
+         <annotation xml:id="a12.5_2" target="mt:12.5.6-7"
             ana="ana:Uebersetzung ana:Bedeutungsverschiebung">
             <note>LXX übersetzt den Konsonantenbestand, führt ihn aber auf <seg xml:lang="he"
                   >מעיד</seg> "Termin, Zeitpunkt" zurück.</note>
          </annotation>
-         -->
 
       </listAnnotation>
    </standOff>
