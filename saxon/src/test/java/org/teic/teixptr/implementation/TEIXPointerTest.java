@@ -145,11 +145,12 @@ public class TEIXPointerTest extends TestSetup {
     }
 
     @Test
-    void test_ijobrn04() throws Exception {
+    void test_ijobrn01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(ijobrn01, mtXml, proc);
 	assertEquals("range", pointer.getPointerType());
 	XdmValue selection = pointer.getSelectedNodes();
-	assertEquals(2, selection.size());
+	XdmValue forrest = Utils.forrest(selection);
+	assertEquals(3, forrest.size());
     }
 
 }
