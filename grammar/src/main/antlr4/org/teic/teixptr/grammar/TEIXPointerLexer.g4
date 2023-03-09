@@ -28,4 +28,4 @@ DIGIT : [0-9] ;
 
 IDREF : [a-zA-Z_] [a-zA-Z0-9_.+-]* ;
 
-CHAR : . ;
+CHAR : ~[,] ;
