@@ -394,6 +394,14 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 		    // reset the xpath state variable
 		    xpath = null;
 		}
+	    } else if (ctx.xpath() != null && xpath != null) {
+		if (!ctx.xpath().getText().isEmpty()) {
+		    LOG.debug("found XPATH argument to range(), evaluating: {}", xpath);
+		    XdmValue node = evaluateXPath(xpath, "XPATH");
+		    selectedNodesStack.add(node);
+		    // reset the xpath state variable
+		    xpath = null;
+		}
 	    }
 	}
     }
