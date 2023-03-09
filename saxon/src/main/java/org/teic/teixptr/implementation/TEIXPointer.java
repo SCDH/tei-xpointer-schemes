@@ -419,6 +419,8 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 		try {
 		    for (int i = 0; i < pairsCount; i++) {
 
+			XdmValue intersection = XdmEmptySequence.getInstance();
+			boolean endReached = false;
 			// collect nodes following the start node
 			XdmValue startPointer = selectedNodesStack.get(2*i);
 			XdmValue followingStartNodes = XdmEmptySequence.getInstance();
@@ -429,7 +431,8 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 			    // Point pointer
 			    Point startPoint = Point.getPoint(startPointer);
 			    if (startPoint.getPosition() == Point.LEFT) {
-				followingStartNodes = followingStartNodes.append(startPoint.getNode());
+				intersection = intersection.append(startPoint.getNode());
+				//followingStartNodes = followingStartNodes.append(startPoint.getNode());
 				followingIterator = startPoint.getNode().axisIterator(Axis.FOLLOWING);
 			    } else if (startPoint.getPosition() == Point.RIGHT) {
 				followingIterator = startPoint.getNode().axisIterator(Axis.FOLLOWING);
@@ -443,71 +446,60 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 			    // Sequence pointer
 			    followingIterator = Utils.getFirstNode(startPointer).axisIterator(Axis.FOLLOWING);
 			}
-    			// add nodes on the following axis
-			while (followingIterator.hasNext()) {
-			    XdmNode node = followingIterator.next();
-			    followingStartNodes = followingStartNodes.append(node);
-			    LOG.debug("adding {} node following start: {}", node.getNodeKind(), node.toString());
-			}
-			LOG.debug("nodes in following start node: {}", followingStartNodes.size());
-
 
 			// collect nodes preceding the end node
 			XdmValue endPointer = selectedNodesStack.get(2*i+1);
-			XdmValue precedingEndNodes = XdmEmptySequence.getInstance();
-			// initialize axis iterator with an empty iterator
-			Iterator<XdmNode> precedingIterator = new ArrayList<XdmNode>().iterator();
+			XdmNode endNode;
 			// handle pointer types
+			boolean appendEndNode = false;
 			if (Point.isPoint(endPointer)) {
 			    // Point pointer
 			    Point endPoint = Point.getPoint(endPointer);
-			    if (endPoint.getPosition() == Point.LEFT) {
-				precedingIterator = endPoint.getNode().axisIterator(Axis.PRECEDING);
-			    } else if (endPoint.getPosition() == Point.RIGHT) {
-				precedingEndNodes = precedingEndNodes.append(endPoint.getNode());
-				precedingIterator = endPoint.getNode().axisIterator(Axis.PRECEDING);
+			    endNode = endPoint.getNode();
+			    if (endPoint.getPosition() == Point.RIGHT) {
+				appendEndNode = true;
 			    } else if (endPoint.getPosition() == Point.STRING_INDEX) {
 				// FIXME: get text node fragment
-				precedingEndNodes = precedingEndNodes.append(endPoint.getNode());
-				precedingIterator = endPoint.getNode().axisIterator(Axis.PRECEDING);
+				appendEndNode = true;
 			    } else {
 				// FIXME
 			    }
 			} else {
-			    // Sequence pointer
-			    precedingIterator = Utils.getFirstNode(endPointer).axisIterator(Axis.PRECEDING);
+			    // we will be iterating until the last node of the end pointer
+			    endNode = Utils.getLastNode(endPointer);
 			}
-    			// add nodes on the preceding axis
-			while (precedingIterator.hasNext()) {
-			    XdmNode node = precedingIterator.next();
-			    precedingEndNodes = precedingEndNodes.append(node);
-			    LOG.debug("adding {} node preceding end: {}", node.getNodeKind(), node.toString());
-			}
-			LOG.debug("nodes in preceding end node: {}", precedingEndNodes.size());
 
-			// intersection
-			// TODO: is there a faster solution?
-			Iterator<XdmItem> startIterator = followingStartNodes.iterator();
+			LOG.debug("iterate for intersection ...");
+
 			int n = 0;
-			while (startIterator.hasNext()) {
-			    XdmItem startItem = startIterator.next();
-			    if (startItem instanceof XdmNode) {
-				XdmNode startNode = (XdmNode) startItem;
-				Iterator<XdmItem> endIterator = precedingEndNodes.iterator();
-				while (endIterator.hasNext()) {
-				    XdmItem endItem = endIterator.next();
-				    if (endItem instanceof XdmNode) {
-					XdmNode endNode = (XdmNode) endItem;
-					if (startNode.equals(endNode)) {
-					    seqs = seqs.append(startNode);
-					    n++;
-					    break;
-					}
-				    }
+			while (followingIterator.hasNext() && !endReached) {
+			    LOG.debug("iteration {}", n);
+			    XdmItem item = followingIterator.next();
+			    if (item instanceof XdmNode) {
+				XdmNode node = (XdmNode) item;
+				if (node.equals(endNode)) {
+				    LOG.debug("end reached at node {}", n);
+				    endReached = true;
+				} else {
+				    intersection = intersection.append(node);
+				    n++;
+				    LOG.debug("Appending node {}", n);
 				}
 			    }
 			}
+
+			if (appendEndNode) {
+			    intersection = intersection.append(endNode);
+			}
+
 			LOG.debug("range pair with {} nodes", n);
+
+			//seqs = seqs.append(intersection);
+			Iterator<XdmItem> intersectionIter = intersection.iterator();
+			while (intersectionIter.hasNext()) {
+			    seqs = seqs.append(intersectionIter.next());
+			}
+
 		    }
 		} catch (SaxonApiException e) {
 		    errorSeen = true;
