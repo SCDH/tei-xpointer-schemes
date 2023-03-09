@@ -123,7 +123,6 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(0, selection.size());
     }
 
-    @Disabled
     @Test
     void test_sysrn09() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn09, satsXml, proc);
