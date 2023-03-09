@@ -414,25 +414,55 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 		errorSeen = true;
 		errorStack.add(new Exception("error processing range pointer: number of range pairs and processed pointers differ"));
 	    } else {
-		// start with an empty sequence
-		XdmValue seqs = XdmEmptySequence.getInstance();
+		// algorithm: The overall range is a set union of the
+		// nodes of each range described by a pair of
+		// pointers, the start pointer and the end
+		// pointer. Each such range is the intersection of the
+		// nodes following the start pointer and the nodes
+		// preceding the end pointer. Depending on the pointer
+		// type, the start or end node identified by the
+		// pointer is part of the intersection. E.g. when the
+		// range starts with a left() pointer, the node
+		// identified by this left pointer also belongs to the
+		// range.
+
+		// implementation: 1) iterate of pointer pairs. 2) for
+		// each pointer pair: start with an empty range. Get
+		// the starting pointer's first node. Append it to the
+		// range if the pointer type does require so (e.g. for
+		// a left() pointer). Get an iterator for the
+		// following:: axis of this node. Get the end
+		// pointer's node and set a predicate that indicates,
+		// if the node must be appended to the range based on
+		// the pointer type (e.g. true for a right() pointer).
+		// Do the intersection: Iterate over the following::
+		// axis as long as there are nodes AND the end node
+		// has not been reached. Append each node seen to the
+		// range.  If the end node has been reached, then
+		// append the range to the ranges.
+
+		// start with ranges empty
+		XdmValue ranges = XdmEmptySequence.getInstance();
+
 		try {
 		    for (int i = 0; i < pairsCount; i++) {
 
-			XdmValue intersection = XdmEmptySequence.getInstance();
-			boolean endReached = false;
-			// collect nodes following the start node
+			// we start with an empty intersection
+			XdmValue range = XdmEmptySequence.getInstance();
+
 			XdmValue startPointer = selectedNodesStack.get(2*i);
-			XdmValue followingStartNodes = XdmEmptySequence.getInstance();
 			// initialize axis iterator with an empty iterator
+			XdmNode startNode = null;
 			Iterator<XdmNode> followingIterator = new ArrayList<XdmNode>().iterator();
 			// handle pointer types
 			if (Point.isPoint(startPointer)) {
 			    // Point pointer
 			    Point startPoint = Point.getPoint(startPointer);
 			    if (startPoint.getPosition() == Point.LEFT) {
-				intersection = intersection.append(startPoint.getNode());
-				//followingStartNodes = followingStartNodes.append(startPoint.getNode());
+				// we have a start node not on the axis iterator
+				startNode = startPoint.getNode();
+				// append it to the range
+				range = range.append(startNode);
 				followingIterator = startPoint.getNode().axisIterator(Axis.FOLLOWING);
 			    } else if (startPoint.getPosition() == Point.RIGHT) {
 				followingIterator = startPoint.getNode().axisIterator(Axis.FOLLOWING);
@@ -447,9 +477,9 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 			    followingIterator = Utils.getFirstNode(startPointer).axisIterator(Axis.FOLLOWING);
 			}
 
-			// collect nodes preceding the end node
+
 			XdmValue endPointer = selectedNodesStack.get(2*i+1);
-			XdmNode endNode;
+			XdmNode endNode = null;
 			// handle pointer types
 			boolean appendEndNode = false;
 			if (Point.isPoint(endPointer)) {
@@ -469,35 +499,45 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 			    endNode = Utils.getLastNode(endPointer);
 			}
 
-			LOG.debug("iterate for intersection ...");
+			// process the intersection
+			boolean endReached = false;
 
+			// case start node equals end node: no axis
+			// iteration needed, end node already reached.
+			if (startNode != null) {
+			    if (startNode.equals(endNode)) {
+				LOG.debug("start node and end node are the same node");
+				endReached = true;
+			    }
+			}
+
+			// iterate the axis to the end node
 			int n = 0;
 			while (followingIterator.hasNext() && !endReached) {
-			    LOG.debug("iteration {}", n);
 			    XdmItem item = followingIterator.next();
 			    if (item instanceof XdmNode) {
 				XdmNode node = (XdmNode) item;
 				if (node.equals(endNode)) {
-				    LOG.debug("end reached at node {}", n);
+				    LOG.debug("end node reached at axis step {}", n);
 				    endReached = true;
 				} else {
-				    intersection = intersection.append(node);
+				    range = range.append(node);
 				    n++;
-				    LOG.debug("Appending node {}", n);
+				    LOG.debug("appending node {} to intersection", n);
 				}
 			    }
 			}
 
+			// append the end node if required
 			if (appendEndNode) {
-			    intersection = intersection.append(endNode);
+			    range = range.append(endNode);
 			}
 
-			LOG.debug("range pair with {} nodes", n);
+			LOG.debug("range with {} nodes", n);
 
-			//seqs = seqs.append(intersection);
-			Iterator<XdmItem> intersectionIter = intersection.iterator();
-			while (intersectionIter.hasNext()) {
-			    seqs = seqs.append(intersectionIter.next());
+			// append range to ranges
+			if (endReached) {
+			    ranges = ranges.append(range);
 			}
 
 		    }
@@ -507,7 +547,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 		}
 		// store the generated selection of nodes to the stack
 		selectedNodesStack.clear();
-		selectedNodesStack.add(seqs);
+		selectedNodesStack.add(ranges);
 	    }
 	}
     }
