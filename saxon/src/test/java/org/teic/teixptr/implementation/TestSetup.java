@@ -26,7 +26,7 @@ public class TestSetup {
 
     public static String satsxp01, satsr01, satsl01, satssi01, satsrn01;
 
-    public static String casern04;
+    public static String sysrn04, sysrn05, sysrn06, sysrn07, sysrn08, sysrn09;
 
     public static String ijobidref01, ijobrn01;
 
@@ -46,14 +46,19 @@ public class TestSetup {
     }
 
     @BeforeAll
-    public static void setupSATSExamples() throws IOException {
+    public static void setupExamples() throws IOException {
 	satsxp01 = readSatsSample("satsxp01.txt");
 	satsr01 = readSatsSample("satsr01.txt");
 	satsl01 = readSatsSample("satsl01.txt");
 	satssi01 = readSatsSample("satssi01.txt");
 	satsrn01 = readSatsSample("satsrn01.txt");
 
-	casern04 = readSystematicSample("casern04.txt");
+	sysrn04 = readSystematicSample("rn04.txt");
+	sysrn05 = readSystematicSample("rn05.txt");
+	sysrn06 = readSystematicSample("rn06.txt");
+	sysrn07 = readSystematicSample("rn07.txt");
+	sysrn08 = readSystematicSample("rn08.txt");
+	sysrn09 = readSystematicSample("rn09.txt");
 
 	ijobidref01 = readRealWorldSample("ijobidref01.txt");
 	ijobrn01 = readRealWorldSample("ijobrn01.txt");
