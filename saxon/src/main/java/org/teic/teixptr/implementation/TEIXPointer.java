@@ -474,7 +474,9 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 			    }
 			} else {
 			    // Sequence pointer
-			    followingIterator = Utils.getFirstNode(startPointer).axisIterator(Axis.FOLLOWING);
+			    startNode = Utils.getFirstNode(startPointer);
+			    range = range.append(startNode);
+			    followingIterator = startNode.axisIterator(Axis.FOLLOWING);
 			}
 
 
@@ -497,6 +499,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 			} else {
 			    // we will be iterating until the last node of the end pointer
 			    endNode = Utils.getLastNode(endPointer);
+			    appendEndNode = true;
 			}
 
 			// process the intersection
@@ -504,10 +507,12 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 
 			// case start node equals end node: no axis
 			// iteration needed, end node already reached.
+			boolean startEndSame = false;
 			if (startNode != null) {
 			    if (startNode.equals(endNode)) {
-				LOG.debug("start node and end node are the same node");
+				LOG.info("start node and end node are the same node");
 				endReached = true;
+				startEndSame = true;
 			    }
 			}
 
@@ -529,14 +534,16 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 			}
 
 			// append the end node if required
-			if (appendEndNode) {
+			if (appendEndNode && !startEndSame) {
 			    range = range.append(endNode);
 			}
 
 			LOG.debug("range with {} nodes", n);
 
 			// append range to ranges
-			if (endReached) {
+			if (startEndSame && !appendEndNode) {
+			    // do not append range
+			} else if (endReached) {
 			    ranges = ranges.append(range);
 			}
 

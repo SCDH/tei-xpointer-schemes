@@ -77,8 +77,8 @@ public class TEIXPointerTest extends TestSetup {
     }
 
     @Test
-    void test_casern04() throws Exception {
-	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(casern04, satsXml, proc);
+    void test_sysrn04() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn04, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
 	XdmValue selection = pointer.getSelectedNodes();
 	assertEquals(19, selection.size());
@@ -88,6 +88,52 @@ public class TEIXPointerTest extends TestSetup {
 	node = Utils.getLastNode(selection);
 	assertEquals("<lb n=\"4\"/>", node.toString().strip());
     }
+
+    @Test
+    void test_sysrn05() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn05, satsXml, proc);
+	assertEquals("range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(0, selection.size());
+    }
+
+    @Test
+    void test_sysrn06() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn06, satsXml, proc);
+	assertEquals("range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(0, selection.size());
+    }
+
+    @Test
+    void test_sysrn07() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn07, satsXml, proc);
+	assertEquals("range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+	// assert right first and last node
+	assertEquals("<lb n=\"3\"/>", selection.toString());
+    }
+
+    @Test
+    void test_sysrn08() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn08, satsXml, proc);
+	assertEquals("range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(0, selection.size());
+    }
+
+    @Disabled
+    @Test
+    void test_sysrn09() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn09, satsXml, proc);
+	assertEquals("range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+	// assert right first and last node
+	assertEquals("<lb n=\"3\"/>", selection.toString());
+    }
+
 
     @Test
     void test_ijobidref01() throws Exception {
