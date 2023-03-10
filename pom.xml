@@ -91,6 +91,7 @@
        <module>grammar</module>
        <module>xpath-extension</module>
        <module>saxon</module>
+       <module>oxygen</module>
     </modules>
 
 </project>

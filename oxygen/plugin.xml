@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The plugin.dtd file is located in the OXYGEN_INSATALL_DIR/plugins
+     directory -->
+<!DOCTYPE plugin SYSTEM "../plugin.dtd">
+<plugin
+    id="${project.groupId}.${project.artifactId}"
+    name="${project.name}"
+    description="Implementation of the TEI XPointer scheme and XPath function extensions"
+    version="${project.version}"
+    class="org.teic.teixptr.oxygen.TEIXPointerPlugin"
+    classLoaderType="preferReferencedResources">
+
+   <runtime>
+      <!-- we use the global class loader to make the extension
+	   functions available throughout in oxygen. -->
+      <librariesFolder name="lib" scope="global"/>
+   </runtime>
+
+   <extension
+       type="WorkspaceAccess"
+       class="org.teic.teixptr.oxygen.TEIXPointerPluginExtension"/>
+
+</plugin>
