@@ -39,7 +39,7 @@
        <maven.compiler.target>1.8</maven.compiler.target>
        <antlr.version>4.10.1</antlr.version>
        <antlr.test.version>1.21</antlr.test.version>
-       <slf4j.version>1.7.32</slf4j.version>
+       <slf4j.version>2.0.6</slf4j.version>
        <saxon.version>10.2</saxon.version>
        <xmlresolver.version>4.5.1</xmlresolver.version>
        <junit.version>5.7.2</junit.version>
