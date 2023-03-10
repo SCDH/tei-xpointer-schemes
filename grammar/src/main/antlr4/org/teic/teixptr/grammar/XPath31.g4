@@ -225,7 +225,7 @@ eqname : QName | URIQualifiedName
  ;
 
 // Not per spec. Specified for testing.
-auxilary : (expr SEMI )+ EOF;
+// auxilary : (expr SEMI )+ EOF;
 
 
 AT : '@' ;
@@ -389,4 +389,4 @@ fragment FragChar : '\u0009' | '\u000a' | '\u000d'
 Whitespace :  ('\u000d' | '\u000a' | '\u0020' | '\u0009')+ -> skip ;
 
 // Not per spec. Specified for testing.
-SEMI : ';' ;
+// SEMI : ';' ;
