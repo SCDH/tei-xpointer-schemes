@@ -1,6 +1,9 @@
-parser grammar TEIXPointerParser ;
+// First grammar for the TEI XPointer scheme
+// This was replaced with TEIXPointer.g4
 
-options { tokenVocab=TEIXPointerLexer; }
+parser grammar TEIXPointer1Parser ;
+
+options { tokenVocab=TEIXPointer1Lexer; }
 
 // fragment is a reserved token in ANTLR parser grammars
 fragm : FRAGMENT pointer WS* ;

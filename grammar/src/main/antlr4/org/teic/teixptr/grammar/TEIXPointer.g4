@@ -1,4 +1,4 @@
-grammar TEIXPointer2;
+grammar TEIXPointer;
 
 import XPath31;
 

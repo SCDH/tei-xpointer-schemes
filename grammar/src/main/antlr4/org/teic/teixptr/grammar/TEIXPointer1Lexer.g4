@@ -1,4 +1,7 @@
-lexer grammar TEIXPointerLexer;
+// First grammar for the TEI XPointer scheme
+// This was replaced with TEIXPointer.g4
+
+lexer grammar TEIXPointer1Lexer;
 
 WS : [\n\f\r ] ;
 
