@@ -22,6 +22,16 @@ left_pointer : LEFT OP WS* idref_or_xpath WS* CP ;
 
 right_pointer : RIGHT OP WS* idref_or_xpath WS* CP ;
 
+// Allowing xpath as an argument to pointers with more than one
+// argument (as the one below) is a mess. Since commas may be present
+// in xpath selectors, this introduces ambiguity.
+
+// For now, we solute the ambiguity by not allowing the COMMA in CHAR
+// and thus not allowing COMMA in text.
+
+// Another strategy of disambiguation would be to describe some parts
+// of the XPath syntax, where commas are allowed.
+
 string_index_pointer : STRING_INDEX OP WS* idref_or_xpath WS* COMMA WS* offset WS* CP ;
 
 range_pointer : RANGE OP WS* range_pointer_pair ( WS* COMMA WS* range_pointer_pair )*  WS* CP ;
@@ -38,11 +48,12 @@ range_start : range_argument ;
 range_end : range_argument ;
 
 range_argument
-    : xpath_pointer
+    : xpath_pointer     // we allow this unlike the SATS section
     | left_pointer
     | right_pointer
     | string_index_pointer
     | idref
+    | xpath             // allowing this is a mess
     ;
 
 
