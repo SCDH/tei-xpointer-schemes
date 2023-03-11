@@ -31,7 +31,7 @@ running the following command:
 mvn javadoc:aggregate
 ```
 
-### Running XSLT and XQuery
+### Evaluating TEI XPointers with XSLT and XQuery
 
 After running `mvn package` there are scripts in `saxon/target/bin`
 for running Saxon from commandline. These scripts set the classpath
@@ -51,6 +51,12 @@ passes the Saxon configuration in
 [`saxon/saxon-config.xml`](saxon/saxon-config.xml) to Saxon, so that
 the XPath functions defined in this project are available to the XSLT
 processor.
+
+The XSLT in `testsamples/realworld/extract-annotated-spans.xsl` or the
+imported `libref.xsl` evaluates TEI XPointers with the new
+`xptr:get-sequence()` XPath function. It takes two `xs:string`
+arguments, one for the file URL and one for the pointer, and returns a
+sequence of nodes.
 
 ### Inspecting the parse tree
 
