@@ -6,48 +6,48 @@ import XPath31;
 fragm : POUND pointer Whitespace* ;
 
 pointer
-    : xpath_pointer
-    | left_pointer
-    | right_pointer
-    | stringindex_pointer
-    | range_pointer
-    | stringrange_pointer
-    | match_pointer
+    : xpathPointer
+    | leftPointer
+    | rightPointer
+    | stringIndexPointer
+    | rangePointer
+    | stringRangePointer
+    | matchPointer
     | idref
     ;
 
-xpath_pointer : 'xpath' OP Whitespace* pathexpr Whitespace* CP ;
+xpathPointer : 'xpath' OP Whitespace* pathexpr Whitespace* CP ;
 
-left_pointer : 'left' OP Whitespace* idref_or_pathexpr Whitespace* CP ;
+leftPointer : 'left' OP Whitespace* idrefOrPathexpr Whitespace* CP ;
 
-right_pointer : 'right' OP Whitespace* idref_or_pathexpr Whitespace* CP ;
+rightPointer : 'right' OP Whitespace* idrefOrPathexpr Whitespace* CP ;
 
-stringindex_pointer : 'string-index' OP Whitespace* idref_or_pathexpr Whitespace* COMMA Whitespace* offset Whitespace* CP ;
+stringIndexPointer : 'string-index' OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* offset Whitespace* CP ;
 
-range_pointer : 'range' OP Whitespace* range_pointer_pair ( Whitespace* COMMA Whitespace* range_pointer_pair )*  Whitespace* CP ;
+rangePointer : 'range' OP Whitespace* rangePointerPair ( Whitespace* COMMA Whitespace* rangePointerPair )*  Whitespace* CP ;
 
-stringrange_pointer : 'string-range' OP Whitespace* idref_or_pathexpr Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length ( Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length )* Whitespace* CP ;
+stringRangePointer : 'string-range' OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length ( Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length )* Whitespace* CP ;
 
-match_pointer : 'match' OP Whitespace* idref_or_pathexpr Whitespace* COMMA Whitespace* regex ( Whitespace* COMMA Whitespace* index )? Whitespace* CP ;
+matchPointer : 'match' OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* regex ( Whitespace* COMMA Whitespace* index )? Whitespace* CP ;
 
 
-range_pointer_pair : range_start Whitespace* COMMA Whitespace* range_end ;
+rangePointerPair : rangeStart Whitespace* COMMA Whitespace* rangeEnd ;
 
-range_start : range_argument ;
+rangeStart : rangeArgument ;
 
-range_end : range_argument ;
+rangeEnd : rangeArgument ;
 
-range_argument
-    : xpath_pointer     // we allow this unlike the SATS spec
-    | left_pointer
-    | right_pointer
-    | stringindex_pointer
+rangeArgument
+    : xpathPointer     // we allow this unlike the SATS spec
+    | leftPointer
+    | rightPointer
+    | stringIndexPointer
     | idref
     | pathexpr
     ;
 
 
-idref_or_pathexpr
+idrefOrPathexpr
     : idref
     | pathexpr
     ;
