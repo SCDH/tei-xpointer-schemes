@@ -235,6 +235,9 @@ public class TEIXPointer extends TEIXPointerBaseListener {
     public void enterPointer(TEIXPointerParser.PointerContext ctx) {
 	pointerType = ctx.getStart().getText();
 	LOG.debug("found base pointer: {}", pointerType);
+	if (ctx.xpathPointer() != null) {
+	    assertNonEmpty = false;
+	}
     }
 
     @Override

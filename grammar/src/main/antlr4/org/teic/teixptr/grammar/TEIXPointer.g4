@@ -70,6 +70,13 @@ regex : StringLiteral ;
 pointerName : XPATH | LEFT | RIGHT | STRINGINDEX | RANGE | STRINGRANGE | MATCH ;
 
 
+// overriding XPath31 grammar rules
+
+stepexpr : postfixexpr | axisstep | pointerName ;
+// the following does not work instead of overriding stepexpr
+// NCName : FragmentNCName | XPATH | LEFT | RIGHT | STRINGINDEX | RANGE | STRINGRANGE | MATCH ;
+
+
 // lexer rules
 
 XPATH : 'xpath' | 'XPATH' ;

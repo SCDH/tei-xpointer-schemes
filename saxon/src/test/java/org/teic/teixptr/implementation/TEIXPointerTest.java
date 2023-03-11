@@ -88,11 +88,19 @@ public class TEIXPointerTest extends TestSetup {
     }
 
     @Test
-    void test_sysidref2() throws Exception {
+    void test_sysidref02() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysidref02, satsXml, proc);
 	assertEquals("IDREF", pointer.getPointerType());
 	XdmValue selection = pointer.getSelectedNodes();
 	assertEquals(0, selection.size());
+    }
+
+    @Test
+    void test_sysxp02() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysxp02, satsXml, proc);
+	assertEquals("xpath", pointer.getPointerType());
+	//XdmValue selection = pointer.getSelectedNodes();
+	//assertEquals(0, selection.size());
     }
 
     @Test
