@@ -88,6 +88,14 @@ public class TEIXPointerTest extends TestSetup {
     }
 
     @Test
+    void test_sysidref2() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysidref02, satsXml, proc);
+	assertEquals("IDREF", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(0, selection.size());
+    }
+
+    @Test
     void test_sysrn04() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn04, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());

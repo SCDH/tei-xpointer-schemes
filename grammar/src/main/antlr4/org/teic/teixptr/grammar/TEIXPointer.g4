@@ -16,19 +16,19 @@ pointer
     | idref
     ;
 
-xpathPointer : 'xpath' OP Whitespace* pathexpr Whitespace* CP ;
+xpathPointer : XPATH OP Whitespace* pathexpr Whitespace* CP ;
 
-leftPointer : 'left' OP Whitespace* idrefOrPathexpr Whitespace* CP ;
+leftPointer : LEFT OP Whitespace* idrefOrPathexpr Whitespace* CP ;
 
-rightPointer : 'right' OP Whitespace* idrefOrPathexpr Whitespace* CP ;
+rightPointer : RIGHT OP Whitespace* idrefOrPathexpr Whitespace* CP ;
 
-stringIndexPointer : 'string-index' OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* offset Whitespace* CP ;
+stringIndexPointer : STRINGINDEX OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* offset Whitespace* CP ;
 
-rangePointer : 'range' OP Whitespace* rangePointerPair ( Whitespace* COMMA Whitespace* rangePointerPair )*  Whitespace* CP ;
+rangePointer : RANGE OP Whitespace* rangePointerPair ( Whitespace* COMMA Whitespace* rangePointerPair )*  Whitespace* CP ;
 
-stringRangePointer : 'string-range' OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length ( Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length )* Whitespace* CP ;
+stringRangePointer : STRINGRANGE OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length ( Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length )* Whitespace* CP ;
 
-matchPointer : 'match' OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* regex ( Whitespace* COMMA Whitespace* index )? Whitespace* CP ;
+matchPointer : MATCH OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* regex ( Whitespace* COMMA Whitespace* index )? Whitespace* CP ;
 
 
 rangePointerPair : rangeStart Whitespace* COMMA Whitespace* rangeEnd ;
@@ -55,7 +55,8 @@ idrefOrPathexpr
 idref
     // TODO: production of Name (https://www.w3.org/TR/REC-xml/#NT-Name) allows ':', while NCNAME does not
     : NCName
-    | QName  // above NCName in lexer
+    | QName         // above NCName in lexer
+    | pointerName   // an IDREF may equal a pointer name
     ;
 
 offset : IntegerLiteral ;
@@ -65,3 +66,16 @@ length : IntegerLiteral ;
 index : IntegerLiteral ;
 
 regex : StringLiteral ;
+
+pointerName : XPATH | LEFT | RIGHT | STRINGINDEX | RANGE | STRINGRANGE | MATCH ;
+
+
+// lexer rules
+
+XPATH : 'xpath' | 'XPATH' ;
+LEFT : 'left' | 'LEFT' ;
+RIGHT : 'right' | 'RIGHT' ;
+STRINGINDEX : 'string-index' | 'STRING-INDEX' ;
+RANGE : 'range' | 'RANGE' ;
+STRINGRANGE : 'string-range' | 'STRING-RANGE' ;
+MATCH : 'match' | 'MATCH' ;

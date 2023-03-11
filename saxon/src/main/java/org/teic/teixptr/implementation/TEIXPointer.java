@@ -239,23 +239,22 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 
     @Override
     public void exitPointer(TEIXPointerParser.PointerContext ctx) {
-	String firstToken = ctx.getStart().getText().toLowerCase();
 	if (errorSeen) {
 	    LOG.error("errors occurred while processing the pointer");
 	}
 	// set selectedNodes according to the base pointer type
-	else if (firstToken.equals("xpath")) {
+	else if (ctx.xpathPointer() != null) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (firstToken.equals("left")) {
+	} else if (ctx.leftPointer() != null) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (firstToken.equals("right")) {
+	} else if (ctx.rightPointer() != null) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (firstToken.equals("range")) {
+	} else if (ctx.rangePointer() != null) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (firstToken.equals("string-index")) {
+	} else if (ctx.stringIndexPointer() != null) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (!ctx.idref().getText().isEmpty()) {
-	    // it's an IDREF
+	} else if (ctx.idref() != null) {
+	    // handle IDREF
 	    pointerType = "IDREF";
 	    LOG.debug("found IDREF, evaluating: {}", xpath);
 	    selectedNodes = evaluateXPath(xpath, "IDREF");
