@@ -1,0 +1,12 @@
+#!/bin/bash
+
+JARS=${project.build.directory}/lib/antlr4-runtime-${antlr.version}.jar
+JARS=$JARS:${project.build.directory}/lib/antlr4-${antlr.version}.jar
+JARS=$JARS:${project.build.directory}/lib/org.abego.treelayout.core-${treelayout.version}.jar
+#JARS=$JARS:${project.build.directory}/tei-xpointer-grammar-${project.version}.jar
+JARS=$JARS:${project.build.directory}/classes
+
+# echo "classpath $JARS"
+
+java -cp $JARS org.antlr.v4.gui.TestRig "$@"
+#java -cp $JARS org.antlr.v4.runtime.misc.TestRig "$@"
