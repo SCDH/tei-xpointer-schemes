@@ -15,7 +15,22 @@
 
     <properties>
        <test.resources>${project.build.directory}/generated-test-resources</test.resources>
+       <treelayout.version>1.0.3</treelayout.version>
     </properties>
+
+    <dependencies>
+       <!-- for the antlr-grun script -->
+       <dependency>
+	  <groupId>org.antlr</groupId>
+	  <artifactId>antlr4</artifactId>
+	  <version>${antlr.version}</version>
+       </dependency>
+       <dependency>
+          <groupId>org.abego.treelayout</groupId>
+	  <artifactId>org.abego.treelayout.core</artifactId>
+	  <version>${treelayout.version}</version>
+       </dependency>
+    </dependencies>
 
     <build>
        <plugins>
@@ -94,6 +109,73 @@
                 </scenarios>
              </configuration>
           </plugin>
+
+          <plugin>
+             <!-- put jars required for antlr-grun helper script into
+		  the target/lib -->
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-dependency-plugin</artifactId>
+             <version>3.1.1</version>
+             <executions>
+                <execution>
+                   <phase>generate-resources</phase>
+                   <goals>
+                      <goal>copy-dependencies</goal>
+                   </goals>
+                   <configuration>
+                      <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                      <includeArtifactIds>antlr4,antlr4-runtime,org.abego.treelayout.core</includeArtifactIds>
+                   </configuration>
+                </execution>
+             </executions>
+          </plugin>
+
+	 <!-- fill in the right versions in the templates in scripts
+	      directory and set their permissions -->
+	 <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+	       <execution>
+		  <id>copy-resources</id>
+		  <phase>generate-resources</phase>
+		  <goals>
+		     <goal>copy-resources</goal>
+		  </goals>
+		  <configuration>
+		     <outputDirectory>${project.build.directory}/bin</outputDirectory>
+		     <resources>
+			<resource>
+		           <directory>${project.basedir}/scripts</directory>
+		           <includes>
+			      <include>antlr-grun</include>
+		           </includes>
+			   <filtering>true</filtering>
+			</resource>
+		     </resources>
+		  </configuration>
+	       </execution>
+            </executions>
+	 </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+		<execution>
+		    <id>set-permissions</id>
+		    <phase>generate-resources</phase>
+		    <configuration>
+                       <target>
+			  <chmod file="${project.build.directory}/bin/antlr-grun" perm="755"/>
+                       </target>
+		    </configuration>
+		    <goals>
+                       <goal>run</goal>
+		    </goals>
+		</execution>
+            </executions>
+         </plugin>
 
        </plugins>
     </build>
