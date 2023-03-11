@@ -78,7 +78,7 @@
                 <scenarios>
                    <scenario>
                       <scenarioName>Pointers from TEI Guidelines Section SATS</scenarioName>
-                      <verbose>true</verbose>
+                      <verbose>false</verbose>
                       <showTree>false</showTree>
                       <entryPoint>fragm</entryPoint>
                       <grammarName>TEIXPointer</grammarName>
