@@ -26,7 +26,7 @@ public class TestSetup {
 
     public static String satsxp01, satsr01, satsl01, satssi01, satsrn01;
 
-    public static String sysrn04, sysrn05, sysrn06, sysrn07, sysrn08, sysrn09;
+    public static String sysidref01, sysrn04, sysrn05, sysrn06, sysrn07, sysrn08, sysrn09;
 
     public static String ijobidref01, ijobrn01;
 
@@ -53,6 +53,8 @@ public class TestSetup {
 	satssi01 = readSatsSample("satssi01.txt");
 	satsrn01 = readSatsSample("satsrn01.txt");
 
+
+	sysidref01 = readSystematicSample("idref01.txt");
 	sysrn04 = readSystematicSample("rn04.txt");
 	sysrn05 = readSystematicSample("rn05.txt");
 	sysrn06 = readSystematicSample("rn06.txt");

@@ -77,6 +77,17 @@ public class TEIXPointerTest extends TestSetup {
     }
 
     @Test
+    void test_sysidref01() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysidref01, satsXml, proc);
+	assertEquals("IDREF", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+	// assert right first and last node
+    	XdmNode node = Utils.getFirstNode(selection);
+	assertEquals("<lb n=\"1\" xml:id=\"line1\"/>", node.toString());
+    }
+
+    @Test
     void test_sysrn04() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn04, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
