@@ -37,7 +37,7 @@ import org.teic.teixptr.grammar.*;
  * The implementation of the TEI XPointer scheme.
  *
  */
-public class TEIXPointer extends TEIXPointerParserBaseListener {
+public class TEIXPointer extends TEIXPointerBaseListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(TEIXPointer.class);
 
@@ -239,19 +239,20 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 
     @Override
     public void exitPointer(TEIXPointerParser.PointerContext ctx) {
+	String firstToken = ctx.getStart().getText().toLowerCase();
 	if (errorSeen) {
 	    LOG.error("errors occurred while processing the pointer");
 	}
 	// set selectedNodes according to the base pointer type
-	else if (ctx.getStart().getType() == TEIXPointerLexer.XPATH) {
+	else if (firstToken.equals("xpath")) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (ctx.getStart().getType() == TEIXPointerLexer.LEFT) {
+	} else if (firstToken.equals("left")) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (ctx.getStart().getType() == TEIXPointerLexer.RIGHT) {
+	} else if (firstToken.equals("right")) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (ctx.getStart().getType() == TEIXPointerLexer.RANGE) {
+	} else if (firstToken.equals("range")) {
 	    selectedNodes = selectedNodesStack.get(0);
-	} else if (ctx.getStart().getType() == TEIXPointerLexer.STRING_INDEX) {
+	} else if (firstToken.equals("string-index")) {
 	    selectedNodes = selectedNodesStack.get(0);
 	} else if (!ctx.idref().getText().isEmpty()) {
 	    // it's an IDREF
@@ -286,18 +287,23 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * Internal.
      */
     @Override
-    public void enterXpath(TEIXPointerParser.XpathContext ctx) {
+    public void enterPathexpr(TEIXPointerParser.PathexprContext ctx) {
 	// we save the XPATH to the state and let the pointer evaluate
 	// it on the exit<POINTER> event
-	LOG.debug("found XPATH {}", ctx.getText());
-	xpath = ctx.getText();
+	//
+	// We just store the first pathexpr in the state variable.
+	// Followups may contain only parts.
+	if (xpath == null) {
+	    LOG.debug("found XPATH {}", ctx.getText());
+	    xpath = ctx.getText();
+	}
     }
 
     /**
      * Internal.
      */
     @Override
-    public void exitXpath_pointer(TEIXPointerParser.Xpath_pointerContext ctx) {
+    public void exitXpathPointer(TEIXPointerParser.XpathPointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
@@ -314,7 +320,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * Internal.
      */
     @Override
-    public void exitLeft_pointer(TEIXPointerParser.Left_pointerContext ctx) {
+    public void exitLeftPointer(TEIXPointerParser.LeftPointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
@@ -337,7 +343,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * Internal.
      */
     @Override
-    public void exitRight_pointer(TEIXPointerParser.Right_pointerContext ctx) {
+    public void exitRightPointer(TEIXPointerParser.RightPointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
@@ -359,7 +365,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * Internal.
      */
     @Override
-    public void exitString_index_pointer(TEIXPointerParser.String_index_pointerContext ctx) {
+    public void exitStringIndexPointer(TEIXPointerParser.StringIndexPointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
@@ -382,7 +388,7 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * Internal.
      */
     @Override
-    public void exitRange_argument(TEIXPointerParser.Range_argumentContext ctx) {
+    public void exitRangeArgument(TEIXPointerParser.RangeArgumentContext ctx) {
 	// We only have to check if there was a argument, that is not a pointer: an IDREF
 	// Then we have to evaluate it and push the selection on the stack.
 	if (!errorSeen) {
@@ -394,8 +400,8 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
 		    // reset the xpath state variable
 		    xpath = null;
 		}
-	    } else if (ctx.xpath() != null && xpath != null) {
-		if (!ctx.xpath().getText().isEmpty()) {
+	    } else if (ctx.pathexpr() != null && xpath != null) {
+		if (!ctx.pathexpr().getText().isEmpty()) {
 		    LOG.debug("found XPATH argument to range(), evaluating: {}", xpath);
 		    XdmValue node = evaluateXPath(xpath, "XPATH");
 		    selectedNodesStack.add(node);
@@ -410,11 +416,11 @@ public class TEIXPointer extends TEIXPointerParserBaseListener {
      * Internal.
      */
     @Override
-    public void exitRange_pointer(TEIXPointerParser.Range_pointerContext ctx) {
+    public void exitRangePointer(TEIXPointerParser.RangePointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
-	    int pairsCount = ctx.range_pointer_pair().size();
+	    int pairsCount = ctx.rangePointerPair().size();
 	    LOG.debug("found range() pointer with {} pair(s)", pairsCount);
 	    if (pairsCount*2 != selectedNodesStack.size()) {
 		LOG.error("error processing range pointers: {} range pairs mismatch {} processed pointers",
