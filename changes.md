@@ -1,12 +1,13 @@
 # Changes
 
-## 0.2.0-dev
+## 0.2.0
 
 - grammar based on XPath 3.1 grammar from the ANTLR4 grammars project,
   written by Ken Domino:
   [https://github.com/antlr/grammars-v4/blob/master/xpath/xpath31/XPath31.g4](https://github.com/antlr/grammars-v4/blob/master/xpath/xpath31/XPath31.g4)
 - allow `COMMA` in path expressions
 - added more test cases
+- delivery as oxygen plugin
 
 ## 0.1.0
 
