@@ -5,6 +5,10 @@ outlined in the [SATS
 section](https://www.tei-c.org/release/doc/tei-p5-doc/de/html/SA.html#SATS)
 in the TEI guidelines.
 
+Using this implementation, TEI XPointers can be parsed and evaluated
+either through a Java API or from XSLT and XQuery through [XPath
+functions](doc/xpath-functions.md).
+
 ### State
 
 development
@@ -15,10 +19,25 @@ development
 - `xpath-extension`: definitions of XPath functions for processing XPointers
 - `saxon`: an implementation of processing TEI XPointers based on
   Saxon's s9api
+- `oxygen`: the implementation of the TEI XPointer scheme packetized
+  as a plugin for the Oxygen XML editor
 
 ## Getting started
 
-Build, test and packetize:
+Installation of the Oxygen plugin is done through the extension
+manager (menu **Help** -> **Install new add-ons**) with the following
+URL:
+
+```
+https://scdh.zivgitlabpages.uni-muenster.de/tei-processing/tei-xpointer-scheme/descriptor.xml
+```
+
+The plugin will enable you to evaluate TEI XPointers using the XPath
+extension functions.
+
+
+For building, testing and packetizing locally run the following
+command from the root of the cloned repository:
 
 ```{shell}
 mvn clean package verify
