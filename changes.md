@@ -1,5 +1,9 @@
 # Changes
 
+## 0.2.1
+
+- fix pipeline
+
 ## 0.2.0
 
 - grammar based on XPath 3.1 grammar from the ANTLR4 grammars project,

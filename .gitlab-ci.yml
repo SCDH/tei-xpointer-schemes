@@ -51,7 +51,7 @@ pages:
     - cp -v oxygen/target/*-plugin.jar public/
     - mvn -Doxygen.version=25 $MAVEN_CLI_OPTS clean verify
     - cp -v oxygen/target/*-plugin.jar public/
-    - cp -v target/generated-resources/xml/xslt/pom.xml public/descriptor.xml
+    - cp -v target/generated-resources/xml/xslt/descriptor.xml public/
     - ls -la public
   artifacts:
     paths:
