@@ -39,10 +39,11 @@
        <maven.compiler.target>1.8</maven.compiler.target>
        <antlr.version>4.12.0</antlr.version>
        <antlr.test.version>1.21</antlr.test.version>
-       <slf4j.version>1.7.32</slf4j.version>
+       <slf4j.version>2.0.6</slf4j.version>
        <saxon.version>10.2</saxon.version>
        <xmlresolver.version>4.5.1</xmlresolver.version>
        <junit.version>5.7.2</junit.version>
+       <oxygen.versions>23:23.0,23.1,23.2|24:24.0,24.1,24.2|25:25.0+</oxygen.versions>
     </properties>
 
     <!-- dependencies needed everywhere -->
@@ -91,6 +92,54 @@
        <module>grammar</module>
        <module>xpath-extension</module>
        <module>saxon</module>
+       <module>oxygen</module>
     </modules>
+
+    <profiles>
+      <!--
+	   Profiles for building for different versions of
+	   oxygenxml. Please add new versions to the property
+	   oxygen.versions, too!
+      -->
+      <profile>
+	 <id>oxygen23</id>
+	 <activation>
+	    <property>
+	       <name>oxygen.version</name>
+	       <value>23</value>
+	    </property>
+	 </activation>
+	 <properties>
+	    <saxon.version>9.9.1-7</saxon.version>
+	    <oxygen.sdk.version>23.1.0.4</oxygen.sdk.version>
+	 </properties>
+      </profile>
+      <profile>
+	 <id>oxygen24</id>
+	 <activation>
+	    <property>
+	       <name>oxygen.version</name>
+	       <value>24</value>
+	    </property>
+	 </activation>
+	 <properties>
+	    <saxon.version>10.6</saxon.version>
+	    <oxygen.sdk.version>24.1.0.0</oxygen.sdk.version>
+	 </properties>
+      </profile>
+      <profile>
+	 <id>oxygen25</id>
+	 <activation>
+	    <property>
+	       <name>oxygen.version</name>
+	       <value>25</value>
+	    </property>
+	 </activation>
+	 <properties>
+	    <saxon.version>11.2</saxon.version>
+	    <oxygen.sdk.version>25.0.0.0</oxygen.sdk.version>
+	 </properties>
+      </profile>
+    </profiles>
 
 </project>

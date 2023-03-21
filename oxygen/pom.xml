@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>org.teic.teixptr</groupId>
+      <artifactId>TEIXPointerScheme</artifactId>
+      <version>${revision}</version>
+   </parent>
+
+   <artifactId>tei-xpointer-oxygen</artifactId>
+   <name>TEI XPointer oXygen Plugin</name>
+
+   <properties>
+      <oxygen.version>25</oxygen.version>
+      <oxygen.sdk.version>25.0.0.0</oxygen.sdk.version>
+      <release.url.OFF>https://github.com/SCDH/tei-xpointer-scheme/releases/download/${revision}/</release.url.OFF>
+      <release.url></release.url>
+   </properties>
+
+   <repositories>
+      <repository>
+         <id>maven-central</id>
+         <url>https://repo1.maven.org/maven2/</url>
+      </repository>
+      <repository>
+         <id>oxygen-repository</id>
+         <url>https://www.oxygenxml.com/maven/</url>
+      </repository>
+   </repositories>
+
+   <dependencies>
+       <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>tei-xpointer-saxon-impl</artifactId>
+          <version>${revision}</version>
+       </dependency>
+       <dependency>
+          <groupId>com.oxygenxml</groupId>
+          <artifactId>oxygen</artifactId>
+          <version>${oxygen.sdk.version}</version>
+       </dependency>
+       <dependency>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-reload4j</artifactId>
+	  <version>${slf4j.version}</version>
+       </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+
+	 <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${compiler-plugin.version}</version>
+         </plugin>
+
+	 <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy-jars</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                     <includeArtifactIds>tei-xpointer-grammar,tei-xpointer-xpath-extension,tei-xpointer-saxon-impl,antlr4-runtime,slf4j-api,slf4j-reload4j</includeArtifactIds>
+                  </configuration>
+               </execution>
+	    </executions>
+	 </plugin>
+
+         <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+               <execution>
+                  <id>properties-to-resources</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${project.build.directory}</outputDirectory>
+                     <resources>
+                        <resource>
+                           <directory>${project.basedir}</directory>
+                           <includes>
+                              <include>plugin.xml</include>
+                              <include>descriptor.xml</include>
+                           </includes>
+                           <filtering>true</filtering>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!-- make plugin package -->
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+	       <!--
+               <execution>
+                  <id>assemble-jar-with-dependencies</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+                  <configuration>
+                     <finalName>${project.artifactId}-${project.version}</finalName>
+		     <archive>
+			<manifest>
+			   <addClasspath>true</addClasspath>
+			</manifest>
+		     </archive>
+                     <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
+                     <descriptors>
+                        <descriptor>assembly-jar.xml</descriptor>
+                     </descriptors>
+                  </configuration>
+               </execution>
+	       -->
+               <execution>
+                  <id>assemble-plugin</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>single</goal>
+                  </goals>
+                  <configuration>
+                     <finalName>${project.artifactId}${oxygen.version}-${project.version}</finalName>
+                     <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
+                     <descriptors>
+                        <descriptor>assembly.xml</descriptor>
+                     </descriptors>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+	 <!-- make a package descriptor for multiple versions of oxygen -->
+	 <plugin>
+	    <groupId>org.codehaus.mojo</groupId>
+	    <artifactId>xml-maven-plugin</artifactId>
+	    <version>1.0.2</version>
+	    <executions>
+	       <execution>
+		  <goals>
+		     <goal>transform</goal>
+		  </goals>
+		  <phase>package</phase>
+	       </execution>
+	    </executions>
+	    <configuration>
+	       <transformationSets>
+		  <transformationSet>
+		     <dir>${project.build.directory}</dir>
+		     <includes>
+			<include>descriptor.xml</include>
+		     </includes>
+		     <stylesheet>multiversion.xsl</stylesheet>
+		     <parameters>
+			<parameter>
+			   <name>oxygen-versions</name>
+			   <value>${oxygen.versions}</value>
+			</parameter>
+			<parameter>
+			   <name>artifact</name>
+			   <value>${project.artifactId}</value>
+			</parameter>
+		     </parameters>
+		  </transformationSet>
+	       </transformationSets>
+	    </configuration>
+	    <dependencies>
+	       <dependency>
+		  <groupId>net.sf.saxon</groupId>
+		  <artifactId>Saxon-HE</artifactId>
+		  <version>10.2</version>
+	       </dependency>
+	    </dependencies>
+	 </plugin>
+
+      </plugins>
+   </build>
+
+</project>
