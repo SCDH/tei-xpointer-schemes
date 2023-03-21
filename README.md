@@ -24,6 +24,8 @@ development
 
 ## Getting started
 
+### Oxygen plugin
+
 Installation of the Oxygen plugin is done through the extension
 manager (menu **Help** -> **Install new add-ons**) with the following
 URL:
@@ -32,9 +34,11 @@ URL:
 https://scdh.zivgitlabpages.uni-muenster.de/tei-processing/tei-xpointer-scheme/descriptor.xml
 ```
 
-The plugin will enable you to evaluate TEI XPointers using the XPath
-extension functions.
+The plugin will enable you to evaluate TEI XPointers using the [XPath
+extension functions](doc/xpath-functions.md).
 
+
+### Evaluating TEI XPointers with XSLT and XQuery from the command line
 
 For building, testing and packetizing locally run the following
 command from the root of the cloned repository:
@@ -42,15 +46,6 @@ command from the root of the cloned repository:
 ```{shell}
 mvn clean package verify
 ```
-
-Java API docs are present in `target/site/apidocs/index.html` after
-running the following command:
-
-```{shell}
-mvn javadoc:aggregate
-```
-
-### Evaluating TEI XPointers with XSLT and XQuery
 
 After running `mvn package` there are scripts in `saxon/target/bin`
 for running Saxon from commandline. These scripts set the classpath
@@ -76,6 +71,17 @@ imported `libref.xsl` evaluates TEI XPointers with the new
 `xptr:get-sequence()` XPath function. It takes two `xs:string`
 arguments, one for the file URL and one for the pointer, and returns a
 sequence of nodes.
+
+
+### Java API
+
+Java API docs are present in `target/site/apidocs/index.html` after
+running the following command:
+
+```{shell}
+mvn javadoc:aggregate
+```
+
 
 ### Inspecting the parse tree
 
