@@ -13,6 +13,9 @@ cache:
   script:
     - 'mvn $MAVEN_CLI_OPTS generate-sources'
     - 'mvn $MAVEN_CLI_OPTS verify'
+    - 'mvn -Doxygen.version=23 $MAVEN_CLI_OPTS clean verify'
+    - 'mvn -Doxygen.version=24 $MAVEN_CLI_OPTS clean verify'
+    - 'mvn -Doxygen.version=25 $MAVEN_CLI_OPTS clean verify'
   except:
     - master
 
@@ -26,11 +29,34 @@ deploy:jdk11:
   script:
     - 'mvn generate-sources -s .gitlab-ci_settings.xml'
     - 'mvn verify -s .gitlab-ci_settings.xml'
-    - '# location of local maven repository:'
+    - 'echo "location of local maven repository:"'
     - 'mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout'
   artifacts:
     paths:
-      - core/target
+      - grammar/target
+      - xpath-extension/target
+      - saxon/target
   only:
     - master
     - tags
+
+pages:
+  stage: deploy
+  script:
+    - mkdir -p public
+    - ls -la
+    - mvn -Doxygen.version=23 $MAVEN_CLI_OPTS clean verify
+    - cp -v oxygen/target/*-plugin.jar public/
+    - mvn -Doxygen.version=24 $MAVEN_CLI_OPTS clean verify
+    - cp -v oxygen/target/*-plugin.jar public/
+    - mvn -Doxygen.version=25 $MAVEN_CLI_OPTS clean verify
+    - cp -v oxygen/target/*-plugin.jar public/
+    - cp -v target/generated-resources/xml/xslt/pom.xml public/descriptor.xml
+    - ls -la public
+  artifacts:
+    paths:
+      - public
+  only:
+    # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/27818
+    variables:
+      - $CI_COMMIT_TAG =~ /^v\d+.\d+.\d+$/
