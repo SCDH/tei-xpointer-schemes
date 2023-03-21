@@ -5,7 +5,7 @@
    <includeBaseDirectory>true</includeBaseDirectory>
    <baseDirectory>${project.artifactId}</baseDirectory>
 
-   <id>${oxygen.version}-plugin</id>
+   <id>plugin</id>
 
    <formats>
       <format>jar</format>
