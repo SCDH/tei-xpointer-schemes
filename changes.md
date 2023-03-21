@@ -1,5 +1,9 @@
 # Changes
 
+## 0.2.2
+
+- fix pipeline
+
 ## 0.2.1
 
 - fix pipeline
