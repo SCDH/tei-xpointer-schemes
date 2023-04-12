@@ -18,7 +18,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_satsexp01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsxp01, satsXml, proc);
 	assertEquals("xpath", pointer.getPointerType());
-	assertEquals("<reg>habui</reg>", pointer.getSelectedNodes().toString());
+	assertEquals("<reg xmlns=\"http://www.tei-c.org/ns/1.0\">habui</reg>", pointer.getSelectedNodes().toString());
     }
 
     @Test
@@ -29,7 +29,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
-	assertEquals("<lb n=\"3\"/>", point.getNode().toString());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", point.getNode().toString());
 	assertEquals(Point.RIGHT, point.getPosition());
 	assertEquals("right", point.getPointerType());
 	assertEquals(0, point.getOffset());
@@ -43,7 +43,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
-	assertEquals("<supplied reason=\"lost\">si</supplied>", point.getNode().toString());
+	assertEquals("<supplied xmlns=\"http://www.tei-c.org/ns/1.0\" reason=\"lost\">si</supplied>", point.getNode().toString());
 	assertEquals(Point.LEFT, point.getPosition());
 	assertEquals("left", point.getPointerType());
 	assertEquals(Point.LEFT_OFFSET, point.getOffset());
@@ -57,7 +57,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
-	assertEquals("<lb n=\"2\"/>", point.getNode().toString());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"2\"/>", point.getNode().toString());
 	assertEquals(Point.STRING_INDEX, point.getPosition());
 	assertEquals("string-index", point.getPointerType());
 	assertEquals(1, point.getOffset());
@@ -71,7 +71,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(19, selection.size());
 	// assert right first and last node
 	XdmNode node = Utils.getFirstNode(selection);
-	assertEquals("<lb n=\"3\"/>", node.toString());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", node.toString());
 	node = Utils.getLastNode(selection);
 	assertEquals("supra res", node.toString().strip());
     }
@@ -84,7 +84,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
 	// assert right first and last node
     	XdmNode node = Utils.getFirstNode(selection);
-	assertEquals("<lb n=\"1\" xml:id=\"line1\"/>", node.toString());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"1\" xml:id=\"line1\"/>", node.toString());
     }
 
     @Test
@@ -111,9 +111,9 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(19, selection.size());
 	// assert right first and last node
     	XdmNode node = Utils.getFirstNode(selection);
-	assertEquals("<unclear>s</unclear>", node.toString());
+	assertEquals("<unclear xmlns=\"http://www.tei-c.org/ns/1.0\">s</unclear>", node.toString());
 	node = Utils.getLastNode(selection);
-	assertEquals("<lb n=\"4\"/>", node.toString().strip());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"4\"/>", node.toString().strip());
     }
 
     @Test
@@ -139,7 +139,7 @@ public class TEIXPointerTest extends TestSetup {
 	XdmValue selection = pointer.getSelectedNodes();
 	assertEquals(1, selection.size());
 	// assert right first and last node
-	assertEquals("<lb n=\"3\"/>", selection.toString());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", selection.toString());
     }
 
     @Test
@@ -157,7 +157,7 @@ public class TEIXPointerTest extends TestSetup {
 	XdmValue selection = pointer.getSelectedNodes();
 	assertEquals(1, selection.size());
 	// assert right first and last node
-	assertEquals("<lb n=\"3\"/>", selection.toString());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", selection.toString());
     }
 
 

@@ -2,6 +2,7 @@ package org.teic.teixptr.implementation;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 import java.net.URI;
@@ -21,6 +22,8 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.Axis;
+import net.sf.saxon.om.NamespaceBinding;
+import net.sf.saxon.om.NamespaceMap;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -45,7 +48,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 
     protected final Processor processor;
 
-    protected final XPathCompiler xpathCompiler;
+    public static final String TEINS = "http://www.tei-c.org/ns/1.0";
 
 
     private String pointerType;
@@ -59,6 +62,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
     private List<Exception> errorStack = new ArrayList<Exception>();
     private List<XdmValue> selectedNodesStack = new ArrayList<XdmValue>();
     private String xpath = null;
+    private NamespaceMap namespaces = new NamespaceMap(Collections.singletonList(NamespaceBinding.XML));
 
     /**
      * Create a {@link TEIXPointer} to a file.
@@ -71,7 +75,6 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	this.processor = processor;
 	DocumentBuilder documentBuilder = this.processor.newDocumentBuilder();
 	docNode = documentBuilder.build(file);
-	xpathCompiler = processor.newXPathCompiler();
     }
 
     /**
@@ -85,7 +88,6 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	this.processor = processor;
 	DocumentBuilder documentBuilder = this.processor.newDocumentBuilder();
 	docNode = documentBuilder.build(source);
-	xpathCompiler = processor.newXPathCompiler();
     }
 
     /**
@@ -98,7 +100,6 @@ public class TEIXPointer extends TEIXPointerBaseListener {
     public TEIXPointer(XdmNode node, Processor processor) throws SaxonApiException {
 	this.processor = processor;
 	this.docNode = node;
-	xpathCompiler = processor.newXPathCompiler();
     }
 
 
@@ -164,6 +165,13 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      */
     protected XdmValue evaluateXPath(String xpath, String pointerType) {
 	try {
+	    XPathCompiler xpathCompiler = processor.newXPathCompiler();
+	    // set the namespace binding
+	    for (String prefix : this.namespaces.getPrefixArray()) {
+		xpathCompiler.declareNamespace(prefix, namespaces.getURI(prefix));
+	    }
+	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
+	    // compile and evaluate
 	    XPathExecutable xpathExecutable = xpathCompiler.compile(xpath);
 	    XPathSelector xpathSelector = xpathExecutable.load();
 	    xpathSelector.setContextItem(docNode);
@@ -186,6 +194,13 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      */
     protected XdmValue evaluateXPathWithContext(String xpath, XdmNode context, String pointerType) {
 	try {
+	    XPathCompiler xpathCompiler = processor.newXPathCompiler();
+	    // set the namespace binding
+	    for (String prefix : this.namespaces.getPrefixArray()) {
+		xpathCompiler.declareNamespace(prefix, namespaces.getURI(prefix));
+	    }
+	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
+	    // compile and evaluate
 	    XPathExecutable xpathExecutable = xpathCompiler.compile(xpath);
 	    XPathSelector xpathSelector = xpathExecutable.load();
 	    xpathSelector.setContextItem(context);
@@ -196,6 +211,19 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    errorStack.add(e);
 	    return null;
 	}
+    }
+
+    /**
+     * Set the default namespace to the TEI namespace. This implements
+     * a passage from the TEI guidelines: "TEI Pointer schemes assume
+     * that un-prefixed element names in TEI Pointer XPaths are in the
+     * TEI namespace, http://www.tei-c.org/ns/1.0."<P>
+     *
+     * This method is intended for
+     * <code>enter&lt;TEIXPOINTER&gt;</code> methods.
+     */
+    protected void addTEINamespaceBinding() {
+	this.namespaces = this.namespaces.bind("", TEINS);
     }
 
     /**
@@ -305,6 +333,14 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      * Internal.
      */
     @Override
+    public void enterXpathPointer(TEIXPointerParser.XpathPointerContext ctx) {
+	addTEINamespaceBinding();
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
     public void exitXpathPointer(TEIXPointerParser.XpathPointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
@@ -316,6 +352,14 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    // reset the xpath state variable
 	    xpath = null;
 	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterLeftPointer(TEIXPointerParser.LeftPointerContext ctx) {
+	addTEINamespaceBinding();
     }
 
     /**
@@ -345,6 +389,14 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      * Internal.
      */
     @Override
+    public void enterRightPointer(TEIXPointerParser.RightPointerContext ctx) {
+	addTEINamespaceBinding();
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
     public void exitRightPointer(TEIXPointerParser.RightPointerContext ctx) {
 	if (!errorSeen) {
 	    // we get the XPath from the xpath state variable on the
@@ -361,6 +413,14 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		errorStack.add(e);
 	    }
 	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterStringIndexPointer(TEIXPointerParser.StringIndexPointerContext ctx) {
+	addTEINamespaceBinding();
     }
 
     /**
@@ -412,6 +472,14 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		}
 	    }
 	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterRangePointer(TEIXPointerParser.RangePointerContext ctx) {
+	addTEINamespaceBinding();
     }
 
     /**

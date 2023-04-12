@@ -1,4 +1,4 @@
-<div xml:lang="la" type="edition"
+<div xmlns="http://www.tei-c.org/ns/1.0" xml:lang="la" type="edition"
  xml:space="preserve"><ab>
                            <lb n="1" xml:id="line1"/><supplied reason="lost">si</supplied> non <choice><reg>habui</reg><orig>abui</orig></choice> quidquam vaco 
                            <lb n="2"/>si<gap reason="illegible" quantity="3"

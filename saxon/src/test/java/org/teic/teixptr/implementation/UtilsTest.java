@@ -20,7 +20,7 @@ public class UtilsTest extends TestSetup {
 	XdmValue selection = pointer.getSelectedNodes();
 	assertEquals(19, selection.size());
 	XdmNode node = Utils.getFirstNode(selection);
-	assertEquals("<lb n=\"3\"/>", node.toString());
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", node.toString());
     }
 
     @Test
