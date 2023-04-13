@@ -3,12 +3,17 @@ package org.teic.teixptr.implementation;
 import java.util.Iterator;
 import java.util.ArrayList;
 
+import net.sf.saxon.s9api.Axis;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.XdmEmptySequence;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmNodeKind;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XdmExternalObject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -27,6 +32,8 @@ import net.sf.saxon.s9api.XdmExternalObject;
  *
  */
 public class Point {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Point.class);
 
     /**
      * Point located next left to the node.
@@ -55,7 +62,18 @@ public class Point {
 
     private final int offset;
 
-    public Point(XdmNode node, int position, int offset) {
+    /**
+     * Create a new Point that stores an {@link XdmNode} as reference
+     * node.<P>
+     *
+     * Use one of the static methods of this class to create a Point.
+     *
+     * @param node     the {@link XdmNode} reference node
+     * @param position a code specific to the XPointer scheme
+     * @param offset   an integer that describes the point relative in the text, if node is a text node
+     *
+     */
+    protected Point(XdmNode node, int position, int offset) {
 	this.node = node;
 	this.position = position;
 	this.offset = offset;
@@ -158,23 +176,137 @@ public class Point {
      * @return {@link XdmValue}
      */
     public static XdmValue makeStringIndex(XdmValue xdmValue, int offset) throws SaxonApiException {
-	// get the last node from the xdmValue and wrap it into a point
-	ArrayList<XdmItem> wrappedItems = new ArrayList<XdmItem>();
-	Point point = null;
-	Iterator<XdmItem> iter = xdmValue.documentOrder().iterator();
+	Point point = Point.makeStringIndexPoint(xdmValue, offset);
+	if (point != null) {
+	    XdmExternalObject wrappedPoint = new XdmExternalObject(point);
+	    return wrappedPoint;
+	} else {
+	    return XdmEmptySequence.getInstance();
+	}
+    }
+
+    /**
+     * A static method that makes a Point from a
+     * <code>string-index()</code> pointer from a given XdmValue with
+     * reference node(s) and an offset.<P>
+     *
+     * The {@link Point} will store a reference to a text node. This
+     * text node is either on the descendant axis or or on the
+     * following axis of the of the left-most node of the given
+     * nodes. It is the text node, in which the offset points to (or
+     * immediately before). The {@link Point} will store the offset to
+     * the referenced point within this text node. It is not
+     * necessarily the offset given as parameter to this method.<P>
+     *
+     * Spec: "An offset of 0 represents the position immediately
+     * before the first character in either the first text node
+     * descendant of the node addressed in the first parameter or
+     * the first following text node, if the addressed element
+     * contains no text node descendants."<p>
+     *
+     * @param referenceNodes  the node(s) to get the string point at offset from
+     * @param offset          the offset
+     */
+    public static Point makeStringIndexPoint(XdmValue referenceNodes, int offset) throws SaxonApiException {
+
+	// get the first (left most) node of the reference nodes
+	Iterator<XdmItem> iter = referenceNodes.documentOrder().iterator();
+	XdmNode referenceNode = null;
 	while (iter.hasNext()) {
 	    XdmItem item = iter.next();
 	    if (item instanceof XdmNode) {
-		// wrap the node into a Point object
-		point = new Point((XdmNode) item, STRING_INDEX, offset);
+		referenceNode = (XdmNode) item;
+		break;
 	    }
 	}
-	if (point != null) {
-	    XdmExternalObject wrappedPoint = new XdmExternalObject(point);
-	    wrappedItems.add(wrappedPoint);
+
+	// stop, if we do not have a reference node
+	if (referenceNode == null) {
+	    return null;
 	}
-	return new XdmValue(wrappedItems);
+	// else
+
+	XdmNode startNode = null;
+	Iterator<XdmNode> startIterator;
+	// initialize integers for navigation
+	int currentOffset = 0;
+	int startTextOffset;
+	boolean offsetReached = false;
+
+	// navigate to the starting text node and take a part of it
+	if (offset >= 0) {
+	    // search the first text node on the descendant axis
+	    startIterator = referenceNode.axisIterator(Axis.DESCENDANT);
+	    while (startIterator.hasNext() && !offsetReached) {
+		LOG.info("searching starting text node on the descendant axis");
+		XdmNode node = startIterator.next();
+		if (node.getNodeKind() != XdmNodeKind.TEXT) {
+		    continue;
+		} else {
+		    String text = node.toString();
+		    int len = text.length();
+		    if (offset < currentOffset + len) {
+			// reached
+			offsetReached = true;
+			startNode = node;
+		    } else {
+			currentOffset = currentOffset + len;
+		    }
+		}
+	    }
+	    // search on the following axis if not found on the descendant axis
+	    startIterator = referenceNode.axisIterator(Axis.FOLLOWING);
+	    while (startIterator.hasNext() && !offsetReached) {
+		LOG.info("searching starting text node on the following axis");
+		XdmNode node = startIterator.next();
+		if (node.getNodeKind() != XdmNodeKind.TEXT) {
+		    continue;
+		} else {
+		    String text = node.toString();
+		    int len = text.length();
+		    if (offset < currentOffset + len) {
+			// reached
+			offsetReached = true;
+			startNode = node;
+		    } else {
+			currentOffset = currentOffset + len;
+		    }
+		}
+	    }
+	    startTextOffset = offset - currentOffset;
+	} else {
+	    // preceding axis
+	    startIterator = referenceNode.axisIterator(Axis.PRECEDING);
+	    while (startIterator.hasNext() && !offsetReached) {
+		LOG.debug("searching starting text node on the preceding axis");
+		XdmNode node = startIterator.next();
+		if (node.getNodeKind() != XdmNodeKind.TEXT) {
+		    continue;
+		} else {
+		    String text = node.toString();
+		    int len = text.length();
+		    if (offset <= currentOffset - len) {
+			// reached
+			offsetReached = true;
+			currentOffset = currentOffset - len; // to start of node
+			startNode = node;
+		    } else {
+			currentOffset = currentOffset - len;
+		    }
+		}
+	    }
+	    startTextOffset = currentOffset - offset;
+	}
+
+	//
+	if (startNode == null) {
+	    return null;
+	} else {
+	    return new Point(startNode, Point.STRING_INDEX, startTextOffset);
+	}
     }
+
+
 
     /**
      * Test if the supplied {@link XdmValue} is a {@link Point}.
