@@ -82,7 +82,7 @@ public class TEIXPointerTest extends TestSetup {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr01, satsXml, proc);
 	assertEquals("string-range", pointer.getPointerType());
 	XdmValue selection = pointer.getSelectedNodes();
-	assertEquals(3, selection.size());
+	assertEquals(4, selection.size());
 	assertEquals("auge et opto u", TestUtils.getFirstItem(selection).toString());
 	assertEquals(" bene valeas", TestUtils.getLastItem(selection).toString());
     }
@@ -92,7 +92,7 @@ public class TEIXPointerTest extends TestSetup {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr02, satsXml, proc);
 	assertEquals("string-range", pointer.getPointerType());
 	XdmValue selection = pointer.getSelectedNodes();
-	assertEquals(2, selection.size());
+	assertEquals(3, selection.size());
 	assertEquals("in ", TestUtils.getFirstItem(selection).toString());
 	assertEquals("mente", TestUtils.getLastItem(selection).toString());
     }

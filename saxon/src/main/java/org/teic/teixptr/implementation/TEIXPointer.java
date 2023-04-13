@@ -834,8 +834,30 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 					currentLength = currentLength + textLength;
 				    }
 				} else if (followingNode.getNodeKind() == XdmNodeKind.ELEMENT) {
-				    // TODO
+				    // add element node if its text nodes do not exceed the remaining length
 
+				    // spec: As with range(), the
+				    // addressed sequence may contain
+				    // text nodes and/or
+				    // elements. [...] Because
+				    // string-range() addresses points
+				    // in the text stream, tags are
+				    // invisible to it. For example,
+				    // if an empty tag like lb is
+				    // encountered while processing a
+				    // string-range(), it will be
+				    // included in the resulting
+				    // sequence, but the LENGTH count
+				    // will not increment when it is
+				    // captured."
+				    String text = Utils.descendantTextNodesAsString(followingNode);
+				    if (length >= currentLength + text.length()) {
+					LOG.info("adding element node '{}'", followingNode.getNodeName());
+					range = range.append(followingNode);
+				    }
+				} else {
+				    // add all other kind of nodes, since they do not contribute to the length.
+				    range = range.append(followingNode);
 				}
 			    }
 			}
