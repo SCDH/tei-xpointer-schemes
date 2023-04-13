@@ -174,7 +174,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    if (this.namespaces.getURI("") != null) {
 		xpathCompiler.declareNamespace("", this.namespaces.getURI(""));
 	    }
-	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
+	    LOG.debug("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
 	    // compile and evaluate
 	    XPathExecutable xpathExecutable = xpathCompiler.compile(xpath);
 	    XPathSelector xpathSelector = xpathExecutable.load();
@@ -208,7 +208,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    if (this.namespaces.getURI("") != null) {
 		xpathCompiler.declareNamespace("", this.namespaces.getURI(""));
 	    }
-	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
+	    LOG.debug("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
 	    // compile and evaluate
 	    XPathExecutable xpathExecutable = xpathCompiler.compile(xpath);
 	    XPathSelector xpathSelector = xpathExecutable.load();
