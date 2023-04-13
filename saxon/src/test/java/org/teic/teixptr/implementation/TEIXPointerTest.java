@@ -58,7 +58,9 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
-	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"2\"/>", point.getNode().toString());
+	assertEquals("si", point.getNode().toString());
+	assertEquals("s", point.getNode().toString().substring(0, point.getOffset()));
+	assertEquals("i", point.getNode().toString().substring(point.getOffset()));
 	assertEquals(Point.STRING_INDEX, point.getPosition());
 	assertEquals("string-index", point.getPointerType());
 	assertEquals(1, point.getOffset());
@@ -192,6 +194,21 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", selection.toString());
     }
 
+    @Test
+    void test_sysssi02() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(syssi02, satsXml, proc);
+	assertEquals("string-index", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+	Point point = Point.getPoint(selection);
+	assertNotNull(point);
+	assertEquals("b", point.getNode().toString());
+	assertEquals("", point.getNode().toString().substring(0, point.getOffset()));
+	assertEquals("b", point.getNode().toString().substring(point.getOffset()));
+	assertEquals(Point.STRING_INDEX, point.getPosition());
+	assertEquals("string-index", point.getPointerType());
+	assertEquals(0, point.getOffset());
+    }
 
     @Test
     void test_ijobidref01() throws Exception {
