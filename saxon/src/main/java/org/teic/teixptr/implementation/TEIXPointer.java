@@ -674,7 +674,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
 	    int pairsCount = ctx.stringRangePointerPair().size();
-	    LOG.info("found string-right() pointer with {} pairs, reference point evaluating: {}", pairsCount, xpath);
+	    LOG.debug("found string-right() pointer with {} pairs, reference point evaluating: {}", pairsCount, xpath);
 
 	    // start with ranges empty
 	    XdmValue ranges = XdmEmptySequence.getInstance();
@@ -715,7 +715,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		    // get the starting text node and offset in it from the Point object
 		    XdmNode startNode = startPoint.getNode();
 		    int startTextOffset = startPoint.getOffset();
-		    LOG.info("found start point at offset {} in text node '{}'", startTextOffset, startNode.toString());
+		    LOG.debug("found start point at offset {} in text node '{}'", startTextOffset, startNode.toString());
 
 		    // iterate until the length is reached
 		    boolean lengthReached = false;
@@ -724,20 +724,20 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		    // use method to make the range
 		    // ranges = ranges.append(makeStringRange(startNode, offset, length, currentOffset));
 		    if (startNode != null) {
-			LOG.info("searching for the end text node");
+			LOG.debug("searching for the end text node");
 			String startText = startNode.toString();
 			int startTextLength = startText.length();
 
 			if (startTextLength >= startTextOffset + length) {
 			    // the whole string range is contained in the start text node
-			    LOG.info("the whole text range is contained in one text node");
+			    LOG.debug("the whole text range is contained in one text node");
 
 			    // add a xs:string to range
 			    textValue =	StringValue.makeStringValue(startText.substring(startTextOffset, startTextOffset + length));
 			    range = range.append(XdmValue.makeValue(textValue));
 			} else {
 			    // we have to get following nodes to get a string of the required length
-			    LOG.info("the text range exceeds one text node");
+			    LOG.debug("the text range exceeds one text node");
 
 			    // add part of starting text node as xs:string to range
 			    textValue =	StringValue.makeStringValue(startText.substring(startTextOffset));
@@ -748,20 +748,20 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 			    Iterator<XdmNode> followingIterator = startNode.axisIterator(Axis.FOLLOWING);
 			    while (followingIterator.hasNext() && !lengthReached) {
 				XdmNode followingNode = followingIterator.next();
-				LOG.info("evaluating node of type {}", followingNode.getNodeKind());
+				LOG.debug("evaluating node of type {}", followingNode.getNodeKind());
 				if (followingNode.getNodeKind() == XdmNodeKind.TEXT) {
 				    String text = followingNode.toString();
 				    int textLength = text.length();
 				    if (length < currentLength + textLength) {
 					// add part of the text node as xs:string
-					LOG.info("adding part of text node '{}'", text);
+					LOG.debug("adding part of text node '{}'", text);
 					textValue = StringValue.makeStringValue(text.substring(0, length - currentLength));
 					range = range.append(XdmValue.makeValue(textValue));
 					lengthReached = true;
 					currentLength = length;
 				    } else {
 					// append the whole text node
-					LOG.info("adding full text node '{}'", text.toString());
+					LOG.debug("adding full text node '{}'", text.toString());
 					if (length == currentLength + textLength) {
 					    lengthReached = true;
 					}
@@ -787,7 +787,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 				    // captured."
 				    String text = Utils.descendantTextNodesAsString(followingNode);
 				    if (length >= currentLength + text.length()) {
-					LOG.info("adding element node '{}'", followingNode.getNodeName());
+					LOG.debug("adding element node '{}'", followingNode.getNodeName());
 					range = range.append(followingNode);
 				    }
 				} else {

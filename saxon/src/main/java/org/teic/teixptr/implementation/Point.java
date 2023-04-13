@@ -238,7 +238,7 @@ public class Point {
 	    // search the first text node on the descendant axis
 	    startIterator = referenceNode.axisIterator(Axis.DESCENDANT);
 	    while (startIterator.hasNext() && !offsetReached) {
-		LOG.info("searching starting text node on the descendant axis");
+		LOG.debug("searching starting text node on the descendant axis");
 		XdmNode node = startIterator.next();
 		if (node.getNodeKind() != XdmNodeKind.TEXT) {
 		    continue;
@@ -257,7 +257,7 @@ public class Point {
 	    // search on the following axis if not found on the descendant axis
 	    startIterator = referenceNode.axisIterator(Axis.FOLLOWING);
 	    while (startIterator.hasNext() && !offsetReached) {
-		LOG.info("searching starting text node on the following axis");
+		LOG.debug("searching starting text node on the following axis");
 		XdmNode node = startIterator.next();
 		if (node.getNodeKind() != XdmNodeKind.TEXT) {
 		    continue;
