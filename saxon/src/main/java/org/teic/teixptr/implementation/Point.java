@@ -18,12 +18,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A {@link Point} is a wrapper around an {@link XdmNode} and adds a
- * position relative to the node. The position should be one of
- * <code>LEFT</code>, <code>RIGHT</code>.<P>
+ * position relative to the node. The position is a code specific to
+ * the XPointer scheme the point is described with. It is one of
+ * {@link LEFT}, {@link RIGHT}, or {@link STRING_INDEX}.<P>
+ *
+ * A {@link Point} object can be created through one of the static
+ * methods of this class.
  *
  * See {@link #makePointLeft(XdmValue) makePointLeft(XdmValue)} and
  * {@link #makePointRight(XdmValue) makePointRight(XdmValue)} for a
- * convenient methods to wrap {@link XdmValue}.<P>
+ * convenient methods to wrap {@link XdmValue} using a {@link
+ * XdmExternalObject}.<P>
  *
  * Implementation notes:<P> Cf. {@link XdmItem}: "Users must not
  * attempt to create additional subclasses." We wrap the Point into
@@ -169,11 +174,15 @@ public class Point {
     }
 
     /**
-     * A static method that makes a {@link Point} right of the last
-     * node in the {@link XdmValue} passed in.
+     * A static method that makes a {@link Point} for a string-index()
+     * scheme. The first (left-most) node of the reference nodes
+     * passed in as {@link XdmValue} is used as a reference from which
+     * the offset in the text stream is searched.
      *
      * @param xdmValue  the item or node (list) to wrap into point
      * @return {@link XdmValue}
+     *
+     * @see makeStringIndexPoint(XdmValue, int)
      */
     public static XdmValue makeStringIndex(XdmValue xdmValue, int offset) throws SaxonApiException {
 	Point point = Point.makeStringIndexPoint(xdmValue, offset);
