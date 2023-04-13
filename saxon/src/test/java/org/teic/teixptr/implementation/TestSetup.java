@@ -24,7 +24,7 @@ public class TestSetup {
 
     public static String mtXml = Paths.get(realworldSamples.resolve("MT.tei.xml")).toFile().toString();
 
-    public static String satsxp01, satsr01, satsl01, satssi01, satsrn01;
+    public static String satsxp01, satsr01, satsl01, satssi01, satsrn01, satssr01, satssr02, satssr03;
 
     public static String sysidref01, sysidref02, sysxp02, sysrn04, sysrn05, sysrn06, sysrn07, sysrn08, sysrn09;
 
@@ -52,6 +52,9 @@ public class TestSetup {
 	satsl01 = readSatsSample("satsl01.txt");
 	satssi01 = readSatsSample("satssi01.txt");
 	satsrn01 = readSatsSample("satsrn01.txt");
+	satssr01 = readSatsSample("satssr01.txt");
+	satssr02 = readSatsSample("satssr02.txt");
+	satssr03 = readSatsSample("satssr03.txt");
 
 
 	sysidref01 = readSystematicSample("idref01.txt");

@@ -8,6 +8,7 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmItem;
 
 
 public class TEIXPointerTest extends TestSetup {
@@ -75,6 +76,37 @@ public class TEIXPointerTest extends TestSetup {
 	node = Utils.getLastNode(selection);
 	assertEquals("supra res", node.toString().strip());
     }
+
+    @Test
+    void test_satssr01() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr01, satsXml, proc);
+	assertEquals("string-range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(3, selection.size());
+	assertEquals("auge et opto u", TestUtils.getFirstItem(selection).toString());
+	assertEquals(" bene valeas", TestUtils.getLastItem(selection).toString());
+    }
+
+    @Test
+    void test_satssr02() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr02, satsXml, proc);
+	assertEquals("string-range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(2, selection.size());
+	assertEquals("in ", TestUtils.getFirstItem(selection).toString());
+	assertEquals("mente", TestUtils.getLastItem(selection).toString());
+    }
+
+    @Test
+    void test_satssr03() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr03, satsXml, proc);
+	assertEquals("string-range", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(2, selection.size());
+	assertEquals("in ", TestUtils.getFirstItem(selection).toString());
+	assertEquals("mentem", TestUtils.getLastItem(selection).toString());
+    }
+
 
     @Test
     void test_sysidref01() throws Exception {
