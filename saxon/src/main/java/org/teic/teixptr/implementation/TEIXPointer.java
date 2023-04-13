@@ -680,24 +680,18 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    XdmValue ranges = XdmEmptySequence.getInstance();
 
 	    try {
-		// Spec: "An offset of 0 represents the position
-		// immediately before the first character in either
-		// the first text node descendant of the node
-		// addressed in the first parameter or the first
-		// following text node, if the addressed element
-		// contains no text node descendants."
-
 		// get the frist node referenced by the first argument
 		XdmValue referenceNodes = evaluateXPath(xpath, "string-range()");
-		Iterator<XdmItem> iter = referenceNodes.documentOrder().iterator();
-		XdmNode referenceNode = null;
-		while (iter.hasNext()) {
-		    XdmItem item = iter.next();
-		    if (item instanceof XdmNode) {
-			referenceNode = (XdmNode) item;
-			break;
-		    }
-		}
+
+		/* for preformance reasons we could do: */
+		// Iterator<XdmItem> iter = referenceNodes.documentOrder().iterator();
+		// while (iter.hasNext()) {
+		//     XdmItem item = iter.next();
+		//     if (item instanceof XdmNode) {
+		// 	referenceNodes = (XdmNode) item;
+		// 	break;
+		//     }
+		// }
 
 		// iterate over pairs
 		for (int i = 0; i < pairsCount; i++) {
@@ -705,84 +699,25 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		    // we start with an empty range
 		    XdmValue range = XdmEmptySequence.getInstance();
 
+		    // get the offset and length from the parser context and cast to integer
 		    int offset = Integer.parseInt(ctx.stringRangePointerPair(i).offset().IntegerLiteral().getText());
 		    int length = Integer.parseInt(ctx.stringRangePointerPair(i).length().IntegerLiteral().getText());
 
-		    XdmNode startNode = null;
-		    // initialize iterator with an empty iterator
-		    Iterator<XdmNode> startIterator = new ArrayList<XdmNode>().iterator();
-		    // initialize integers for navigation
-		    int currentOffset = 0;
-		    int startTextOffset;
-		    boolean offsetReached = false;
+		    // the start point is like in the string-index() scheme
+		    Point startPoint = Point.makeStringIndexPoint(referenceNodes, offset);
 
-		    // navigate to the starting text node and take a part of it
-		    if (offset >= 0) {
-			// search the first text node on the descendant axis
-			startIterator = referenceNode.axisIterator(Axis.DESCENDANT);
-			while (startIterator.hasNext() && !offsetReached) {
-			    LOG.info("searching starting text node on the descendant axis");
-			    XdmNode node = startIterator.next();
-			    if (node.getNodeKind() != XdmNodeKind.TEXT) {
-				continue;
-			    } else {
-				String text = node.toString();
-				int len = text.length();
-				if (offset < currentOffset + len) {
-				    // reached
-				    offsetReached = true;
-				    startNode = node;
-				} else {
-				    currentOffset = currentOffset + len;
-				}
-			    }
-			}
-			// search on the following axis if not found on the descendant axis
-			startIterator = referenceNode.axisIterator(Axis.FOLLOWING);
-			while (startIterator.hasNext() && !offsetReached) {
-			    LOG.info("searching starting text node on the following axis");
-			    XdmNode node = startIterator.next();
-			    if (node.getNodeKind() != XdmNodeKind.TEXT) {
-				continue;
-			    } else {
-				String text = node.toString();
-				int len = text.length();
-				if (offset < currentOffset + len) {
-				    // reached
-				    offsetReached = true;
-				    startNode = node;
-				} else {
-				    currentOffset = currentOffset + len;
-				}
-			    }
-			}
-			startTextOffset = offset - currentOffset;
-		    } else {
-			// preceding axis
-			startIterator = referenceNode.axisIterator(Axis.PRECEDING);
-			while (startIterator.hasNext() && !offsetReached) {
-			    LOG.debug("searching starting text node on the preceding axis");
-			    XdmNode node = startIterator.next();
-			    if (node.getNodeKind() != XdmNodeKind.TEXT) {
-				continue;
-			    } else {
-				String text = node.toString();
-				int len = text.length();
-				if (offset <= currentOffset - len) {
-				    // reached
-				    offsetReached = true;
-				    currentOffset = currentOffset - len; // to start of node
-				    startNode = node;
-				} else {
-				    currentOffset = currentOffset - len;
-				}
-			    }
-			}
-			startTextOffset = currentOffset - offset;
+		    // step to the next pair if we have no string index point
+		    if (startPoint == null) {
+			LOG.error("no string index found for the offset-length pair {} of the string-range() pointer. Skipping", i);
+			continue;
 		    }
 
-		    LOG.info("found start text node '{}'", startNode.toString());
+		    // get the starting text node and offset in it from the Point object
+		    XdmNode startNode = startPoint.getNode();
+		    int startTextOffset = startPoint.getOffset();
+		    LOG.info("found start point at offset {} in text node '{}'", startTextOffset, startNode.toString());
 
+		    // iterate until the length is reached
 		    boolean lengthReached = false;
 		    int currentLength = 0;
 		    StringValue textValue;
@@ -863,10 +798,8 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 			}
 		    }
 
-		    // append range to ranges
-		    if (offsetReached) {
-			ranges = ranges.append(range);
-		    }
+		    // append the range of this offset-length pair
+		    ranges = ranges.append(range);
 
 		}
 		// reset the xpath state variable
