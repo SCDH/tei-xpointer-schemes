@@ -7,6 +7,8 @@ import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Axis;
+import net.sf.saxon.s9api.XdmNodeKind;
 
 /**
  * Some utility methods.
@@ -89,6 +91,44 @@ public class Utils {
 	    }
 	}
 	return forrest;
+    }
+
+    /**
+     * This returns all the text nodes on the descendant axis of the
+     * given {@link XdmNode}.
+     *
+     * @param node  the not the descendant axis is to be iterated
+     * @return a sequence of text nodes as {@link XdmValue}
+     */
+    public static XdmValue descendantTextNodes(XdmNode node) {
+	XdmValue nodes = XdmEmptySequence.getInstance();
+	Iterator<XdmNode> descendants = node.axisIterator(Axis.DESCENDANT);
+	while (descendants.hasNext()) {
+	    XdmNode descendant = descendants.next();
+	    if (descendant.getNodeKind() == XdmNodeKind.TEXT) {
+		nodes = nodes.append(descendant);
+	    }
+	}
+	return nodes;
+    }
+
+    /**
+     * This returns the string concatenation of all text nodes on the
+     * descendant axis of the given {@link XdmNode}.
+     *
+     * @param node  the not the descendant axis is to be iterated
+     * @return the String concatenation of text nodes on the descendant axis
+     */
+    public static String descendantTextNodesAsString(XdmNode node) {
+	String text = "";
+	Iterator<XdmNode> descendants = node.axisIterator(Axis.DESCENDANT);
+	while (descendants.hasNext()) {
+	    XdmNode descendant = descendants.next();
+	    if (descendant.getNodeKind() == XdmNodeKind.TEXT) {
+		text = text + descendant.toString();
+	    }
+	}
+	return text;
     }
 
 }
