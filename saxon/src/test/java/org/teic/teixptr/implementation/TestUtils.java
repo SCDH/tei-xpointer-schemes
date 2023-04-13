@@ -20,4 +20,21 @@ class TestUtils {
 	return null;
     }
 
+    public static XdmItem getFirstItem(XdmValue xdmValue) {
+	Iterator<XdmItem> iter = xdmValue.iterator();
+	if (iter.hasNext()) {
+	    return iter.next();
+	}
+	return null;
+    }
+
+    public static XdmItem getLastItem(XdmValue xdmValue) {
+	XdmItem last = null;
+	Iterator<XdmItem> iter = xdmValue.iterator();
+	while (iter.hasNext()) {
+	    last = iter.next();
+	}
+	return last;
+    }
+
 }
