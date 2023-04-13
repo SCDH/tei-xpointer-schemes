@@ -665,14 +665,6 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	bindDefaultNamespaceTEI();
     }
 
-
-    protected XdmValue makeStringRange(XdmNode startNode, int offset, int length, int currentOffset)
-	throws SaxonApiException {
-	XdmValue range = XdmEmptySequence.getInstance();
-
-	return range;
-    }
-
     /**
      * Internal.
      */
