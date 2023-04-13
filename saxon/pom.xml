@@ -58,7 +58,7 @@
                    </goals>
                    <configuration>
                       <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                      <includeArtifactIds>tei-xpointer-grammar,tei-xpointer-xpath-extension,slf4j-simple,slf4j-api,Saxon-HE,xmlresolver,antlr4-runtime</includeArtifactIds>
+                      <includeArtifactIds>tei-xpointer-grammar,tei-xpointer-xpath-extension,slf4j-simple,slf4j-api,Saxon-HE,xmlresolver,xml-apis,antlr4-runtime</includeArtifactIds>
                    </configuration>
                 </execution>
              </executions>

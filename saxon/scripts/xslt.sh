@@ -7,6 +7,7 @@ BUILDPATH=$SCRIPTPATH/..
 
 JARS=$BUILDPATH/lib/Saxon-HE-${saxon.version}.jar
 JARS=$JARS:$BUILDPATH/lib/xmlresolver-${xmlresolver.version}.jar
+JARS=$JARS:$BUILDPATH/lib/xml-apis-${xml-apis.version}.jar
 JARS=$JARS:$BUILDPATH/lib/slf4j-api-${slf4j.version}.jar
 JARS=$JARS:$BUILDPATH/lib/slf4j-simple-${slf4j.version}.jar
 JARS=$JARS:$BUILDPATH/lib/antlr4-runtime-${antlr.version}.jar

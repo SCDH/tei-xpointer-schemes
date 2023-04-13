@@ -2,13 +2,14 @@ package org.teic.teixptr.implementation;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Iterator;
 import java.net.URI;
 import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.helpers.NamespaceSupport;
 import javax.xml.transform.Source;
 
 import net.sf.saxon.s9api.DocumentBuilder;
@@ -22,8 +23,6 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.Axis;
-import net.sf.saxon.om.NamespaceBinding;
-import net.sf.saxon.om.NamespaceMap;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -62,7 +61,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
     private List<Exception> errorStack = new ArrayList<Exception>();
     private List<XdmValue> selectedNodesStack = new ArrayList<XdmValue>();
     private String xpath = null;
-    private NamespaceMap namespaces = new NamespaceMap(Collections.singletonList(NamespaceBinding.XML));
+    private NamespaceSupport namespaces = new NamespaceSupport();
 
     /**
      * Create a {@link TEIXPointer} to a file.
@@ -167,8 +166,13 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	try {
 	    XPathCompiler xpathCompiler = processor.newXPathCompiler();
 	    // set the namespace binding
-	    for (String prefix : this.namespaces.getPrefixArray()) {
+	    Enumeration<String> ns = this.namespaces.getPrefixes();
+	    while (ns.hasMoreElements()) {
+		String prefix = ns.nextElement();
 		xpathCompiler.declareNamespace(prefix, namespaces.getURI(prefix));
+	    }
+	    if (this.namespaces.getURI("") != null) {
+		xpathCompiler.declareNamespace("", this.namespaces.getURI(""));
 	    }
 	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
 	    // compile and evaluate
@@ -196,8 +200,13 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	try {
 	    XPathCompiler xpathCompiler = processor.newXPathCompiler();
 	    // set the namespace binding
-	    for (String prefix : this.namespaces.getPrefixArray()) {
+	    Enumeration<String> ns = this.namespaces.getPrefixes();
+	    while (ns.hasMoreElements()) {
+		String prefix = ns.nextElement();
 		xpathCompiler.declareNamespace(prefix, namespaces.getURI(prefix));
+	    }
+	    if (this.namespaces.getURI("") != null) {
+		xpathCompiler.declareNamespace("", this.namespaces.getURI(""));
 	    }
 	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
 	    // compile and evaluate
@@ -223,7 +232,8 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      * <code>enter&lt;TEIXPOINTER&gt;</code> methods.
      */
     protected void addTEINamespaceBinding() {
-	this.namespaces = this.namespaces.bind("", TEINS);
+	this.namespaces.pushContext();
+	this.namespaces.declarePrefix("", TEINS);
     }
 
     /**
