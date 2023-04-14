@@ -321,10 +321,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	// we make an XPath, save it to the state and let the pointer
 	// evaluate it on the exit<POINTER> event
 	LOG.debug("found IDREF {}", ctx.getText());
-	// xpath = "id(" + ctx.getText() + ")";
-	// IDness is not implemented by Xerces! In a TEI context we
-	// can check the @xml:id instead of calling id(...)
-	xpath = "//*[@xml:id eq '" + ctx.getText() + "']";
+	xpath = "id('" + ctx.getText() + "')";
     }
 
     /**
