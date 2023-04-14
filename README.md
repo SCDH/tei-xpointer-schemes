@@ -7,7 +7,7 @@ in the TEI guidelines.
 
 Using this implementation, TEI XPointers can be parsed and evaluated
 either through a Java API or from XSLT and XQuery through [XPath
-functions](doc/xpath-functions.md).
+extension functions](doc/xpath-functions.md).
 
 ### State
 
@@ -23,8 +23,8 @@ not (yet) implemented: `match()` TEI XPointer scheme, and the
 
 - `grammar`: an ANTLR4-based grammar of the TEI XPointer schemes
 - `xpath-extension`: definitions of XPath functions for processing XPointers
-- `saxon`: an implementation of processing TEI XPointers based on
-  Saxon's s9api
+- `saxon`: an implementation of a XPointer processor based on Saxon's
+  s9api
 - `oxygen`: the implementation of the TEI XPointer scheme packetized
   as a plugin for the Oxygen XML editor
 
@@ -55,7 +55,7 @@ mvn clean package verify
 
 After running `mvn package` there are scripts in `saxon/target/bin`
 for running Saxon from commandline. These scripts set the classpath
-correctly, so that the TEI XPointer processing is available.
+correctly, so that the TEI XPointer processor is available.
 
 Note that you might have to run `chmod +x` on these scripts.
 
@@ -106,6 +106,9 @@ Here, `org.teic.teixptr.grammar.TEIXPointer` is the name of the
 grammar and `fragm` is the name of the grammar's start rule. Try the
 same command with the `-tokens` or `-tree` option, instead.
 
+## Security
+
+Please read the [security instruction](security.md) before using.
 
 # Further reading
 
