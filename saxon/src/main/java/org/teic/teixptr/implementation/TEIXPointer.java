@@ -17,12 +17,14 @@ import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmEmptySequence;
 import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmNodeKind;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.Axis;
+import net.sf.saxon.value.StringValue;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -174,7 +176,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    if (this.namespaces.getURI("") != null) {
 		xpathCompiler.declareNamespace("", this.namespaces.getURI(""));
 	    }
-	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
+	    LOG.debug("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
 	    // compile and evaluate
 	    XPathExecutable xpathExecutable = xpathCompiler.compile(xpath);
 	    XPathSelector xpathSelector = xpathExecutable.load();
@@ -208,7 +210,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    if (this.namespaces.getURI("") != null) {
 		xpathCompiler.declareNamespace("", this.namespaces.getURI(""));
 	    }
-	    LOG.info("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
+	    LOG.debug("evaluating XPath {} with namespace binding {}", xpath, namespaces.toString());
 	    // compile and evaluate
 	    XPathExecutable xpathExecutable = xpathCompiler.compile(xpath);
 	    XPathSelector xpathSelector = xpathExecutable.load();
@@ -231,7 +233,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      * This method is intended for
      * <code>enter&lt;TEIXPOINTER&gt;</code> methods.
      */
-    protected void addTEINamespaceBinding() {
+    protected void bindDefaultNamespaceTEI() {
 	this.namespaces.pushContext();
 	this.namespaces.declarePrefix("", TEINS);
     }
@@ -294,6 +296,8 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    selectedNodes = selectedNodesStack.get(0);
 	} else if (ctx.stringIndexPointer() != null) {
 	    selectedNodes = selectedNodesStack.get(0);
+	} else if (ctx.stringRangePointer() != null) {
+	    selectedNodes = selectedNodesStack.get(0);
 	} else if (ctx.idref() != null) {
 	    // handle IDREF
 	    pointerType = "IDREF";
@@ -317,10 +321,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	// we make an XPath, save it to the state and let the pointer
 	// evaluate it on the exit<POINTER> event
 	LOG.debug("found IDREF {}", ctx.getText());
-	// xpath = "id(" + ctx.getText() + ")";
-	// IDness is not implemented by Xerces! In a TEI context we
-	// can check the @xml:id instead of calling id(...)
-	xpath = "//*[@xml:id eq '" + ctx.getText() + "']";
+	xpath = "id('" + ctx.getText() + "')";
     }
 
     /**
@@ -344,7 +345,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      */
     @Override
     public void enterXpathPointer(TEIXPointerParser.XpathPointerContext ctx) {
-	addTEINamespaceBinding();
+	bindDefaultNamespaceTEI();
     }
 
     /**
@@ -369,7 +370,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      */
     @Override
     public void enterLeftPointer(TEIXPointerParser.LeftPointerContext ctx) {
-	addTEINamespaceBinding();
+	bindDefaultNamespaceTEI();
     }
 
     /**
@@ -400,7 +401,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      */
     @Override
     public void enterRightPointer(TEIXPointerParser.RightPointerContext ctx) {
-	addTEINamespaceBinding();
+	bindDefaultNamespaceTEI();
     }
 
     /**
@@ -430,7 +431,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      */
     @Override
     public void enterStringIndexPointer(TEIXPointerParser.StringIndexPointerContext ctx) {
-	addTEINamespaceBinding();
+	bindDefaultNamespaceTEI();
     }
 
     /**
@@ -489,7 +490,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
      */
     @Override
     public void enterRangePointer(TEIXPointerParser.RangePointerContext ctx) {
-	addTEINamespaceBinding();
+	bindDefaultNamespaceTEI();
     }
 
     /**
@@ -653,4 +654,166 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	}
     }
 
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterStringRangePointer(TEIXPointerParser.StringRangePointerContext ctx) {
+	bindDefaultNamespaceTEI();
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitStringRangePointer(TEIXPointerParser.StringRangePointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    int pairsCount = ctx.stringRangePointerPair().size();
+	    LOG.debug("found string-right() pointer with {} pairs, reference point evaluating: {}", pairsCount, xpath);
+
+	    // start with ranges empty
+	    XdmValue ranges = XdmEmptySequence.getInstance();
+
+	    try {
+		// get the frist node referenced by the first argument
+		XdmValue referenceNodes = evaluateXPath(xpath, "string-range()");
+
+		/* for preformance reasons we could do: */
+		// Iterator<XdmItem> iter = referenceNodes.documentOrder().iterator();
+		// while (iter.hasNext()) {
+		//     XdmItem item = iter.next();
+		//     if (item instanceof XdmNode) {
+		// 	referenceNodes = (XdmNode) item;
+		// 	break;
+		//     }
+		// }
+
+		// iterate over pairs
+		for (int i = 0; i < pairsCount; i++) {
+
+		    // we start with an empty range
+		    XdmValue range = XdmEmptySequence.getInstance();
+
+		    // get the offset and length from the parser context and cast to integer
+		    int offset = Integer.parseInt(ctx.stringRangePointerPair(i).offset().IntegerLiteral().getText());
+		    int length = Integer.parseInt(ctx.stringRangePointerPair(i).length().IntegerLiteral().getText());
+
+		    // the start point is like in the string-index() scheme
+		    Point startPoint = Point.makeStringIndexPoint(referenceNodes, offset);
+
+		    // step to the next pair if we have no string index point
+		    if (startPoint == null) {
+			LOG.error("no string index found for the offset-length pair {} of the string-range() pointer. Skipping", i);
+			continue;
+		    }
+
+		    // get the starting text node and offset in it from the Point object
+		    XdmNode startNode = startPoint.getNode();
+		    int startTextOffset = startPoint.getOffset();
+		    LOG.debug("found start point at offset {} in text node '{}'", startTextOffset, startNode.toString());
+
+		    // iterate until the length is reached
+		    boolean lengthReached = false;
+		    int currentLength = 0;
+		    StringValue textValue;
+		    // use method to make the range
+		    // ranges = ranges.append(makeStringRange(startNode, offset, length, currentOffset));
+		    if (startNode != null) {
+			LOG.debug("searching for the end text node");
+			String startText = startNode.toString();
+			int startTextLength = startText.length();
+
+			if (startTextLength >= startTextOffset + length) {
+			    // the whole string range is contained in the start text node
+			    LOG.debug("the whole text range is contained in one text node");
+
+			    // add a xs:string to range
+			    textValue =	StringValue.makeStringValue(startText.substring(startTextOffset, startTextOffset + length));
+			    range = range.append(XdmValue.makeValue(textValue));
+			} else {
+			    // we have to get following nodes to get a string of the required length
+			    LOG.debug("the text range exceeds one text node");
+
+			    // add part of starting text node as xs:string to range
+			    textValue =	StringValue.makeStringValue(startText.substring(startTextOffset));
+			    range = range.append(XdmValue.makeValue(textValue));
+			    currentLength = currentLength + startTextLength - startTextOffset;
+
+			    // walk the following axis
+			    Iterator<XdmNode> followingIterator = startNode.axisIterator(Axis.FOLLOWING);
+			    while (followingIterator.hasNext() && !lengthReached) {
+				XdmNode followingNode = followingIterator.next();
+				LOG.debug("evaluating node of type {}", followingNode.getNodeKind());
+				if (followingNode.getNodeKind() == XdmNodeKind.TEXT) {
+				    String text = followingNode.toString();
+				    int textLength = text.length();
+				    if (length < currentLength + textLength) {
+					// add part of the text node as xs:string
+					LOG.debug("adding part of text node '{}'", text);
+					textValue = StringValue.makeStringValue(text.substring(0, length - currentLength));
+					range = range.append(XdmValue.makeValue(textValue));
+					lengthReached = true;
+					currentLength = length;
+				    } else {
+					// append the whole text node
+					LOG.debug("adding full text node '{}'", text.toString());
+					if (length == currentLength + textLength) {
+					    lengthReached = true;
+					}
+					range = range.append(followingNode);
+					currentLength = currentLength + textLength;
+				    }
+				} else if (followingNode.getNodeKind() == XdmNodeKind.ELEMENT) {
+				    // add element node if its text nodes do not exceed the remaining length
+
+				    // spec: As with range(), the
+				    // addressed sequence may contain
+				    // text nodes and/or
+				    // elements. [...] Because
+				    // string-range() addresses points
+				    // in the text stream, tags are
+				    // invisible to it. For example,
+				    // if an empty tag like lb is
+				    // encountered while processing a
+				    // string-range(), it will be
+				    // included in the resulting
+				    // sequence, but the LENGTH count
+				    // will not increment when it is
+				    // captured."
+				    String text = Utils.descendantTextNodesAsString(followingNode);
+				    if (length >= currentLength + text.length()) {
+					LOG.debug("adding element node '{}'", followingNode.getNodeName());
+					range = range.append(followingNode);
+				    }
+				} else {
+				    // add all other kind of nodes, since they do not contribute to the length.
+				    range = range.append(followingNode);
+				}
+			    }
+			}
+		    }
+
+		    // append the range of this offset-length pair
+		    ranges = ranges.append(range);
+
+		}
+		// reset the xpath state variable
+		xpath = null;
+	    } catch (NullPointerException e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    } catch (SaxonApiException e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    } catch (StringIndexOutOfBoundsException e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    }
+	    // store the generated selection of nodes to the stack
+	    selectedNodesStack.clear();
+	    selectedNodesStack.add(ranges);
+	}
+    }
 }

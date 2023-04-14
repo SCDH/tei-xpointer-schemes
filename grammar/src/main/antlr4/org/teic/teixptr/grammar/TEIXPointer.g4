@@ -26,12 +26,14 @@ stringIndexPointer : STRINGINDEX OP Whitespace* idrefOrPathexpr Whitespace* COMM
 
 rangePointer : RANGE OP Whitespace* rangePointerPair ( Whitespace* COMMA Whitespace* rangePointerPair )*  Whitespace* CP ;
 
-stringRangePointer : STRINGRANGE OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length ( Whitespace* COMMA Whitespace* offset Whitespace* COMMA Whitespace* length )* Whitespace* CP ;
+stringRangePointer : STRINGRANGE OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* stringRangePointerPair ( Whitespace* COMMA Whitespace* stringRangePointerPair )* Whitespace* CP ;
 
 matchPointer : MATCH OP Whitespace* idrefOrPathexpr Whitespace* COMMA Whitespace* regex ( Whitespace* COMMA Whitespace* index )? Whitespace* CP ;
 
 
 rangePointerPair : rangeStart Whitespace* COMMA Whitespace* rangeEnd ;
+
+stringRangePointerPair : offset Whitespace* COMMA Whitespace* length ;
 
 rangeStart : rangeArgument ;
 

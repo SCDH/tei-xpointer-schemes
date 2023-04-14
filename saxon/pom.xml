@@ -72,7 +72,7 @@
             <executions>
 	       <execution>
 		  <id>copy-resources</id>
-		  <phase>compile</phase>
+		  <phase>generate-resources</phase>
 		  <goals>
 		     <goal>copy-resources</goal>
 		  </goals>
@@ -96,14 +96,15 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
+	    <version>3.1.0</version>
             <executions>
 		<execution>
 		    <id>set-permissions</id>
-		    <phase>package</phase>
+		    <phase>test</phase>
 		    <configuration>
                        <target>
-			  <chmod file="${project.build.directory}/bin/saxon.sh" perm="755"/>
-			  <chmod file="${project.build.directory}/bin/xslt.sh" perm="755"/>
+			  <chmod file="${project.build.directory}/bin/saxon.sh" perm="555"/>
+			  <chmod file="${project.build.directory}/bin/xslt.sh" perm="555"/>
                        </target>
 		    </configuration>
 		    <goals>

@@ -1,5 +1,10 @@
 # Changes
 
+## 0.3.0-dev
+
+- implement `string-range()` scheme
+- improve `string-index()` scheme
+
 ## 0.2.2
 
 - fix pipeline
