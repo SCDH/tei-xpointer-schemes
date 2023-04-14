@@ -59,8 +59,12 @@ correctly, so that the TEI XPointer processor is available.
 
 Note that you might have to run `chmod +x` on these scripts.
 
-Here is an example invokation of an XSLT stylesheet from the
+Here are two example invokations of an XSLT stylesheet from the
 testsuite:
+
+```{shell}
+saxon/target/bin/xslt.sh -config:saxon/saxon-config.xml -xsl:testsamples/systematic/sequences.xsl -it pointer="rn04.txt"
+```
 
 ```{shell}
 saxon/target/bin/xslt.sh -config:saxon/saxon-config.xml -xi:on -s:testsamples/realworld/Annotationen.xml -xsl:testsamples/realworld/extract-annotated-spans.xsl
