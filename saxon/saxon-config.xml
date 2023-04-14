@@ -7,6 +7,13 @@ http://www.saxonica.com/documentation/index/configuration-file.html
 -->
 <configuration edition="HE" xmlns="http://saxon.sf.net/ns/configuration">
 
+   <!-- security settings. Read security.md before changing! -->
+   <global
+      allowedProtocols="file"
+      unparsedTextURIResolver="net.sf.saxon.lib.StandardUnparsedTextResolver"
+      uriResolver="net.sf.saxon.lib.StandardURIResolver"
+      />
+
    <resources>
       <!-- register the extension functions -->
       <extensionFunction>org.teic.teixptr.implementation.extensions.Forrest</extensionFunction>
