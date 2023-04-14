@@ -78,9 +78,9 @@ processor.
 
 The XSLT in `testsamples/realworld/extract-annotated-spans.xsl` or the
 imported `libref.xsl` evaluates TEI XPointers with the new
-`xptr:get-sequence()` XPath function. It takes two `xs:string`
-arguments, one for the file URL and one for the pointer, and returns a
-sequence of nodes.
+[`xptr:get-sequence()` XPath function](doc/xpath-functions.md). It
+takes two `xs:string` arguments, one for the file URL and one for the
+pointer, and returns a sequence of nodes.
 
 
 ### Java API
