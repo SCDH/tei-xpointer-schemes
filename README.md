@@ -106,6 +106,9 @@ Here, `org.teic.teixptr.grammar.TEIXPointer` is the name of the
 grammar and `fragm` is the name of the grammar's start rule. Try the
 same command with the `-tokens` or `-tree` option, instead.
 
+## Security
+
+Please read the [security instruction](security.md) before using.
 
 # Further reading
 
