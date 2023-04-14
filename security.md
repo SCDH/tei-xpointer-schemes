@@ -40,6 +40,8 @@ Saxon configuration file.
 
   <global
       allowedProtocols="http,https,ftp,ftps"
+      unparsedTextURIResolver="net.sf.saxon.lib.StandardUnparsedTextResolver"
+      uriResolver="net.sf.saxon.lib.StandardURIResolver"
 	  />
 
   <!-- ... -->
@@ -49,10 +51,18 @@ Saxon configuration file.
 
 ### Local machine
 
-Don't use the processor for XPointers XPath expression you do not trust.
+1. Unless you fully trust the XPath expressions in the processed
+   XPointers, consider setting `allowedProtocols="file"` in the Saxon
+   config file. This is the default setting in
+   [`saxon/saxon-config.xml`](saxon/saxon-config.xml).
+
+2. Also consider setting
+   `uriResolver="org.teic.teixptr.implementation.security.DenyingURIResolver"`
+   which serves an extra gatekeeper behind the closed door.
+
 
 # When you find more security risks
 
 When you found a security issue, please do not post it into the issue
-traker, but first report it via private mail to one of the developers
+tracker, but first report it via private mail to one of the developers
 or to `scdh (at) uni-muenster (dot) de`.
