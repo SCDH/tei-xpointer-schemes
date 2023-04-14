@@ -1,4 +1,4 @@
-# Implementation of the TEI XPointer Scheme
+# Implementation of the TEI XPointer Schemes
 
 This project is an implementation of the TEI XPointer scheme as
 outlined in the [SATS
@@ -11,11 +11,17 @@ functions](doc/xpath-functions.md).
 
 ### State
 
-development
+development, testing
+
+implemented XPointer schemes: `xpath()`, `left()`, `right()`,
+`string-index()`, `range()`, `string-range()`
+
+not (yet) implemented: `match()` TEI XPointer scheme, and the
+`xmlns()` scheme for binding namespaces to prefixes; chaining pointers
 
 ## Modules
 
-- `grammar`: an ANTLR4-based grammar of the TEI XPointer scheme
+- `grammar`: an ANTLR4-based grammar of the TEI XPointer schemes
 - `xpath-extension`: definitions of XPath functions for processing XPointers
 - `saxon`: an implementation of processing TEI XPointers based on
   Saxon's s9api
