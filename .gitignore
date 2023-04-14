@@ -1,6 +1,8 @@
 # emacs backup files
 *~
 
+testsamples/malicious
+
 # maven build artifacts and automatically set up files
 target
 .settings
