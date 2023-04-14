@@ -138,6 +138,24 @@ public class TEIXPointerTest extends TestSetup {
     }
 
     @Test
+    void test_sysxp03() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysxp03, satsXml, proc);
+	assertEquals("xpath", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(1, selection.size());
+    	XdmNode node = Utils.getFirstNode(selection);
+	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"1\" xml:id=\"line1\"/>", node.toString());
+    }
+
+    @Test
+    void test_sysxp04() throws Exception {
+	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysxp04, satsXml, proc);
+	assertEquals("xpath", pointer.getPointerType());
+	XdmValue selection = pointer.getSelectedNodes();
+	assertEquals(0, selection.size());
+    }
+
+    @Test
     void test_sysrn04() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn04, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
