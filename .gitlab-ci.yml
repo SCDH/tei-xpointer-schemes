@@ -14,7 +14,8 @@ cache:
     - 'mvn $MAVEN_CLI_OPTS generate-sources'
     - 'mvn $MAVEN_CLI_OPTS verify'
     - 'mvn -Doxygen.version=23 $MAVEN_CLI_OPTS clean verify'
-    - 'mvn -Doxygen.version=24 $MAVEN_CLI_OPTS clean verify'
+    - 'mvn -Doxygen.version=24.0 $MAVEN_CLI_OPTS clean verify'
+    - 'mvn -Doxygen.version=24.1 $MAVEN_CLI_OPTS clean verify'
     - 'mvn -Doxygen.version=25 $MAVEN_CLI_OPTS clean verify'
   except:
     - master
@@ -47,7 +48,9 @@ pages:
     - ls -la
     - mvn -Doxygen.version=23 $MAVEN_CLI_OPTS clean verify
     - cp -v oxygen/target/*-plugin.jar public/
-    - mvn -Doxygen.version=24 $MAVEN_CLI_OPTS clean verify
+    - mvn -Doxygen.version=24.0 $MAVEN_CLI_OPTS clean verify
+    - cp -v oxygen/target/*-plugin.jar public/
+    - mvn -Doxygen.version=24.1 $MAVEN_CLI_OPTS clean verify
     - cp -v oxygen/target/*-plugin.jar public/
     - mvn -Doxygen.version=25 $MAVEN_CLI_OPTS clean verify
     - cp -v oxygen/target/*-plugin.jar public/

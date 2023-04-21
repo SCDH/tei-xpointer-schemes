@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.1
+
+- fix builds in CI/CD pipeline
+
 ## 0.3.0
 
 - fix dependencies for Oxygen 24.0
