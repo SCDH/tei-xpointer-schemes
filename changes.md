@@ -1,6 +1,10 @@
 # Changes
 
-## 0.3.0-dev
+## 0.3.1
+
+- fix dependencies for Oxygen 24.0
+
+## 0.3.0
 
 - implement `string-range()` scheme
 - improve `string-index()` scheme
