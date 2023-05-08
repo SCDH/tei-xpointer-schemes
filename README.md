@@ -37,7 +37,7 @@ manager (menu **Help** -> **Install new add-ons**) with the following
 URL:
 
 ```
-https://scdh.zivgitlabpages.uni-muenster.de/tei-processing/tei-xpointer-scheme/descriptor.xml
+https://scdh.github.io/tei-xpointer-schemes/descriptor.xml
 ```
 
 The plugin will enable you to evaluate TEI XPointers using the [XPath
