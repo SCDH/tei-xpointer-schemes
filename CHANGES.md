@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.3
+
+- fix github release action
+
 ## 0.3.2
 
 - use github actions for tests, making releases and publishing
