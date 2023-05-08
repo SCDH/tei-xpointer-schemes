@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.2
+
+- use github actions for tests, making releases and publishing
+
 ## 0.3.1
 
 - fix builds in CI/CD pipeline
