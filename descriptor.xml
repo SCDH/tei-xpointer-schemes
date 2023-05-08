@@ -3,8 +3,8 @@
                xmlns:xt="http://www.oxygenxml.com/ns/extension"
                xsi:schemaLocation="http://www.oxygenxml.com/ns/extension http://www.oxygenxml.com/ns/extension/extensions.xsd">
    <xt:extension id="org.teic.teixptr.tei-xpointer-oxygen23.0">
-      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.2/tei-xpointer-oxygen23-0.3.2-plugin.jar"/>
-      <xt:version>0.3.2</xt:version>
+      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.3/tei-xpointer-oxygen23-0.3.3-plugin.jar"/>
+      <xt:version>0.3.3</xt:version>
       <xt:oxy_version>23.0</xt:oxy_version>
       <xt:type>plugin</xt:type>
       <xt:author>Christian Lück</xt:author>
@@ -52,8 +52,8 @@ SOFTWARE.
 </xt:license>
    </xt:extension>
    <xt:extension id="org.teic.teixptr.tei-xpointer-oxygen23.1">
-      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.2/tei-xpointer-oxygen23-0.3.2-plugin.jar"/>
-      <xt:version>0.3.2</xt:version>
+      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.3/tei-xpointer-oxygen23-0.3.3-plugin.jar"/>
+      <xt:version>0.3.3</xt:version>
       <xt:oxy_version>23.1</xt:oxy_version>
       <xt:type>plugin</xt:type>
       <xt:author>Christian Lück</xt:author>
@@ -101,8 +101,8 @@ SOFTWARE.
 </xt:license>
    </xt:extension>
    <xt:extension id="org.teic.teixptr.tei-xpointer-oxygen23.2">
-      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.2/tei-xpointer-oxygen23-0.3.2-plugin.jar"/>
-      <xt:version>0.3.2</xt:version>
+      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.3/tei-xpointer-oxygen23-0.3.3-plugin.jar"/>
+      <xt:version>0.3.3</xt:version>
       <xt:oxy_version>23.2</xt:oxy_version>
       <xt:type>plugin</xt:type>
       <xt:author>Christian Lück</xt:author>
@@ -150,8 +150,8 @@ SOFTWARE.
 </xt:license>
    </xt:extension>
    <xt:extension id="org.teic.teixptr.tei-xpointer-oxygen24.0">
-      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.2/tei-xpointer-oxygen24.0-0.3.2-plugin.jar"/>
-      <xt:version>0.3.2</xt:version>
+      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.3/tei-xpointer-oxygen24.0-0.3.3-plugin.jar"/>
+      <xt:version>0.3.3</xt:version>
       <xt:oxy_version>24.0</xt:oxy_version>
       <xt:type>plugin</xt:type>
       <xt:author>Christian Lück</xt:author>
@@ -199,8 +199,8 @@ SOFTWARE.
 </xt:license>
    </xt:extension>
    <xt:extension id="org.teic.teixptr.tei-xpointer-oxygen24.1">
-      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.2/tei-xpointer-oxygen24.1-0.3.2-plugin.jar"/>
-      <xt:version>0.3.2</xt:version>
+      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.3/tei-xpointer-oxygen24.1-0.3.3-plugin.jar"/>
+      <xt:version>0.3.3</xt:version>
       <xt:oxy_version>24.1</xt:oxy_version>
       <xt:type>plugin</xt:type>
       <xt:author>Christian Lück</xt:author>
@@ -248,8 +248,8 @@ SOFTWARE.
 </xt:license>
    </xt:extension>
    <xt:extension id="org.teic.teixptr.tei-xpointer-oxygen24.2">
-      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.2/tei-xpointer-oxygen24.1-0.3.2-plugin.jar"/>
-      <xt:version>0.3.2</xt:version>
+      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.3/tei-xpointer-oxygen24.1-0.3.3-plugin.jar"/>
+      <xt:version>0.3.3</xt:version>
       <xt:oxy_version>24.2</xt:oxy_version>
       <xt:type>plugin</xt:type>
       <xt:author>Christian Lück</xt:author>
@@ -297,8 +297,8 @@ SOFTWARE.
 </xt:license>
    </xt:extension>
    <xt:extension id="org.teic.teixptr.tei-xpointer-oxygen25.0+">
-      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.2/tei-xpointer-oxygen25-0.3.2-plugin.jar"/>
-      <xt:version>0.3.2</xt:version>
+      <xt:location href="https://github.com/SCDH/tei-xpointer-schemes/releases/download/0.3.3/tei-xpointer-oxygen25-0.3.3-plugin.jar"/>
+      <xt:version>0.3.3</xt:version>
       <xt:oxy_version>25.0+</xt:oxy_version>
       <xt:type>plugin</xt:type>
       <xt:author>Christian Lück</xt:author>
