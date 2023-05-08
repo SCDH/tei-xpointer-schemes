@@ -15,8 +15,7 @@
    <properties>
       <oxygen.version>25</oxygen.version>
       <oxygen.sdk.version>25.0.0.0</oxygen.sdk.version>
-      <release.url.OFF>https://github.com/SCDH/tei-xpointer-scheme/releases/download/${revision}/</release.url.OFF>
-      <release.url></release.url>
+      <release.url>https://github.com/SCDH/tei-xpointer-schemes/releases/download/${revision}/</release.url>
    </properties>
 
    <repositories>

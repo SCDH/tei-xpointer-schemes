@@ -1,0 +1,117 @@
+name: Create release
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+-?**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: run maven
+        run: mvn --batch-mode --update-snapshots package
+
+      - name: create release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body_path: CHANGES.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: upload grammar module jar file to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: grammar/target/tei-xpointer-grammar-${{ github.ref_name }}.jar
+          asset_name: tei-xpointer-grammar-${{ github.ref_name }}.jar
+          asset_content_type: application/java-archive
+
+      - name: upload xpath-extension module jar file to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: xpath-extension/target/tei-xpointer-xpath-extension-${{ github.ref_name }}.jar
+          asset_name: tei-xpointer-xpath-extension-${{ github.ref_name }}.jar
+          asset_content_type: application/java-archive
+
+      - name: upload saxon-impl module jar file to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: saxon/target/tei-xpointer-saxon-impl-${{ github.ref_name }}.jar
+          asset_name: tei-xpointer-saxon-impl-${{ github.ref_name }}.jar
+          asset_content_type: application/java-archive
+
+      - name: build for oxygen 23
+        run: mvn -Doxygen.version=23 --batch-mode --update-snapshots clean package
+
+      - name: upload oxygen plugin to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: oxygen/target/tei-xpointer-oxygen23-${{ github.ref_name }}-plugin.jar
+          asset_name: tei-xpointer-oxygen23-${{ github.ref_name }}-plugin.jar
+          asset_content_type: application/java-archive
+
+      - name: build for oxygen 24.0
+        run: mvn -Doxygen.version=24.0 --batch-mode --update-snapshots clean package
+
+      - name: upload oxygen plugin to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: oxygen/target/tei-xpointer-oxygen24.0-${{ github.ref_name }}-plugin.jar
+          asset_name: tei-xpointer-oxygen24.0-${{ github.ref_name }}-plugin.jar
+          asset_content_type: application/java-archive
+
+      - name: build for oxygen 24.1
+        run: mvn -Doxygen.version=24.1 --batch-mode --update-snapshots clean package
+
+      - name: upload oxygen plugin to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: oxygen/target/tei-xpointer-oxygen24.1-${{ github.ref_name }}-plugin.jar
+          asset_name: tei-xpointer-oxygen24.1-${{ github.ref_name }}-plugin.jar
+          asset_content_type: application/java-archive
+
+      - name: build for oxygen 25
+        run: mvn -Doxygen.version=25 --batch-mode --update-snapshots clean package
+
+      - name: upload oxygen plugin to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: oxygen/target/tei-xpointer-oxygen25-${{ github.ref_name }}-plugin.jar
+          asset_name: tei-xpointer-oxygen25-${{ github.ref_name }}-plugin.jar
+          asset_content_type: application/java-archive
