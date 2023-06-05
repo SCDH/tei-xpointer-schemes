@@ -43,6 +43,7 @@
        <saxon.version>10.2</saxon.version>
        <xmlresolver.version>4.5.1</xmlresolver.version>
        <xml-apis.version>1.4.01</xml-apis.version>
+       <apache-jena.version>4.8.0</apache-jena.version>
        <junit.version>5.7.2</junit.version>
        <oxygen.versions>23:23.0,23.1,23.2|24.0:24.0|24:24.1,24.2|25:25.0+</oxygen.versions>
     </properties>
