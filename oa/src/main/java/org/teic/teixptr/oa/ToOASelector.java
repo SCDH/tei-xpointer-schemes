@@ -2,6 +2,7 @@ package org.teic.teixptr.oa;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Iterator;
@@ -43,14 +44,14 @@ public class ToOASelector extends TEIXPointerBaseListener {
 
     private final Model model;
 
-    private Resource selector = null;
+    private List<Resource> selector = null;
 
 
     // state variables
     private boolean errorSeen = false;
     private List<Exception> errorStack = new ArrayList<Exception>();
     private String xpath = null;
-    private List<Resource> selectorStack = new ArrayList<Resource>();
+    private List<List<Resource>> selectorStack = new ArrayList<List<Resource>>();
     private NamespaceSupport namespaces = new NamespaceSupport();
 
 
@@ -115,20 +116,37 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	}
     }
 
-    protected Resource mkXPathSelector(String xpath, String context) {
+    protected List<Resource> mkXPathSelector(String xpath, String context) {
 	// we have no ID for an XPointer, so we create an anonymous resource
 	Resource selector = model.createResource();
 	selector.addProperty(RDF.type, OA.XPathSelector);
 	selector.addProperty(RDF.value, xpath);
-	return selector;
+	return new ArrayList<Resource>(Collections.singletonList(selector));
     }
 
-    protected Resource refineByCharScheme(Resource selector, int offset) {
+
+    protected Resource charScheme(int offset) {
 	Resource charScheme = model.createResource();
 	charScheme.addProperty(RDF.type, OA.FragmentSelector);
 	charScheme.addProperty(DCTerms.conformsTo, model.createResource(RFC5147_URI));
 	charScheme.addProperty(RDF.value, "char=" + Integer.toString(offset));
-	selector.addProperty(OA.refinedBy, charScheme);
+	return charScheme;
+    }
+
+
+    protected List<Resource> refineByCharScheme(List<Resource> selector, int offset) {
+	List<Resource> newList = new ArrayList<Resource>();
+	for (Resource sel : selector) {
+	    sel.addProperty(OA.refinedBy, charScheme(offset));
+	    newList.add(sel);
+	}
+	return newList;
+    }
+
+    protected List<Resource> refineByCharScheme(List<Resource> selector, int offset, int selectorIndex) {
+	Resource sel = selector.get(selectorIndex);
+	sel.addProperty(OA.refinedBy, charScheme(offset));
+	selector.set(selectorIndex, sel);
 	return selector;
     }
 
@@ -159,7 +177,9 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	// wrap selector in target with oa:hasSource
 	Resource target = model.createResource();
 	target.addProperty(OA.hasSource, this.systemId);
-	target.addProperty(OA.hasSelector, this.selector);
+	for (Resource sel : this.selector) {
+	    target.addProperty(OA.hasSelector, sel);
+	}
 	return target;
     }
 
@@ -254,7 +274,7 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	    // we get the XPath from the xpath state variable on the
 	    // exit event
 	    LOG.debug("found XPATH pointer, evaluating: {}", xpath);
-	    Resource selector = mkXPathSelector(xpath, "xpath()");
+	    List<Resource> selector = mkXPathSelector(xpath, "xpath()");
 	    selectorStack.add(selector);
 	    // reset the xpath state variable
 	    xpath = null;
@@ -280,7 +300,7 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	    LOG.debug("found left() pointer, evaluating: {}", xpath);
 	    // wrap node(s) into a point
 	    try {
-		Resource selector = mkXPathSelector(xpath, "left()");
+		List<Resource> selector = mkXPathSelector(xpath, "left()");
 		selectorStack.add(selector);
 		// reset the xpath state variable
 		xpath = null;
@@ -310,7 +330,7 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	    LOG.debug("found right() pointer, evaluating: {}", xpath);
 	    // wrap node(s) into a point
 	    try {
-		Resource selector = mkXPathSelector(xpath, "right()");
+		List<Resource> selector = mkXPathSelector(xpath, "right()");
 		selectorStack.add(selector);
 		// reset the xpath state variable
 		xpath = null;
@@ -340,7 +360,7 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	    LOG.debug("found string-index() pointer, evaluating: {}", xpath);
 	    try {
 		int offset = Integer.parseInt(ctx.offset().getText());
-		Resource selector = mkXPathSelector(xpath, "string-index()");
+		List<Resource> selector = mkXPathSelector(xpath, "string-index()");
 		selector = refineByCharScheme(selector, offset);
 		selectorStack.add(selector);
 		// reset the xpath state variable
@@ -364,7 +384,7 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	    if (ctx.idref() != null && xpath != null) {
 		if (!ctx.idref().getText().isEmpty()) {
 		    LOG.debug("found IDREF argument to range(), evaluating: {}", xpath);
-		    Resource selector = mkXPathSelector(xpath, "IDREF");
+		    List<Resource> selector = mkXPathSelector(xpath, "IDREF");
 		    selectorStack.add(selector);
 		    // reset the xpath state variable
 		    xpath = null;
@@ -372,7 +392,7 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	    } else if (ctx.pathexpr() != null && xpath != null) {
 		if (!ctx.pathexpr().getText().isEmpty()) {
 		    LOG.debug("found XPATH argument to range(), evaluating: {}", xpath);
-		    Resource selector = mkXPathSelector(xpath, "XPATH");
+		    List<Resource> selector = mkXPathSelector(xpath, "XPATH");
 		    selectorStack.add(selector);
 		    // reset the xpath state variable
 		    xpath = null;
