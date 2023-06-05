@@ -21,6 +21,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.OA;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.DCTerms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public class ToOASelector extends TEIXPointerBaseListener {
     private static final Logger LOG = LoggerFactory.getLogger(ToOASelector.class);
 
     public static final String TEINS = "http://www.tei-c.org/ns/1.0";
+
+    public static final String RFC5147_URI = "http://tools.ietf.org/rfc/rfc5147";
 
     protected final String systemId;
 
@@ -120,6 +123,14 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	return selector;
     }
 
+    protected Resource refineByCharScheme(Resource selector, int offset) {
+	Resource charScheme = model.createResource();
+	charScheme.addProperty(RDF.type, OA.FragmentSelector);
+	charScheme.addProperty(DCTerms.conformsTo, model.createResource(RFC5147_URI));
+	charScheme.addProperty(RDF.value, "char=" + Integer.toString(offset));
+	selector.addProperty(OA.refinedBy, charScheme);
+	return selector;
+    }
 
     /**
      * Set the default namespace to the TEI namespace. This implements
@@ -247,6 +258,126 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	    selectorStack.add(selector);
 	    // reset the xpath state variable
 	    xpath = null;
+	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterLeftPointer(TEIXPointerParser.LeftPointerContext ctx) {
+	bindDefaultNamespaceTEI();
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitLeftPointer(TEIXPointerParser.LeftPointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    LOG.debug("found left() pointer, evaluating: {}", xpath);
+	    // wrap node(s) into a point
+	    try {
+		Resource selector = mkXPathSelector(xpath, "left()");
+		selectorStack.add(selector);
+		// reset the xpath state variable
+		xpath = null;
+	    } catch (Exception e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    }
+	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterRightPointer(TEIXPointerParser.RightPointerContext ctx) {
+	bindDefaultNamespaceTEI();
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitRightPointer(TEIXPointerParser.RightPointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    LOG.debug("found right() pointer, evaluating: {}", xpath);
+	    // wrap node(s) into a point
+	    try {
+		Resource selector = mkXPathSelector(xpath, "right()");
+		selectorStack.add(selector);
+		// reset the xpath state variable
+		xpath = null;
+	    } catch (Exception e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    }
+	}
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterStringIndexPointer(TEIXPointerParser.StringIndexPointerContext ctx) {
+	bindDefaultNamespaceTEI();
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitStringIndexPointer(TEIXPointerParser.StringIndexPointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    LOG.debug("found string-index() pointer, evaluating: {}", xpath);
+	    try {
+		int offset = Integer.parseInt(ctx.offset().getText());
+		Resource selector = mkXPathSelector(xpath, "string-index()");
+		selector = refineByCharScheme(selector, offset);
+		selectorStack.add(selector);
+		// reset the xpath state variable
+		xpath = null;
+	    } catch (Exception e) {
+		errorSeen = true;
+		errorStack.add(e);
+	    }
+	}
+    }
+
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitRangeArgument(TEIXPointerParser.RangeArgumentContext ctx) {
+	// We only have to check if there was a argument, that is not a pointer: an IDREF
+	// Then we have to evaluate it and push the selection on the stack.
+	if (!errorSeen) {
+	    if (ctx.idref() != null && xpath != null) {
+		if (!ctx.idref().getText().isEmpty()) {
+		    LOG.debug("found IDREF argument to range(), evaluating: {}", xpath);
+		    Resource selector = mkXPathSelector(xpath, "IDREF");
+		    selectorStack.add(selector);
+		    // reset the xpath state variable
+		    xpath = null;
+		}
+	    } else if (ctx.pathexpr() != null && xpath != null) {
+		if (!ctx.pathexpr().getText().isEmpty()) {
+		    LOG.debug("found XPATH argument to range(), evaluating: {}", xpath);
+		    Resource selector = mkXPathSelector(xpath, "XPATH");
+		    selectorStack.add(selector);
+		    // reset the xpath state variable
+		    xpath = null;
+		}
+	    }
 	}
     }
 
