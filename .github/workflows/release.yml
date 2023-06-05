@@ -90,8 +90,8 @@ jobs:
           asset_name: tei-xpointer-oxygen24.0-${{ github.ref_name }}-plugin.jar
           asset_content_type: application/java-archive
 
-      - name: build for oxygen 24.1
-        run: mvn -Doxygen.version=24.1 --batch-mode --update-snapshots clean package
+      - name: build for oxygen 24
+        run: mvn -Doxygen.version=24 --batch-mode --update-snapshots clean package
 
       - name: upload oxygen plugin to release
         uses: actions/upload-release-asset@v1
@@ -99,8 +99,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: oxygen/target/tei-xpointer-oxygen24.1-${{ github.ref_name }}-plugin.jar
-          asset_name: tei-xpointer-oxygen24.1-${{ github.ref_name }}-plugin.jar
+          asset_path: oxygen/target/tei-xpointer-oxygen24-${{ github.ref_name }}-plugin.jar
+          asset_name: tei-xpointer-oxygen24-${{ github.ref_name }}-plugin.jar
           asset_content_type: application/java-archive
 
       - name: build for oxygen 25

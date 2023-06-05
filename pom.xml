@@ -44,7 +44,7 @@
        <xmlresolver.version>4.5.1</xmlresolver.version>
        <xml-apis.version>1.4.01</xml-apis.version>
        <junit.version>5.7.2</junit.version>
-       <oxygen.versions>23:23.0,23.1,23.2|24.0:24.0|24.1:24.1,24.2|25:25.0+</oxygen.versions>
+       <oxygen.versions>23:23.0,23.1,23.2|24.0:24.0|24:24.1,24.2|25:25.0+</oxygen.versions>
     </properties>
 
     <!-- dependencies needed everywhere -->
@@ -164,11 +164,11 @@
 	 </properties>
       </profile>
       <profile>
-	 <id>oxygen24.1</id>
+	 <id>oxygen24</id>
 	 <activation>
 	    <property>
 	       <name>oxygen.version</name>
-	       <value>24.1</value>
+	       <value>24</value>
 	    </property>
 	 </activation>
 	 <properties>

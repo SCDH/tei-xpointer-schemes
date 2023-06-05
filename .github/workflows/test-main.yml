@@ -31,8 +31,8 @@ jobs:
       - name: run maven with buildprofile for Oxygen version 24.0
         run: mvn -Doxygen.version=24.0 --batch-mode --update-snapshots clean verify
 
-      - name: run maven with buildprofile for Oxygen version 24.1
-        run: mvn -Doxygen.version=24.1 --batch-mode --update-snapshots clean verify
+      - name: run maven with buildprofile for Oxygen version 24.1 etc.
+        run: mvn -Doxygen.version=24 --batch-mode --update-snapshots clean verify
 
       - name: run maven with buildprofile for Oxygen version 25
         run: mvn -Doxygen.version=25 --batch-mode --update-snapshots clean verify
