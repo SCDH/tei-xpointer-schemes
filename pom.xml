@@ -99,6 +99,7 @@
        <module>grammar</module>
        <module>xpath-extension</module>
        <module>saxon</module>
+       <module>oa</module>
        <module>oxygen</module>
     </modules>
 
