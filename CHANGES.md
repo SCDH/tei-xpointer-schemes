@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4.0
+
+- convert TEI XPointers to Open Annotation Selectors
+
 ## 0.3.3
 
 - fix github release action
