@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+       <groupId>org.teic.teixptr</groupId>
+       <artifactId>TEIXPointerScheme</artifactId>
+       <version>${revision}</version>
+    </parent>
+
+    <artifactId>tei-xpointer-cli</artifactId>
+    <name>TEI XPointer CLI</name>
+    <url>https://github.com/lueck/tei-xpointer-scheme</url>
+
+    <dependencies>
+       <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>tei-xpointer-grammar</artifactId>
+	  <version>${revision}</version>
+	  <scope>runtime</scope>
+       </dependency>
+       <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>tei-xpointer-xpath-extension</artifactId>
+	  <version>${revision}</version>
+	  <scope>runtime</scope>
+       </dependency>
+       <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>tei-xpointer-saxon-impl</artifactId>
+	  <version>${revision}</version>
+	  <scope>runtime</scope>
+       </dependency>
+       <dependency>
+	  <groupId>${project.groupId}</groupId>
+	  <artifactId>tei-xpointer-oa</artifactId>
+	  <version>${revision}</version>
+	  <scope>runtime</scope>
+       </dependency>
+    </dependencies>
+
+    <build>
+       <plugins>
+
+          <plugin>
+             <!-- put the dependencies into the target/lib for the
+                  commandline app -->
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-dependency-plugin</artifactId>
+             <version>3.1.1</version>
+             <executions>
+                <execution>
+                   <phase>prepare-package</phase>
+                   <goals>
+                      <goal>copy-dependencies</goal>
+                   </goals>
+                   <configuration>
+                      <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                   </configuration>
+                </execution>
+             </executions>
+          </plugin>
+
+	 <!-- fill in the right versions in the templates in shell
+	      directory and set their permissions -->
+	 <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+	       <execution>
+		  <id>copy-resources</id>
+		  <phase>generate-resources</phase>
+		  <goals>
+		     <goal>copy-resources</goal>
+		  </goals>
+		  <configuration>
+		     <outputDirectory>${project.build.directory}/bin</outputDirectory>
+		     <resources>
+			<resource>
+		           <directory>${project.basedir}</directory>
+		           <includes>
+			      <include>saxon.sh</include>
+			      <include>xslt.sh</include>
+		           </includes>
+			   <filtering>true</filtering>
+			</resource>
+		     </resources>
+		  </configuration>
+	       </execution>
+            </executions>
+	 </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+	    <version>3.1.0</version>
+            <executions>
+		<execution>
+		    <id>set-permissions</id>
+		    <phase>test</phase>
+		    <configuration>
+                       <target>
+			  <chmod file="${project.build.directory}/bin/saxon.sh" perm="755"/>
+			  <chmod file="${project.build.directory}/bin/xslt.sh" perm="755"/>
+                       </target>
+		    </configuration>
+		    <goals>
+                       <goal>run</goal>
+		    </goals>
+		</execution>
+            </executions>
+         </plugin>
+
+	 <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>flatten-maven-plugin</artifactId>
+            <version>1.5.0</version>
+            <configuration>
+            </configuration>
+            <executions>
+	       <!-- pom flattening -->
+	       <execution>
+		  <id>flatten</id>
+		  <phase>process-resources</phase>
+		  <goals>
+		     <goal>flatten</goal>
+		  </goals>
+	       </execution>
+	       <!-- ensure proper cleanup -->
+	       <execution>
+		  <id>flatten.clean</id>
+		  <phase>clean</phase>
+		  <goals>
+		     <goal>clean</goal>
+		  </goals>
+	       </execution>
+            </executions>
+	 </plugin>
+
+       </plugins>
+    </build>
+
+</project>
