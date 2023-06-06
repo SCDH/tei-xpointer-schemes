@@ -70,4 +70,16 @@ public class ToOASelectorTest extends TestSetup {
 	assertEquals(RFC5147, selector.getSelector().getProperty(OA.hasSelector).getResource().getProperty(OA.refinedBy).getResource().getProperty(DCTerms.conformsTo).getObject());
     }
 
+    @Disabled("Wrong pointer type!")
+    @Test
+    void test_satsrn01() throws Exception {
+	ToOASelector selector = ToOASelector.parseTEIXPointer(satsrn01, satsXml);
+	assertEquals("range", selector.getPointerType());
+	assertTrue(selector.getSelector().hasProperty(OA.hasSource));
+	assertTrue(selector.getSelector().getProperty(OA.hasSource).getObject().isLiteral());
+	assertEquals(satsXml, selector.getSelector().getProperty(OA.hasSource).getObject().toString());
+	assertTrue(selector.getSelector().hasProperty(OA.hasSelector));
+	assertEquals(OA.RangeSelector, selector.getSelector().getProperty(OA.hasSelector).getResource().getProperty(RDF.type).getObject());
+    }
+
 }

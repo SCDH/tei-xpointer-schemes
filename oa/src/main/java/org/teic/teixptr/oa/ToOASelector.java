@@ -425,5 +425,55 @@ public class ToOASelector extends TEIXPointerBaseListener {
     }
 
 
+    /**
+     * Internal.
+     */
+    @Override
+    public void enterRangePointer(TEIXPointerParser.RangePointerContext ctx) {
+	bindDefaultNamespaceTEI();
+    }
+
+    /**
+     * Internal.
+     */
+    @Override
+    public void exitRangePointer(TEIXPointerParser.RangePointerContext ctx) {
+	if (!errorSeen) {
+	    // we get the XPath from the xpath state variable on the
+	    // exit event
+	    int pairsCount = ctx.rangePointerPair().size();
+	    LOG.info("found range() pointer with {} pair(s)", pairsCount);
+	    if (pairsCount*2 != selectorStack.size()) {
+		LOG.error("error processing range pointers: {} range pairs mismatch {} processed pointers",
+			  pairsCount, selectorStack.size());
+		errorSeen = true;
+		errorStack.add(new Exception("error processing range pointer: number of range pairs and processed pointers differ"));
+	    } else {
+		List<Resource> selectors = new ArrayList<Resource>();
+
+		for (int i = 0; i < pairsCount; i++) {
+		    Resource rangeSelector = model.createResource();
+		    rangeSelector.addProperty(RDF.type, OA.RangeSelector);
+		    List<Resource> startSel = this.selectorStack.get(2 * i);
+		    if (startSel.size() == 1) {
+			rangeSelector.addProperty(OA.hasStartSelector, startSel.get(0));
+		    } else {
+			// TODO
+		    }
+		    List<Resource> endSel = this.selectorStack.get(2*i + 1);
+		    if (endSel.size() == 1) {
+			rangeSelector.addProperty(OA.hasEndSelector, endSel.get(0));
+		    } else {
+			// TODO
+		    }
+		    selectors.add(rangeSelector);
+		}
+
+		// store push range selectors to the top of the selector stack
+		LOG.info("pushing {} range selectors to the selector stack: {}", selectors.size(), selectors.get(0).listProperties().toList());
+		selectorStack.add(selectors);
+	    }
+	}
+    }
 
 }
