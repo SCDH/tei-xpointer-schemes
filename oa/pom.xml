@@ -30,14 +30,13 @@
 	  <version>${revision}</version>
        </dependency>
        <dependency>
-	  <groupId>${project.groupId}</groupId>
-	  <artifactId>tei-xpointer-saxon-impl</artifactId>
-	  <version>${revision}</version>
-	  <scope>test</scope>
+	  <groupId>org.apache.jena</groupId>
+	  <artifactId>jena-core</artifactId>
+	  <version>${apache-jena.version}</version>
        </dependency>
        <dependency>
 	  <groupId>org.apache.jena</groupId>
-	  <artifactId>jena-core</artifactId>
+	  <artifactId>jena-arq</artifactId>
 	  <version>${apache-jena.version}</version>
        </dependency>
     </dependencies>
