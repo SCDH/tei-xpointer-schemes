@@ -44,6 +44,8 @@ public class ToOASelector extends TEIXPointerBaseListener {
 
     private final Model model;
 
+    private Resource target = null;
+
     private List<Resource> selector = null;
 
 
@@ -63,8 +65,8 @@ public class ToOASelector extends TEIXPointerBaseListener {
     public ToOASelector(String systemId) throws XPointerProcessorException {
 	this.systemId = systemId;
 	this.model = ModelFactory.createDefaultModel();
+	this.addSource();
     }
-
 
     /**
      * A static method that parses a pointer to a {@link ToOASelector}
@@ -173,18 +175,28 @@ public class ToOASelector extends TEIXPointerBaseListener {
     }
 
 
-    public Resource getSelector() {
-	// wrap selector in target with oa:hasSource
-	Resource target = model.createResource();
-	target.addProperty(OA.hasSource, this.systemId);
-	for (Resource sel : this.selector) {
+    protected void addSource() {
+	this.target = model.createResource();
+	this.target.addProperty(OA.hasSource, this.systemId);
+    }
+
+    protected void addSelector(List<Resource> selector) {
+	for (Resource sel : selector) {
 	    target.addProperty(OA.hasSelector, sel);
 	}
-	return target;
+    }
+
+
+
+
+    public Resource getSelector() {
+	return this.target;
     }
 
     public Model getSelectorModel() {
-	return getSelector().listProperties().toModel();
+	//Resource _targer = this.getSelector(); // for adding oa:hasSource
+	//this.addSelector(selector);
+	return this.target.listProperties().toModel(); // this.model;
     }
 
 
@@ -205,21 +217,28 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	// set selector according to the base pointer type
 	else if (ctx.xpathPointer() != null) {
 	    selector = selectorStack.get(0);
-	} else if (ctx.leftPointer() != null) {
-	    selector = selectorStack.get(0);
-	} else if (ctx.rightPointer() != null) {
-	    selector = selectorStack.get(0);
+	    this.addSelector(selector);
+	// } else if (ctx.leftPointer() != null) {
+	//     selector = selectorStack.get(0);
+	//     this.addSelector(selector);
+	// } else if (ctx.rightPointer() != null) {
+	//     selector = selectorStack.get(0);
+	//     this.addSelector(selector);
 	} else if (ctx.rangePointer() != null) {
 	    selector = selectorStack.get(0);
+	    this.addSelector(selector);
 	} else if (ctx.stringIndexPointer() != null) {
 	    selector = selectorStack.get(0);
-	} else if (ctx.stringRangePointer() != null) {
-	    selector = selectorStack.get(0);
+	    this.addSelector(selector);
+	// } else if (ctx.stringRangePointer() != null) {
+	//     selector = selectorStack.get(0);
+	//     this.addSelector(selector);
 	} else if (ctx.idref() != null) {
 	    // handle IDREF
 	    pointerType = "IDREF";
 	    LOG.debug("found IDREF, evaluating: {}", xpath);
 	    selector = mkXPathSelector(xpath, "IDREF");
+	    this.addSelector(selector);
 	    // reset the xpath state variable
 	    xpath = null;
 	} else {
