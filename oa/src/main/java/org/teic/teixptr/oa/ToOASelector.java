@@ -183,6 +183,10 @@ public class ToOASelector extends TEIXPointerBaseListener {
 	return target;
     }
 
+    public Model getSelectorModel() {
+	return getSelector().listProperties().toModel();
+    }
+
 
     /**
      * Internal.
