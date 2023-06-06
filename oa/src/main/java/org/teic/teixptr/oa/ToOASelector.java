@@ -194,9 +194,7 @@ public class ToOASelector extends TEIXPointerBaseListener {
     }
 
     public Model getSelectorModel() {
-	//Resource _targer = this.getSelector(); // for adding oa:hasSource
-	//this.addSelector(selector);
-	return this.target.listProperties().toModel(); // this.model;
+	return this.model; // this.target.listProperties().toModel();
     }
 
 
