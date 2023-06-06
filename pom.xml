@@ -27,7 +27,7 @@
 
     <properties>
 
-       <revision>0.3.3</revision><!-- this is the project.version -->
+       <revision>0.3.4</revision><!-- this is the project.version -->
 
        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -99,6 +99,7 @@
        <module>xpath-extension</module>
        <module>saxon</module>
        <module>oxygen</module>
+       <module>cli</module>
     </modules>
 
     <build>
