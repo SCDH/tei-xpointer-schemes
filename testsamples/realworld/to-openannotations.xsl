@@ -18,7 +18,14 @@
         </rdf:RDF>
     </xsl:template>
 
-    <xsl:template match="annotation">
+    <xsl:template match="annotation[not(@xml:id)]">
+      <xsl:message>
+	<xsl:text>WARNING: annotation without @xml:id. Position </xsl:text>
+	<xsl:value-of select="position()"/>
+      </xsl:message>
+    </xsl:template>
+
+    <xsl:template match="annotation[@xml:id]">
         <xsl:variable name="context" select="."/>
         <rdf:Description rdf:about="{concat(base-uri(), '#', @xml:id)}">
             <oa:hasTarget>
