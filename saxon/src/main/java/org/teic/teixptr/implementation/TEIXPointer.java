@@ -54,14 +54,22 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 
     private String pointerType;
 
-    private XdmValue selectedNodes = null;
+    /**
+     * A pointer somehow references nodes of a document. However, some
+     * pointers reference points inside or between nodes, e.g. a
+     * pointer from the string-index() scheme. This field stores the
+     * sequence of related XDM values. Be aware, that some items from
+     * this sequence may be something else than {@link XdmNode}, but
+     * can also be a {@link Point} wrapped into an XDM value.
+     */
+    private XdmValue relatedNodes = null;
 
     protected boolean assertNonEmpty = true;
 
     // state variables
     private boolean errorSeen = false;
     private List<Exception> errorStack = new ArrayList<Exception>();
-    private List<XdmValue> selectedNodesStack = new ArrayList<XdmValue>();
+    private List<XdmValue> relatedNodesStack = new ArrayList<XdmValue>();
     private String xpath = null;
     private NamespaceSupport namespaces = new NamespaceSupport();
 
@@ -262,10 +270,18 @@ public class TEIXPointer extends TEIXPointerBaseListener {
     }
 
     /**
-     * Returns the sequence of nodes (items) selected by the pointer.
+     * Returns the sequence of nodes (XDM items) related by the
+     * pointer.
+     */
+    protected XdmValue getRelatedNodes() {
+	return relatedNodes;
+    }
+
+    /**
+     * Returns the sequence of nodes selected by the pointer.
      */
     public XdmValue getSelectedNodes() {
-	return selectedNodes;
+	return relatedNodes;
     }
 
     /**
@@ -285,24 +301,24 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	if (errorSeen) {
 	    LOG.error("errors occurred while processing the pointer");
 	}
-	// set selectedNodes according to the base pointer type
+	// set relatedNodes according to the base pointer type
 	else if (ctx.xpathPointer() != null) {
-	    selectedNodes = selectedNodesStack.get(0);
+	    relatedNodes = relatedNodesStack.get(0);
 	} else if (ctx.leftPointer() != null) {
-	    selectedNodes = selectedNodesStack.get(0);
+	    relatedNodes = relatedNodesStack.get(0);
 	} else if (ctx.rightPointer() != null) {
-	    selectedNodes = selectedNodesStack.get(0);
+	    relatedNodes = relatedNodesStack.get(0);
 	} else if (ctx.rangePointer() != null) {
-	    selectedNodes = selectedNodesStack.get(0);
+	    relatedNodes = relatedNodesStack.get(0);
 	} else if (ctx.stringIndexPointer() != null) {
-	    selectedNodes = selectedNodesStack.get(0);
+	    relatedNodes = relatedNodesStack.get(0);
 	} else if (ctx.stringRangePointer() != null) {
-	    selectedNodes = selectedNodesStack.get(0);
+	    relatedNodes = relatedNodesStack.get(0);
 	} else if (ctx.idref() != null) {
 	    // handle IDREF
 	    pointerType = "IDREF";
 	    LOG.debug("found IDREF, evaluating: {}", xpath);
-	    selectedNodes = evaluateXPath(xpath, "IDREF");
+	    relatedNodes = evaluateXPath(xpath, "IDREF");
 	    // reset the xpath state variable
 	    xpath = null;
 	} else {
@@ -359,7 +375,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    LOG.debug("found XPATH pointer, evaluating: {}", xpath);
 	    XdmValue nodes = evaluateXPath(xpath, "xpath()");
 	    enforceNonEmptyPolicy(nodes, ctx.getText());
-	    selectedNodesStack.add(nodes);
+	    relatedNodesStack.add(nodes);
 	    // reset the xpath state variable
 	    xpath = null;
 	}
@@ -386,7 +402,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    try {
 		XdmValue point = Point.makePointLeft(evaluateXPath(xpath, "left()"));
 		enforceNonEmptyPolicy(point, ctx.getText());
-		selectedNodesStack.add(point);
+		relatedNodesStack.add(point);
 		// reset the xpath state variable
 		xpath = null;
 	    } catch (Exception e) {
@@ -416,7 +432,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    try {
 		XdmValue point = Point.makePointRight(evaluateXPath(xpath, "right()"));
 		enforceNonEmptyPolicy(point, ctx.getText());
-		selectedNodesStack.add(point);
+		relatedNodesStack.add(point);
 		// reset the xpath state variable
 		xpath = null;
 	    } catch (Exception e) {
@@ -447,7 +463,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		int offset = Integer.parseInt(ctx.offset().getText());
 		XdmValue point = Point.makeStringIndex(evaluateXPath(xpath, "string-index()"), offset);
 		enforceNonEmptyPolicy(point, ctx.getText());
-		selectedNodesStack.add(point);
+		relatedNodesStack.add(point);
 		// reset the xpath state variable
 		xpath = null;
 	    } catch (Exception e) {
@@ -469,7 +485,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		if (!ctx.idref().getText().isEmpty()) {
 		    LOG.debug("found IDREF argument to range(), evaluating: {}", xpath);
 		    XdmValue node = evaluateXPath(xpath, "IDREF");
-		    selectedNodesStack.add(node);
+		    relatedNodesStack.add(node);
 		    // reset the xpath state variable
 		    xpath = null;
 		}
@@ -477,7 +493,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		if (!ctx.pathexpr().getText().isEmpty()) {
 		    LOG.debug("found XPATH argument to range(), evaluating: {}", xpath);
 		    XdmValue node = evaluateXPath(xpath, "XPATH");
-		    selectedNodesStack.add(node);
+		    relatedNodesStack.add(node);
 		    // reset the xpath state variable
 		    xpath = null;
 		}
@@ -503,9 +519,9 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 	    // exit event
 	    int pairsCount = ctx.rangePointerPair().size();
 	    LOG.debug("found range() pointer with {} pair(s)", pairsCount);
-	    if (pairsCount*2 != selectedNodesStack.size()) {
+	    if (pairsCount*2 != relatedNodesStack.size()) {
 		LOG.error("error processing range pointers: {} range pairs mismatch {} processed pointers",
-			  pairsCount, selectedNodesStack.size());
+			  pairsCount, relatedNodesStack.size());
 		errorSeen = true;
 		errorStack.add(new Exception("error processing range pointer: number of range pairs and processed pointers differ"));
 	    } else {
@@ -545,7 +561,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 			// we start with an empty intersection
 			XdmValue range = XdmEmptySequence.getInstance();
 
-			XdmValue startPointer = selectedNodesStack.get(2*i);
+			XdmValue startPointer = relatedNodesStack.get(2*i);
 			// initialize axis iterator with an empty iterator
 			XdmNode startNode = null;
 			Iterator<XdmNode> followingIterator = new ArrayList<XdmNode>().iterator();
@@ -575,7 +591,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 			}
 
 
-			XdmValue endPointer = selectedNodesStack.get(2*i+1);
+			XdmValue endPointer = relatedNodesStack.get(2*i+1);
 			XdmNode endNode = null;
 			// handle pointer types
 			boolean appendEndNode = false;
@@ -648,8 +664,8 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		    errorStack.add(e);
 		}
 		// store the generated selection of nodes to the stack
-		selectedNodesStack.clear();
-		selectedNodesStack.add(ranges);
+		relatedNodesStack.clear();
+		relatedNodesStack.add(ranges);
 	    }
 	}
     }
@@ -812,8 +828,8 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		errorStack.add(e);
 	    }
 	    // store the generated selection of nodes to the stack
-	    selectedNodesStack.clear();
-	    selectedNodesStack.add(ranges);
+	    relatedNodesStack.clear();
+	    relatedNodesStack.add(ranges);
 	}
     }
 }

@@ -19,14 +19,14 @@ public class TEIXPointerTest extends TestSetup {
     void test_satsexp01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsxp01, satsXml, proc);
 	assertEquals("xpath", pointer.getPointerType());
-	assertEquals("<reg xmlns=\"http://www.tei-c.org/ns/1.0\">habui</reg>", pointer.getSelectedNodes().toString());
+	assertEquals("<reg xmlns=\"http://www.tei-c.org/ns/1.0\">habui</reg>", pointer.getRelatedNodes().toString());
     }
 
     @Test
     void test_satsr01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsr01, satsXml, proc);
 	assertEquals("right", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
@@ -40,7 +40,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_satsl01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsl01, satsXml, proc);
 	assertEquals("left", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
@@ -54,7 +54,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_satssi01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssi01, satsXml, proc);
 	assertEquals("string-index", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
@@ -70,7 +70,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_satsrn01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsrn01, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(19, selection.size());
 	// assert right first and last node
 	XdmNode node = Utils.getFirstNode(selection);
@@ -83,7 +83,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_satssr01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr01, satsXml, proc);
 	assertEquals("string-range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(4, selection.size());
 	assertEquals("auge et opto u", TestUtils.getFirstItem(selection).toString());
 	assertEquals(" bene valeas", TestUtils.getLastItem(selection).toString());
@@ -93,7 +93,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_satssr02() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr02, satsXml, proc);
 	assertEquals("string-range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(3, selection.size());
 	assertEquals("in ", TestUtils.getFirstItem(selection).toString());
 	assertEquals("mente", TestUtils.getLastItem(selection).toString());
@@ -103,7 +103,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_satssr03() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satssr03, satsXml, proc);
 	assertEquals("string-range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(2, selection.size());
 	assertEquals("in ", TestUtils.getFirstItem(selection).toString());
 	assertEquals("mentem", TestUtils.getLastItem(selection).toString());
@@ -114,7 +114,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysidref01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysidref01, satsXml, proc);
 	assertEquals("IDREF", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
 	// assert right first and last node
     	XdmNode node = Utils.getFirstNode(selection);
@@ -125,7 +125,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysidref02() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysidref02, satsXml, proc);
 	assertEquals("IDREF", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(0, selection.size());
     }
 
@@ -133,7 +133,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysxp02() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysxp02, satsXml, proc);
 	assertEquals("xpath", pointer.getPointerType());
-	//XdmValue selection = pointer.getSelectedNodes();
+	//XdmValue selection = pointer.getRelatedNodes();
 	//assertEquals(0, selection.size());
     }
 
@@ -141,7 +141,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysxp03() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysxp03, satsXml, proc);
 	assertEquals("xpath", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
     	XdmNode node = Utils.getFirstNode(selection);
 	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"1\" xml:id=\"line1\"/>", node.toString());
@@ -151,7 +151,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysxp04() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysxp04, satsXml, proc);
 	assertEquals("xpath", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(0, selection.size());
     }
 
@@ -159,7 +159,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysrn04() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn04, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(19, selection.size());
 	// assert right first and last node
     	XdmNode node = Utils.getFirstNode(selection);
@@ -172,7 +172,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysrn05() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn05, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(0, selection.size());
     }
 
@@ -180,7 +180,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysrn06() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn06, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(0, selection.size());
     }
 
@@ -188,7 +188,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysrn07() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn07, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
 	// assert right first and last node
 	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", selection.toString());
@@ -198,7 +198,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysrn08() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn08, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(0, selection.size());
     }
 
@@ -206,7 +206,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysrn09() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(sysrn09, satsXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
 	// assert right first and last node
 	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", selection.toString());
@@ -216,7 +216,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_sysssi02() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(syssi02, satsXml, proc);
 	assertEquals("string-index", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
@@ -232,7 +232,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_ijobidref01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(ijobidref01, mtXml, proc);
 	assertEquals("IDREF", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertNotNull(selection);
 	assertEquals(1, selection.size());
     }
@@ -241,7 +241,7 @@ public class TEIXPointerTest extends TestSetup {
     void test_ijobrn01() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(ijobrn01, mtXml, proc);
 	assertEquals("range", pointer.getPointerType());
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	XdmValue forrest = Utils.forrest(selection);
 	assertEquals(3, forrest.size());
     }

@@ -17,7 +17,7 @@ public class UtilsTest extends TestSetup {
     @Test
     void test_getFirstNode() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsrn01, satsXml, proc);
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(19, selection.size());
 	XdmNode node = Utils.getFirstNode(selection);
 	assertEquals("<lb xmlns=\"http://www.tei-c.org/ns/1.0\" n=\"3\"/>", node.toString());
@@ -26,7 +26,7 @@ public class UtilsTest extends TestSetup {
     @Test
     void test_getLastNode() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsrn01, satsXml, proc);
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(19, selection.size());
 	XdmNode node = Utils.getLastNode(selection);
 	assertEquals("supra res", node.toString().strip());
@@ -35,7 +35,7 @@ public class UtilsTest extends TestSetup {
     @Test
     void test_forrest() throws Exception {
 	TEIXPointer pointer = TEIXPointer.parseTEIXPointer(satsrn01, satsXml, proc);
-	XdmValue selection = pointer.getSelectedNodes();
+	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(19, selection.size());
 	XdmValue forrest = Utils.forrest(selection);
 	assertEquals(9, forrest.size());
