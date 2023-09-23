@@ -57,6 +57,11 @@ public class Point {
     public static final int STRING_INDEX = 3;
 
     /**
+     * Point located at an offset in the text nodes following the node.
+     */
+    public static final int STRING_RANGE = 4;
+
+    /**
      * By convention, the offset of a left() pointer is set to this
      * constant value.
      */
@@ -68,6 +73,8 @@ public class Point {
 
     public static final int OFFSET_TO_END = 2;
 
+    public static final int LENGTH_FROM_OFFSET = 3;
+
     private final int fragmentPosition;
 
     private final XdmNode node;
@@ -75,6 +82,8 @@ public class Point {
     private final int position;
 
     private final int offset;
+
+    private final int length;
 
     /**
      * Create a new Point that stores an {@link XdmNode} as reference
@@ -85,6 +94,7 @@ public class Point {
      * @param node     the {@link XdmNode} reference node
      * @param position a code specific to the XPointer scheme
      * @param offset   an integer that describes the point relative in the text, if node is a text node
+     * @param fragmentPosition  where the text fragment is located
      *
      */
     protected Point(XdmNode node, int position, int offset, int fragmentPosition) {
@@ -92,6 +102,28 @@ public class Point {
 	this.position = position;
 	this.offset = offset;
 	this.fragmentPosition = fragmentPosition;
+	this.length = -1;
+    }
+
+    /**
+     * Create a new Point that stores an {@link XdmNode} as reference
+     * node.<P>
+     *
+     * Use one of the static methods of this class to create a Point.
+     *
+     * @param node     the {@link XdmNode} reference node
+     * @param position a code specific to the XPointer scheme
+     * @param offset   an integer that describes the point relative in the text, if node is a text node
+     * @param length   length of the text fragment from offset
+     * @param fragmentPosition  where the text fragment is located
+     *
+     */
+    protected Point(XdmNode node, int position, int offset, int length, int fragmentPosition) {
+	this.node = node;
+	this.position = position;
+	this.offset = offset;
+	this.fragmentPosition = fragmentPosition;
+	this.length = length;
     }
 
     /**
@@ -136,6 +168,19 @@ public class Point {
      */
     public int getOffset() {
 	return offset;
+    }
+
+    /**
+     * Get the length of the text fragment.
+     */
+    public int getLength() {
+	return length;
+    }
+
+    public static XdmValue makeXdmPointValue(Point point) {
+	ArrayList<XdmItem> wrappedItems = new ArrayList<XdmItem>();
+	wrappedItems.add(new XdmExternalObject(point));
+	return new XdmValue(wrappedItems);
     }
 
     /**
