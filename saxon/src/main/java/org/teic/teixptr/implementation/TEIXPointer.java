@@ -634,7 +634,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 			boolean startEndSame = false;
 			if (startNode != null) {
 			    if (startNode.equals(endNode)) {
-				LOG.info("start node and end node are the same node");
+				LOG.debug("start node and end node are the same node");
 				endReached = true;
 				startEndSame = true;
 			    }
@@ -746,7 +746,7 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 		    // iterate until the length is reached
 		    boolean lengthReached = false;
 		    int currentLength = 0;
-		    StringValue textValue;
+		    Point textFragment;
 		    // use method to make the range
 		    // ranges = ranges.append(makeStringRange(startNode, offset, length, currentOffset));
 		    if (startNode != null) {
@@ -756,18 +756,18 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 
 			if (startTextLength >= startTextOffset + length) {
 			    // the whole string range is contained in the start text node
-			    LOG.debug("the whole text range is contained in one text node");
+			    LOG.debug("the whole text range is contained in one text node: {}", startText);
 
 			    // add a xs:string to range
-			    textValue =	StringValue.makeStringValue(startText.substring(startTextOffset, startTextOffset + length));
-			    range = range.append(XdmValue.makeValue(textValue));
+			    textFragment = new Point(startNode, Point.STRING_RANGE, startTextOffset, length, Point.LENGTH_FROM_OFFSET);
+			    range = range.append(Point.makeXdmPointValue(textFragment));
 			} else {
 			    // we have to get following nodes to get a string of the required length
 			    LOG.debug("the text range exceeds one text node");
 
 			    // add part of starting text node as xs:string to range
-			    textValue =	StringValue.makeStringValue(startText.substring(startTextOffset));
-			    range = range.append(XdmValue.makeValue(textValue));
+			    textFragment = new Point(startNode, Point.STRING_RANGE, startTextOffset, Point.OFFSET_TO_END);
+			    range = range.append(Point.makeXdmPointValue(textFragment));
 			    currentLength = currentLength + startTextLength - startTextOffset;
 
 			    // walk the following axis
@@ -781,8 +781,8 @@ public class TEIXPointer extends TEIXPointerBaseListener {
 				    if (length < currentLength + textLength) {
 					// add part of the text node as xs:string
 					LOG.debug("adding part of text node '{}'", text);
-					textValue = StringValue.makeStringValue(text.substring(0, length - currentLength));
-					range = range.append(XdmValue.makeValue(textValue));
+					textFragment = new Point(followingNode, Point.STRING_RANGE, 0, length - currentLength, Point.LENGTH_FROM_OFFSET);
+					range = range.append(Point.makeXdmPointValue(textFragment));
 					lengthReached = true;
 					currentLength = length;
 				    } else {
