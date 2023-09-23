@@ -11,6 +11,7 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmNodeKind;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XdmExternalObject;
+import net.sf.saxon.om.NodeInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,14 @@ public class Point {
      */
     public static final int LEFT_OFFSET = -1;
 
+    public static final int INTER_CHARACTER = 0;
+
+    public static final int START_TO_OFFSET = 1;
+
+    public static final int OFFSET_TO_END = 2;
+
+    private final int fragmentPosition;
+
     private final XdmNode node;
 
     private final int position;
@@ -78,10 +87,11 @@ public class Point {
      * @param offset   an integer that describes the point relative in the text, if node is a text node
      *
      */
-    protected Point(XdmNode node, int position, int offset) {
+    protected Point(XdmNode node, int position, int offset, int fragmentPosition) {
 	this.node = node;
 	this.position = position;
 	this.offset = offset;
+	this.fragmentPosition = fragmentPosition;
     }
 
     /**
@@ -97,6 +107,13 @@ public class Point {
      */
     public int getPosition() {
 	return position;
+    }
+
+    /**
+     * Get the fragment position code.
+     */
+    public int getFragmentPosition() {
+	return fragmentPosition;
     }
 
     /**
@@ -138,7 +155,7 @@ public class Point {
 	    XdmItem item = iter.next();
 	    if (item instanceof XdmNode) {
 		// wrap the node into a Point object
-		Point point = new Point((XdmNode) item, LEFT, LEFT_OFFSET);
+		Point point = new Point((XdmNode) item, LEFT, LEFT_OFFSET, INTER_CHARACTER);
 		XdmExternalObject wrappedPoint = new XdmExternalObject(point);
 		wrappedItems.add(wrappedPoint);
 		break;
@@ -163,7 +180,7 @@ public class Point {
 	    XdmItem item = iter.next();
 	    if (item instanceof XdmNode) {
 		// wrap the node into a Point object
-		point = new Point((XdmNode) item, RIGHT, 0);
+		point = new Point((XdmNode) item, RIGHT, 0, INTER_CHARACTER);
 	    }
 	}
 	if (point != null) {
@@ -184,8 +201,8 @@ public class Point {
      *
      * @see makeStringIndexPoint(XdmValue, int)
      */
-    public static XdmValue makeStringIndex(XdmValue xdmValue, int offset) throws SaxonApiException {
-	Point point = Point.makeStringIndexPoint(xdmValue, offset);
+    public static XdmValue makeStringIndex(XdmValue xdmValue, int offset, int fragmentPosition) throws SaxonApiException {
+	Point point = Point.makeStringIndexPoint(xdmValue, offset, fragmentPosition);
 	if (point != null) {
 	    XdmExternalObject wrappedPoint = new XdmExternalObject(point);
 	    return wrappedPoint;
@@ -216,7 +233,7 @@ public class Point {
      * @param referenceNodes  the node(s) to get the string point at offset from
      * @param offset          the offset
      */
-    public static Point makeStringIndexPoint(XdmValue referenceNodes, int offset) throws SaxonApiException {
+    public static Point makeStringIndexPoint(XdmValue referenceNodes, int offset, int fragmentPosition) throws SaxonApiException {
 
 	// get the first (left most) node of the reference nodes
 	Iterator<XdmItem> iter = referenceNodes.documentOrder().iterator();
@@ -311,7 +328,7 @@ public class Point {
 	if (startNode == null) {
 	    return null;
 	} else {
-	    return new Point(startNode, Point.STRING_INDEX, startTextOffset);
+	    return new Point(startNode, Point.STRING_INDEX, startTextOffset, fragmentPosition);
 	}
     }
 
@@ -350,6 +367,44 @@ public class Point {
 	    }
 	}
 	return null;
+    }
+
+    /**
+     * Wrap a point into a text node using {@link TextNodeFragment},
+     * which makes a virtual copy of the node stored as the reference
+     * node of the point. The resulting text node does not serialize
+     * to the whole text of the original node, but only to a portion
+     * of it, determined by the offset and the fragment position.
+     *
+     * @param point  a {@link Point} object to be wrapped
+     * @return  an {@link XdmNode}
+     */
+    public static XdmNode makeTextNodeFragment(Point point) {
+	if (point.getNode().getNodeKind() == XdmNodeKind.TEXT) {
+	    NodeInfo nodeInfo = new TextNodeFragment(point);
+	    return new XdmNode(nodeInfo);
+	} else {
+	    return point.getNode();
+	}
+    }
+
+    /**
+     * Wrap an {@link XdmItem} into an text node, if and only if it is
+     * a {@link XdmExternalObject} around a {@link Point}. Otherwise,
+     * the item is returned. This static method can be mapped over a
+     * stream of items.
+     *
+     * @param node  an {@link XdmItem}
+     * @return an {@link XdmItem}
+     *
+     * @see Point.makeTextNodeFragment(Point)
+     */
+    public static XdmItem wrapPointIntoTextNode(XdmItem node) {
+	if (Point.isPoint(node)) {
+	    return makeTextNodeFragment(Point.getPoint(node));
+	} else {
+	    return node;
+	}
     }
 
 }
