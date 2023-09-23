@@ -56,6 +56,7 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("string-index", pointer.getPointerType());
 	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(1, selection.size());
+	assertTrue(Point.isPoint(selection));
 	Point point = Point.getPoint(selection);
 	assertNotNull(point);
 	assertEquals("si", point.getNode().toString());
@@ -64,6 +65,9 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals(Point.STRING_INDEX, point.getPosition());
 	assertEquals("string-index", point.getPointerType());
 	assertEquals(1, point.getOffset());
+	// the point is not returned when getting nodes
+	XdmValue nodes = pointer.getNodes();
+	assertEquals(0, nodes.size());
     }
 
     @Test

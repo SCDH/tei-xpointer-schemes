@@ -56,7 +56,7 @@ public class GetSequence extends AbstractGetSequence {
 		    TEIXPointer pointer = TEIXPointer.parseTEIXPointer(pointerArg, uriArg, processor);
 
 		    // return the selected nodes
-		    return pointer.getSelectedNodes().getUnderlyingValue();
+		    return pointer.getNodes().getUnderlyingValue();
 		} catch (SaxonApiException e) {
 		    throw new XPathException(e);
 		} catch (Exception e) {

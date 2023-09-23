@@ -280,8 +280,8 @@ public class TEIXPointer extends TEIXPointerBaseListener {
     /**
      * Returns the sequence of nodes selected by the pointer.
      */
-    public XdmValue getSelectedNodes() {
-	return relatedNodes;
+    public XdmValue getNodes() throws SaxonApiException {
+	return new XdmValue(relatedNodes.stream().filter(item -> item.isNode()));
     }
 
     /**
