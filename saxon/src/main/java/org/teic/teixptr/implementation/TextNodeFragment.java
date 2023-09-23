@@ -40,17 +40,20 @@ public class TextNodeFragment extends VirtualCopy {
      */
     @Override
     public String getStringValue() {
-	LOG.debug("preparing string value for Point");
+	LOG.debug("preparing string value for Point, {}, from {} to {}",
+		  point.getFragmentPosition(), point.getOffset(), point.getLength());
 	if (point.getFragmentPosition() == Point.INTER_CHARACTER) {
 	    LOG.debug("inter character point: empty string");
 	    return "";
 	} else if (point.getFragmentPosition() == Point.START_TO_OFFSET) {
-	    return super.getStringValue().substring(0, point.getOffset());
+	    return getOriginalNode().getStringValue().substring(0, point.getOffset());
 	} else if (point.getFragmentPosition() == Point.OFFSET_TO_END) {
-	    return super.getStringValue().substring(point.getOffset());
+	    return getOriginalNode().getStringValue().substring(point.getOffset());
+	} else if (point.getFragmentPosition() == Point.LENGTH_FROM_OFFSET) {
+	    return getOriginalNode().getStringValue().substring(point.getOffset(), point.getOffset() + point.getLength());
 	} else {
 	    LOG.debug("full original text node");
-	    return super.getStringValue();
+	    return getOriginalNode().getStringValue();
 	}
     }
 
