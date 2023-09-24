@@ -18,6 +18,7 @@ http://www.saxonica.com/documentation/index/configuration-file.html
       <!-- register the extension functions -->
       <extensionFunction>org.teic.teixptr.implementation.extensions.Forrest</extensionFunction>
       <extensionFunction>org.teic.teixptr.implementation.extensions.GetSequence</extensionFunction>
+      <extensionFunction>org.teic.teixptr.implementation.extensions.GetNodes3</extensionFunction>
    </resources>
 
 </configuration>
