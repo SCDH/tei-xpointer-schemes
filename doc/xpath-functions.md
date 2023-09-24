@@ -16,6 +16,9 @@ TODO
 
 # Type dependent functions
 
+[`xptr:get-nodes(href as xs:string, pointer as xs:string,
+  wrap-points as xs:boolean) as node()*`](get-nodes3.md)
+
 [`xptr:get-sequence(uri as xs:string, pointer as xs:string) as node()*`](get-sequence.md)
 
 TODO
