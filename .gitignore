@@ -10,3 +10,4 @@ target
 .project
 *.xpr
 *.flattened-pom.xml
+xspec

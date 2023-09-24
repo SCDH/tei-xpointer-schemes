@@ -61,7 +61,7 @@ public class Utils {
      * @throws SaxonApiException may occur when getting the document order
      */
     public static XdmValue forrest(XdmValue nodes) throws SaxonApiException {
-	Iterator<XdmItem> iter = nodes.documentOrder().iterator();
+	Iterator<XdmItem> iter = docOrderWithVirtualNodes(nodes).iterator();
 	// start with an empty forrest
 	XdmValue forrest = XdmEmptySequence.getInstance();
 	// For every node we test, if it is on the child axis of any
@@ -91,6 +91,23 @@ public class Utils {
 	    }
 	}
 	return forrest;
+    }
+
+    /**
+     * Like {@link XdmValue.documentOrder()}, but does not fail when
+     * there are items that are not nodes or do not have a tree
+     * information. Remember, that {@link
+     * net.sf.saxon.tree.wrapper.VirtualCopy} does not have a {@link
+     * net.sf.saxon.om.TreeInfo}.
+     */
+    protected static XdmValue docOrderWithVirtualNodes(XdmValue nodes) throws SaxonApiException {
+	// documentOrder calls NodeInfo.getTreeInfo().getDocumentNumber() This not work on a VirtualCopy
+	if (nodes.stream().allMatch(item -> item.isNode() && ((XdmNode) item).getUnderlyingNode().getTreeInfo() != null)) {
+	    return nodes.documentOrder();
+	} else {
+	    // TODO: maybe we should assert order in subsequences?
+	    return nodes;
+	}
     }
 
     /**

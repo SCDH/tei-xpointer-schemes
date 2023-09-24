@@ -21,4 +21,15 @@ public class XPathUtils {
 	return inputValue.getStringValue();
     }
 
+    /**
+     * Cast a argument of type <code>xs:boolean</code> to a boolean value.
+     *
+     * @param arg  the argument as {@link Sequence}
+     * @return a boolean value
+     */
+    public static boolean getBooleanArgument(Sequence arg) throws XPathException {
+        boolean inputValue = arg.materialize().effectiveBooleanValue();
+	return inputValue;
+    }
+
 }

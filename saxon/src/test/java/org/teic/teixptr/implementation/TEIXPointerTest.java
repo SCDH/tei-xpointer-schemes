@@ -9,6 +9,7 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XdmNodeKind;
 
 
 public class TEIXPointerTest extends TestSetup {
@@ -68,6 +69,23 @@ public class TEIXPointerTest extends TestSetup {
 	// the point is not returned when getting nodes
 	XdmValue nodes = pointer.getNodes();
 	assertEquals(0, nodes.size());
+
+	// wrap the point into a text node that contains no text for string-index scheme
+	XdmNode fragment = (XdmNode) Point.makeTextNodeFragment(point);
+	assertEquals("", fragment.toString());
+	assertEquals(1, fragment.size());
+	assertEquals(XdmNodeKind.TEXT, fragment.getNodeKind());
+	assertTrue(fragment.getUnderlyingValue() instanceof TextNodeFragment);
+
+	// the point is present when getting wrapped nodes
+	XdmValue wrapped = pointer.getNodesWithPointsWrappedInTextNodes();
+	assertEquals(1, wrapped.size());
+	assertFalse(Point.isPoint(wrapped));
+	XdmItem item = wrapped.itemAt(0);
+	assertTrue(item.isNode());
+	assertFalse(point.getNode().equals(item)); // same node?
+	assertEquals("", item.toString());
+	assertTrue(item.getUnderlyingValue() instanceof TextNodeFragment);
     }
 
     @Test
@@ -89,8 +107,18 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("string-range", pointer.getPointerType());
 	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(4, selection.size());
-	assertEquals("auge et opto u", TestUtils.getFirstItem(selection).toString());
-	assertEquals(" bene valeas", TestUtils.getLastItem(selection).toString());
+	assertTrue(Point.isPoint(selection.itemAt(0)));
+	assertFalse(Point.isPoint(selection.itemAt(1)));
+	assertFalse(Point.isPoint(selection.itemAt(2)));
+	assertFalse(Point.isPoint(selection.itemAt(3))); // whole text node
+	// only whole nodes present when getting nodes
+	XdmValue nodes = pointer.getNodes();
+	assertEquals(3, nodes.size());
+	// points wrapped in virtual text nodes
+	XdmValue wrapped = pointer.getNodesWithPointsWrappedInTextNodes();
+	assertEquals(4, wrapped.size());
+	assertEquals("auge et opto u", wrapped.itemAt(0).toString());
+	assertEquals(" bene valeas", wrapped.itemAt(3).toString());
     }
 
     @Test
@@ -99,8 +127,20 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("string-range", pointer.getPointerType());
 	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(3, selection.size());
-	assertEquals("in ", TestUtils.getFirstItem(selection).toString());
-	assertEquals("mente", TestUtils.getLastItem(selection).toString());
+	assertTrue(Point.isPoint(selection.itemAt(0)));
+	assertFalse(Point.isPoint(selection.itemAt(1)));
+	assertFalse(Point.isPoint(selection.itemAt(2)));
+	// only whole nodes present when getting nodes
+	XdmValue nodes = pointer.getNodes();
+	assertEquals(2, nodes.size());
+	assertEquals("<reg xmlns=\"http://www.tei-c.org/ns/1.0\">mente</reg>", nodes.itemAt(0).toString());
+	assertEquals("mente", nodes.itemAt(1).toString());
+	// points wrapped in virtual text nodes
+	XdmValue wrapped = pointer.getNodesWithPointsWrappedInTextNodes();
+	assertEquals(3, wrapped.size());
+	assertEquals("in ", wrapped.itemAt(0).toString());
+	assertEquals("<reg xmlns=\"http://www.tei-c.org/ns/1.0\">mente</reg>", wrapped.itemAt(1).toString());
+	assertEquals("mente", wrapped.itemAt(2).toString());
     }
 
     @Test
@@ -109,8 +149,20 @@ public class TEIXPointerTest extends TestSetup {
 	assertEquals("string-range", pointer.getPointerType());
 	XdmValue selection = pointer.getRelatedNodes();
 	assertEquals(2, selection.size());
-	assertEquals("in ", TestUtils.getFirstItem(selection).toString());
-	assertEquals("mentem", TestUtils.getLastItem(selection).toString());
+	assertTrue(Point.isPoint(selection.itemAt(0)));
+	assertTrue(Point.isPoint(selection.itemAt(1)));
+	// only whole nodes present when getting nodes
+	XdmValue nodes = pointer.getNodes();
+	assertEquals(0, nodes.size());
+	// points wrapped in virtual text nodes
+	XdmValue wrapped = pointer.getNodesWithPointsWrappedInTextNodes();
+	assertEquals(2, wrapped.size());
+	assertTrue(wrapped.itemAt(0).isNode());
+	assertTrue(wrapped.itemAt(0).getUnderlyingValue() instanceof TextNodeFragment);
+	assertEquals("in ", wrapped.itemAt(0).toString());
+	assertTrue(wrapped.itemAt(1).isNode());
+	assertTrue(wrapped.itemAt(1).getUnderlyingValue() instanceof TextNodeFragment);
+	assertEquals("mentem", wrapped.itemAt(1).toString());
     }
 
 

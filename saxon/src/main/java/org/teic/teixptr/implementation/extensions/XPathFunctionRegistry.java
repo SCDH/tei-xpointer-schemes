@@ -25,6 +25,7 @@ public class XPathFunctionRegistry {
      * @param processor  a Saxon {@link Processor}
      */
     static public void register(Processor processor) {
+	processor.registerExtensionFunction(new org.teic.teixptr.implementation.extensions.GetNodes3());
 	processor.registerExtensionFunction(new org.teic.teixptr.implementation.extensions.GetSequence());
 	processor.registerExtensionFunction(new org.teic.teixptr.implementation.extensions.Forrest());
     }

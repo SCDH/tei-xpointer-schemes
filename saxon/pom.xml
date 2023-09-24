@@ -16,6 +16,7 @@
     <properties>
        <scripts.dir>${project.basedir}/..</scripts.dir>
        <test.resources>${project.build.directory}/generated-test-resources</test.resources>
+       <xspec.version>2.2.4</xspec.version>
     </properties>
 
     <dependencies>
@@ -69,6 +70,87 @@
 	       </execution>
             </executions>
 	 </plugin>
+
+	 <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>copy-jars</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>copy-dependencies</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>unpack-xspec</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>unpack</goal>
+                  </goals>
+                  <configuration>
+                     <artifactItems>
+                        <artifactItem>
+                           <groupId>io.xspec</groupId>
+                           <artifactId>xspec</artifactId>
+                           <version>${xspec.version}</version>
+                           <classifier>enduser-files</classifier>
+                           <type>zip</type>
+                           <!-- "tar.gz" is also available -->
+                        </artifactItem>
+                     </artifactItems>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+               <execution>
+                  <id>properties-to-resources</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${project.build.directory}/bin</outputDirectory>
+                     <resources>
+                        <resource>
+                           <directory>${project.basedir}</directory>
+                           <includes>
+                              <include>run-xspec.sh</include>
+                           </includes>
+                           <filtering>true</filtering>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+	 <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+               <execution>
+                  <id>set-permissions</id>
+                  <phase>test</phase>
+                  <configuration>
+                     <target>
+                        <chmod file="${project.build.directory}/bin/run-xspec.sh" perm="755"/>
+                     </target>
+                  </configuration>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
 
        </plugins>
     </build>
