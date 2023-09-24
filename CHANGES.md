@@ -1,5 +1,25 @@
 # Changes
 
+## 0.3.4 (dev)
+
+- introduce `xptr:get-nodes(href as xs:string, pointer as xs:string,
+  wrap-points as xs:boolean) as node()*` XPath function which returns
+  homogenous sequence of nodes
+  - fragments of text nodes as referred to by the `string-range`
+    scheme are wrapped in virtual text nodes, i.e. nodes without
+    parent and different ID than the original text node.
+  - this greatly simplifies the usage of the XPath API
+- change in `xptr:get-sequence/2`:
+  - this will not return points any more but only complete nodes. Use
+    the new function for getting points wrapped in virtual text nodes
+    instead.
+- change in `xptr:forrest(nodes as node()*) as node()*`
+  - This function will first call `documentOrder()`, only if all nodes
+    have a tree info. This was required for dealing with virtual nodes
+    produced by the new function for getting nodes.
+- new utils for running XSpec tests
+- XSpec tests for new `xptr:get-nodes/3` function
+
 ## 0.3.3
 
 - fix github release action
