@@ -71,6 +71,16 @@
         </x:expect>
     </x:scenario>
 
+    <x:scenario label="get-nodes3-forrest: false, satssr02">
+        <x:call template="get-nodes3-forrest">
+            <x:param name="pointer-file" select="'satssr02.txt'"/>
+            <x:param name="wrap-points" select="false()"/>
+        </x:call>
+        <x:expect label="result">
+            <t:div><t:reg>mente</t:reg></t:div>
+        </x:expect>
+    </x:scenario>
+
     <x:scenario label="get-nodes3: true, satssr02">
         <x:call template="get-nodes3">
             <x:param name="pointer-file" select="'satssr02.txt'"/>
@@ -78,6 +88,16 @@
         </x:call>
         <x:expect label="result">
             <t:div>in <t:reg>mente</t:reg>mente</t:div>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="get-nodes3-forrest: true, satssr02">
+        <x:call template="get-nodes3-forrest">
+            <x:param name="pointer-file" select="'satssr02.txt'"/>
+            <x:param name="wrap-points" select="true()"/>
+        </x:call>
+        <x:expect label="result">
+            <t:div>in <t:reg>mente</t:reg></t:div>
         </x:expect>
     </x:scenario>
 
@@ -92,8 +112,28 @@
         </x:expect>
     </x:scenario>
 
+    <x:scenario label="get-nodes3-forrest: false, satssr03">
+        <x:call template="get-nodes3-forrest">
+            <x:param name="pointer-file" select="'satssr03.txt'"/>
+            <x:param name="wrap-points" select="false()"/>
+        </x:call>
+        <x:expect label="result">
+            <t:div/>
+        </x:expect>
+    </x:scenario>
+
     <x:scenario label="get-nodes3: true, satssr03">
         <x:call template="get-nodes3">
+            <x:param name="pointer-file" select="'satssr03.txt'"/>
+            <x:param name="wrap-points" select="true()"/>
+        </x:call>
+        <x:expect label="result">
+            <t:div>in mentem</t:div>
+        </x:expect>
+    </x:scenario>
+
+    <x:scenario label="get-nodes3-forrest: true, satssr03">
+        <x:call template="get-nodes3-forrest">
             <x:param name="pointer-file" select="'satssr03.txt'"/>
             <x:param name="wrap-points" select="true()"/>
         </x:call>
